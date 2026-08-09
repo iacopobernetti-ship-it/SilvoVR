@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/000_my/Scenes/Base.unity
+    guid: d06de8fa7814a744c8e5211b584fe54c
+  - enabled: 1
+    path: Assets/000_my/Scenes/Silvo01.unity
+    guid: 44a0964eaa51db749a8de7d2df85293e
+  - enabled: 1
+    path: Assets/000_my/Scenes/Silvo02.unity
+    guid: cb339135e9061fa42b2cb63d70fd3783
+  - enabled: 1
+    path: Assets/000_my/Scenes/Silvo03.unity
+    guid: 982de25eba3dc43478a1e9ec777afd83
+  - enabled: 1
+    path: Assets/000_my/Scenes/Silvo04.unity
+    guid: a6caecc45136cab4daad203a5b63bae0
+  m_configObjects:
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 1bbdc97ab43549c4e94ff1810d9ab3ee, type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: fe3cee2911922144badf909b6454d54b, type: 2}
+  m_UseUCBPForAssetBundles: 0

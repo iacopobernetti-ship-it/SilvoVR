@@ -1,0 +1,91 @@
+using System.Collections.Generic;
+using System.IO;
+using Mono.Cecil;
+using UnityEditor;
+using UnityEditor.Build;
+using UnityEditor.Build.Reporting;
+using UnityEngine;
+
+/// <summary>
+/// iOS 构建时自动将预编译 LCCSDK.dll 中的 DllImport("libwebp") / DllImport("libwebpdemux")
+/// 重写为 DllImport("__Internal")，使 IL2CPP 生成直接符号调用而非 dlopen。
+/// </summary>
+public class RewriteWebpDllImport : IPostBuildPlayerScriptDLLs
+{
+    public int callbackOrder => 0;
+
+    static readonly HashSet<string> TargetModuleNames = new HashSet<string>
+    {
+        "libwebp",
+        "libwebpdemux"
+    };
+
+    const string TargetAssemblyName = "LCCSDK.dll";
+
+    public void OnPostBuildPlayerScriptDLLs(BuildReport report)
+    {
+        if (report.summary.platform != BuildTarget.iOS)
+            return;
+
+        var dllPath = FindStagedDll();
+        if (string.IsNullOrEmpty(dllPath))
+        {
+            Debug.LogWarning("[RewriteWebpDllImport] Cannot find " + TargetAssemblyName + " in staging area. Skipping.");
+            return;
+        }
+
+        RewriteDllImports(dllPath);
+    }
+
+    static string FindStagedDll()
+    {
+        var tempDir = Path.GetFullPath("Temp");
+        if (!Directory.Exists(tempDir))
+            return null;
+
+        var candidates = Directory.GetFiles(tempDir, TargetAssemblyName, SearchOption.AllDirectories);
+        return candidates.Length > 0 ? candidates[0] : null;
+    }
+
+    static void RewriteDllImports(string dllPath)
+    {
+        var readerParams = new ReaderParameters
+        {
+            ReadWrite = false,
+            ReadSymbols = false,
+            ReadingMode = ReadingMode.Immediate
+        };
+
+        int rewriteCount = 0;
+
+        using (var assembly = AssemblyDefinition.ReadAssembly(dllPath, readerParams))
+        {
+            foreach (var module in assembly.Modules)
+            {
+                foreach (var type in module.GetTypes())
+                {
+                    foreach (var method in type.Methods)
+                    {
+                        if (!method.HasPInvokeInfo)
+                            continue;
+
+                        if (TargetModuleNames.Contains(method.PInvokeInfo.Module.Name))
+                        {
+                            method.PInvokeInfo.Module.Name = "__Internal";
+                            rewriteCount++;
+                        }
+                    }
+                }
+            }
+
+            if (rewriteCount > 0)
+            {
+                var writerParams = new WriterParameters { WriteSymbols = false };
+                assembly.Write(dllPath, writerParams);
+            }
+        }
+
+        if (rewriteCount > 0)
+            Debug.Log("[RewriteWebpDllImport] Rewrote " + rewriteCount + " P/Invoke entries (libwebp/libwebpdemux → __Internal) for iOS build.");
+    }
+}

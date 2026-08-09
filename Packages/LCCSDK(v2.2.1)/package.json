@@ -1,0 +1,25 @@
+{
+  "name": "com.xgrids.lccsdk",
+  "version": "2.2.1",
+  "displayName": "LCC SDK",
+  "description": "Unity plugin for rendering and editing Gaussian splating asset",
+  "unity": "2022.3",
+  "documentationUrl": "https://xgrids.com/",
+  "changelogUrl": "https://developer.xgrids.cn/#/",
+  "dependencies": {
+    "com.unity.mathematics": "1.2.6",
+    "com.unity.render-pipelines.universal": "17.0.4"
+  },
+  "author": {
+    "name": "Davidwang",
+    "email": "xiangchun.wang@xgrids.com",
+    "url": "https://xgrids.com/"
+  },
+  "samples": [
+    {
+      "displayName": "LCC SDK",
+      "description": "Simple render sample",
+      "path": "Samples~/LCCViewer"
+    }
+  ]
+}
