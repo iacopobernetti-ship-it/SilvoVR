@@ -32,8 +32,30 @@ namespace Artemis.Vr
         [Header("Posizionamento (lazy follow)")]
         [Tooltip("Distanza dalla testa (m). 0.7 = a portata di POKE; il RAY funziona comunque.")]
         [SerializeField] private float distance = 0.7f;
-        [Tooltip("Sotto l'orizzonte dello sguardo (m).")]
+        [Tooltip("Quota rispetto all'orizzonte dello sguardo (m). Positivo = piu' in alto.")]
         [SerializeField] private float heightOffset = -0.25f;
+        [Tooltip("Angolo AZIMUTALE del pannello attorno alla verticale, in gradi: 0 = davanti, " +
+                 "negativo = a sinistra, positivo = a destra. Serve a spostare la HUD fuori " +
+                 "dall'asse di lavoro (per esempio a lato, mentre si punta un fusto davanti a se').")]
+        [SerializeField] private float azimuthDegrees = 0f;
+
+        [Header("Quali rotazioni della TESTA inseguire")]
+        [Tooltip("IMBARDATA (girare la testa a destra/sinistra). SPENTO = il pannello si orienta " +
+                 "sul CORPO del giocatore (l'XR Origin): guardandoti intorno resta dov'e', e ti " +
+                 "segue solo quando ruoti col joystick o cammini. E' la modalita' piu' riposante: " +
+                 "la HUD diventa un oggetto fermo nello spazio del giocatore invece di qualcosa " +
+                 "che insegue lo sguardo e va 'combattuto'.")]
+        [SerializeField] private bool trackHeadYaw = false;
+
+        [Tooltip("BECCHEGGIO (alzare/abbassare lo sguardo). ACCESO = il pannello sale e scende " +
+                 "con lo sguardo, restando sempre in campo visivo. Attenzione: e' proprio il " +
+                 "comportamento che stanca di piu' in sessioni lunghe.")]
+        [SerializeField] private bool trackHeadPitch = false;
+
+        [Tooltip("ROLLIO (inclinare la testa di lato). ACCESO = il pannello si inclina con te, " +
+                 "restando parallelo agli occhi. SPENTO = resta orizzontale rispetto al mondo, " +
+                 "che e' quasi sempre preferibile perche' da' un riferimento stabile.")]
+        [SerializeField] private bool trackHeadRoll = false;
         [Tooltip("Zona morta angolare: il pannello parte solo quando lo scarto supera questo (gradi).")]
         [SerializeField] private float deadZoneDegrees = 35f;
         [Tooltip("Una volta PARTITO, il pannello continua finche' lo scarto non scende sotto " +
@@ -96,6 +118,8 @@ namespace Artemis.Vr
         private TMP_Text diagnostics;
         private float nextDiag;
         private Transform head;
+        private Transform body;          // XR Origin: il "corpo" del giocatore
+        private float nextBodySearch;
         private Transform handLeft, handRight;
         private float nextHandSearch;
         private bool snapNext;
@@ -254,9 +278,15 @@ namespace Artemis.Vr
             string eventCam = canvas == null ? "-" : (canvas.worldCamera == null ? "Camera.main" : canvas.worldCamera.name);
             string layer = canvas == null ? "-" : LayerMask.LayerToName(canvas.gameObject.layer);
 
+            // Nomi delle schede registrate: dice a colpo d'occhio se un pannello ha davvero
+            // chiamato CreateTab o se non e' mai arrivato a costruirsi.
+            var names = new System.Text.StringBuilder();
+            foreach (var kv in tabs) { if (names.Length > 0) names.Append(','); names.Append(kv.Key); }
+
             diagnostics.text =
-                $"scena {SceneManager.GetActiveScene().name} · ES {esCount} · modulo {(hasModule ? "ok" : "MANCA")} · " +
-                $"cam {(cam == null ? "NULL" : cam.name)} · eventCam {eventCam} · layer {layer}";
+                $"scene {SceneManager.GetActiveScene().name} · ES {esCount} · module {(hasModule ? "ok" : "MISSING")} · " +
+                $"cam {(cam == null ? "NULL" : cam.name)} · eventCam {eventCam} · layer {layer}\n" +
+                $"tabs [{names}]";
             diagnostics.color = (esCount == 1 && hasModule)
                 ? new Color(0.6f, 1f, 0.6f, 0.9f)      // verde: configurazione sana
                 : new Color(1f, 0.55f, 0.45f, 0.95f);  // rosso: ecco perche' non risponde
@@ -324,7 +354,8 @@ namespace Artemis.Vr
             AddBorder(go, buttonBorder);
             var le = go.AddComponent<LayoutElement>();
             // 64 px = 6.4 cm: comodo da centrare col dito. Piu' basso frustra il poke.
-            le.preferredHeight = 64; le.flexibleWidth = 1;
+            // Dentro una MakeRow e' la riga a decidere l'altezza (childForceExpandHeight).
+            le.preferredHeight = 64; le.flexibleWidth = 1; le.flexibleHeight = 1;
 
             AddText(go.transform, label, 24, FontStyles.Bold);
 
@@ -339,6 +370,35 @@ namespace Artemis.Vr
             return (btn, img);
         }
 
+        /// <summary>
+        /// Un contenitore ORIZZONTALE dentro una pagina: i widget che ci metti dentro si
+        /// dividono la larghezza in parti uguali. Serve a evitare la colonna unica di pulsanti
+        /// lunghi e stretti, che in visore sono difficili da centrare col ray — due o tre per
+        /// riga vengono piu' quadrati e quindi piu' facili da colpire.
+        /// </summary>
+        public RectTransform MakeRow(Transform parent, float height = 96f)
+        {
+            var go = new GameObject("Row", typeof(RectTransform), typeof(HorizontalLayoutGroup));
+            go.transform.SetParent(parent, false);
+
+            var hlg = go.GetComponent<HorizontalLayoutGroup>();
+            hlg.spacing = 10f;
+            hlg.childControlWidth = true;  hlg.childControlHeight = true;
+            hlg.childForceExpandWidth = true; hlg.childForceExpandHeight = true;
+
+            var le = go.AddComponent<LayoutElement>();
+            le.preferredHeight = height; le.flexibleWidth = 1; le.flexibleHeight = 0;
+            return go.GetComponent<RectTransform>();
+        }
+
+        /// <summary>Dimensioni del pannello in px di canvas — serve a chi costruisce viste
+        /// che devono stare dentro la sua larghezza (per esempio una tabella).</summary>
+        public Vector2 PanelSize => panelSize;
+
+        /// <summary>Colori della cornice, per chi costruisce widget propri e vuole restare coerente.</summary>
+        public Color PanelColor => panelColor;
+        public Color PanelBorder => panelBorder;
+
         /// <summary>Etichetta standard. Ritorna il TMP_Text per aggiornamenti successivi.</summary>
         public TMP_Text MakeLabel(Transform parent, string text, float size = 20, TextAlignmentOptions align = TextAlignmentOptions.Center)
         {
@@ -351,6 +411,35 @@ namespace Artemis.Vr
             t.color = new Color(1f, 1f, 1f, 0.9f);
             t.raycastTarget = false;
             return t;
+        }
+
+        /// <summary>
+        /// Il ray sta puntando il pannello? Serve agli strumenti 3D (rilievo) per NON agire
+        /// quando l'utente sta semplicemente premendo un pulsante: senza questo controllo, un
+        /// colpo di grilletto sulla HUD misurerebbe anche l'albero che le sta dietro.
+        ///
+        /// Intersezione raggio-piano del canvas, poi verifica che il punto cada dentro il
+        /// rettangolo. Nessun collider coinvolto: aggiungerne uno al pannello disturberebbe
+        /// il poke e i raycast di gioco.
+        /// </summary>
+        public bool RayHitsPanel(Ray ray, out float distance)
+        {
+            distance = 0f;
+            if (canvas == null || !canvas.gameObject.activeInHierarchy) return false;
+
+            var rt = canvas.GetComponent<RectTransform>();
+            if (rt == null) return false;
+
+            var plane = new Plane(-canvas.transform.forward, canvas.transform.position);
+            if (!plane.Raycast(ray, out float enter)) return false;
+
+            Vector3 hit = ray.GetPoint(enter);
+            Vector3 local = rt.InverseTransformPoint(hit);
+            var r = rt.rect;
+            if (local.x < r.xMin || local.x > r.xMax || local.y < r.yMin || local.y > r.yMax) return false;
+
+            distance = enter;
+            return true;
         }
 
         // ------------------------------------------------------------------ lazy follow
@@ -369,9 +458,34 @@ namespace Artemis.Vr
             // insegue la testa che si sporge e scappa davanti al dito.
             if (freezeWhenHandWithin > 0.01f && !snapNext && HandNearPanel()) { following = false; return; }
 
-            Vector3 fwdFlat = Vector3.ProjectOnPlane(head.forward, Vector3.up).normalized;
-            if (fwdFlat.sqrMagnitude < 0.01f) return;
-            Vector3 target = head.position + fwdFlat * distance + Vector3.up * heightOffset;
+            // La direzione di riferimento viene dalla TESTA o dal CORPO a seconda del flag:
+            // ancorarla al corpo e' cio' che rende la HUD un oggetto fermo nello spazio del
+            // giocatore, che non insegue lo sguardo.
+            Transform reference = trackHeadYaw ? head : (Body() != null ? Body() : head);
+
+            Vector3 fwd = reference.forward;
+            // Il beccheggio si include solo se richiesto: altrimenti si proietta sul piano
+            // orizzontale e il pannello resta alla sua quota qualunque cosa guardi l'utente.
+            if (!trackHeadPitch) fwd = Vector3.ProjectOnPlane(fwd, Vector3.up);
+            if (fwd.sqrMagnitude < 0.01f) return;
+            fwd.Normalize();
+
+            // Direzione DESIDERATA = riferimento ruotato dell'azimut attorno alla verticale.
+            // Tutto il resto (posizione voluta e isteresi) si misura rispetto a questa, mai
+            // rispetto al riferimento grezzo: con un azimut di 40 gradi lo scarto varrebbe
+            // sempre 40, il pannello si crederebbe eternamente disallineato e inseguirebbe
+            // senza fermarsi mai.
+            Vector3 desiredDir = azimuthDegrees != 0f
+                ? Quaternion.AngleAxis(azimuthDegrees, Vector3.up) * fwd
+                : fwd;
+
+            Vector3 fwdFlat = Vector3.ProjectOnPlane(desiredDir, Vector3.up).normalized;
+            if (fwdFlat.sqrMagnitude < 0.01f) fwdFlat = desiredDir;
+
+            // La POSIZIONE segue sempre la testa: cosi' il pannello accompagna il giocatore sia
+            // quando si sposta col joystick sia quando cammina davvero nel play space. Sono le
+            // ROTAZIONI a essere filtrate dai flag, non le traslazioni.
+            Vector3 target = head.position + desiredDir * distance + Vector3.up * heightOffset;
 
             float dist = Vector3.Distance(canvas.transform.position, head.position);
             if (snapNext || dist > snapBeyond)
@@ -384,7 +498,7 @@ namespace Artemis.Vr
             else
             {
                 Vector3 toPanel = Vector3.ProjectOnPlane(canvas.transform.position - head.position, Vector3.up);
-                float angle = toPanel.sqrMagnitude < 0.02f ? 999f : Vector3.Angle(fwdFlat, toPanel);
+                float angle = toPanel.sqrMagnitude < 0.02f ? 999f : Vector3.Angle(desiredDir, toPanel);
                 float posError = Vector3.Distance(canvas.transform.position, target);
 
                 // ISTERESI su ANGOLO **e** POSIZIONE: si parte se ci si e' girati troppo O se
@@ -406,8 +520,26 @@ namespace Artemis.Vr
             }
         }
 
-        private Quaternion FaceHead() =>
-            Quaternion.LookRotation(canvas.transform.position - head.position, Vector3.up);
+        /// Il pannello guarda sempre il giocatore. Il ROLLIO invece e' opzionale: seguirlo
+        /// tiene il pannello parallelo agli occhi, ignorarlo lo tiene orizzontale rispetto al
+        /// mondo — che di solito e' meglio, perche' offre un riferimento stabile.
+        private Quaternion FaceHead()
+        {
+            Vector3 up = trackHeadRoll && head != null ? head.up : Vector3.up;
+            return Quaternion.LookRotation(canvas.transform.position - head.position, up);
+        }
+
+        /// Il "corpo" del giocatore: l'XR Origin. Cercato con pazienza, perche' in architettura
+        /// rev.2 il rig si ricostruisce a ogni cambio scena.
+        private Transform Body()
+        {
+            if (body != null) return body;
+            if (Time.time < nextBodySearch) return null;
+            nextBodySearch = Time.time + 0.5f;
+            var origin = FindFirstObjectByType<Unity.XR.CoreUtils.XROrigin>();
+            if (origin != null) body = origin.transform;
+            return body;
+        }
 
         private bool HandNearPanel()
         {
@@ -536,7 +668,7 @@ namespace Artemis.Vr
             pageGo.transform.SetParent(go.transform, false);
             pageArea = pageGo.GetComponent<RectTransform>();
             pageArea.anchorMin = new Vector2(0, 0); pageArea.anchorMax = new Vector2(1, 1);
-            pageArea.offsetMin = new Vector2(0, 28); pageArea.offsetMax = new Vector2(0, -72);
+            pageArea.offsetMin = new Vector2(0, 44); pageArea.offsetMax = new Vector2(0, -72);
 
             // striscia diagnostica ancorata in fondo, fuori dalle pagine: sempre visibile,
             // qualunque scheda sia aperta.
@@ -545,7 +677,7 @@ namespace Artemis.Vr
             var diagRt = diagGo.GetComponent<RectTransform>();
             diagRt.anchorMin = new Vector2(0, 0); diagRt.anchorMax = new Vector2(1, 0);
             diagRt.pivot = new Vector2(0.5f, 0);
-            diagRt.offsetMin = new Vector2(8, 4); diagRt.offsetMax = new Vector2(-8, 26);
+            diagRt.offsetMin = new Vector2(8, 4); diagRt.offsetMax = new Vector2(-8, 42);
             diagnostics = diagGo.GetComponent<TextMeshProUGUI>();
             diagnostics.fontSize = 13;
             diagnostics.alignment = TextAlignmentOptions.Center;
@@ -570,6 +702,16 @@ namespace Artemis.Vr
             var t = go.GetComponent<TextMeshProUGUI>();
             t.text = text; t.fontSize = size; t.alignment = TextAlignmentOptions.Center;
             t.fontStyle = style; t.color = Color.white;
+
+            // Auto-dimensionamento: con i pulsanti affiancati la larghezza disponibile si
+            // dimezza, e un corpo fisso sborda. Cosi' il testo si restringe quanto basta e
+            // va a capo invece di uscire dal pulsante.
+            t.enableAutoSizing = true;
+            t.fontSizeMax = size;
+            t.fontSizeMin = Mathf.Max(9f, size * 0.45f);
+            t.enableWordWrapping = true;
+            t.overflowMode = TextOverflowModes.Truncate;
+
             t.raycastTarget = false;                // il click lo prende il pulsante, non il testo
             var r = t.rectTransform;
             r.anchorMin = Vector2.zero; r.anchorMax = Vector2.one;

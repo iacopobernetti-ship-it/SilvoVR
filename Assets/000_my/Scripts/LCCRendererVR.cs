@@ -1,4 +1,4 @@
-﻿using LCCCore;
+using LCCCore;
 using UnityEngine;
 
 /// <summary>

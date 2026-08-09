@@ -55,9 +55,9 @@ namespace Artemis.Vr
             var flow = AreaFlow.Instance;
             if (hud == null || flow == null) return;
 
-            var page = hud.CreateTab("Aree");
+            var page = hud.CreateTab("Areas");
 
-            hud.MakeLabel(page, "Scegli l'area di saggio", 20);
+            hud.MakeLabel(page, "Choose the sample plot", 20);
 
             AddSceneButton(hud, flow, flow.BaseSceneName, flow.BaseLabel, isBase: true);
             foreach (var a in flow.Areas)
@@ -75,7 +75,7 @@ namespace Artemis.Vr
 
         private void AddSceneButton(VrHud hud, AreaFlow flow, string sceneName, string label, bool isBase)
         {
-            var page = hud.CreateTab("Aree");             // idempotente: ritorna la stessa pagina
+            var page = hud.CreateTab("Areas");             // idempotente: ritorna la stessa pagina
             string scene = sceneName;                     // copia locale per la closure
             var (btn, img) = hud.MakeButton(page, label,
                 () => { if (isBase) flow.GoToBase(); else flow.GoToArea(scene); });
@@ -88,13 +88,13 @@ namespace Artemis.Vr
         private void OnLoadStarted(string scene)
         {
             foreach (var b in buttons) b.interactable = false;
-            if (status != null) status.text = $"Carico {scene}…";
+            if (status != null) status.text = $"Loading {scene}…";
         }
 
         private void OnLoadProgress(float p)
         {
             if (status != null && AreaFlow.Instance != null && AreaFlow.Instance.IsBusy)
-                status.text = $"Caricamento scena… {p:P0}";
+                status.text = $"Loading scene… {p:P0}";
         }
 
         private void OnLoadFinished(string scene)
@@ -103,7 +103,7 @@ namespace Artemis.Vr
             if (status != null)
                 status.text = AreaFlow.Instance != null && AreaFlow.Instance.IsOnBase
                     ? ""
-                    : "Scena pronta — lo splat puo' arrivare con qualche secondo di ritardo.";
+                    : "Scene ready — the splat may take a few more seconds.";
             RefreshColors();
         }
 
