@@ -55,6 +55,10 @@ namespace Artemis.Vr
             var flow = AreaFlow.Instance;
             if (hud == null || flow == null) return;
 
+            // In Simulation NO: da li' si esce con "Back to plot", che salva la martellata.
+            // Un salto diretto ad un'altra area perderebbe il lavoro senza avvisare.
+            if (flow.IsOnSimulation) { enabled = false; return; }
+
             var page = hud.CreateTab("Areas");
 
             hud.MakeLabel(page, "Choose the sample plot", 20);
@@ -114,6 +118,10 @@ namespace Artemis.Vr
             var hud = VrHud.Instance;
             var flow = AreaFlow.Instance;
             if (hud == null || flow == null) return;
+
+            // In Simulation NO: da li' si esce con "Back to plot", che salva la martellata.
+            // Un salto diretto ad un'altra area perderebbe il lavoro senza avvisare.
+            if (flow.IsOnSimulation) { enabled = false; return; }
 
             string current = flow.CurrentScene;
             foreach (var kv in buttonImages)

@@ -28,7 +28,7 @@ namespace Artemis.Inventory
     /// </summary>
     public class VrSurveyTool : MonoBehaviour
     {
-        public enum ToolMode { Measure, Mark, Remove }
+        public enum ToolMode { Measure, Remove }
 
         [Header("Puntamento")]
         [Tooltip("Transform da cui parte il ray. Vuoto = si cerca 'Right Controller' nell'XR Origin.")]
@@ -54,6 +54,16 @@ namespace Artemis.Inventory
                  "versione dei pacchetti, mentre CommonUsages.gripButton e' sempre lo stesso. " +
                  "Spegnilo solo per tornare ai binding qui sotto.")]
         [SerializeField] private bool useDeviceGrips = true;
+
+        [Tooltip("Legge anche il GRILLETTO direttamente dal dispositivo XR, come i grip. La riga " +
+                 "diagnostica mostrava 'trigger binds 0', cioe' nessun percorso di binding " +
+                 "riconosciuto dal runtime: invece di continuare a indovinare nomi di layout, si " +
+                 "usa CommonUsages.triggerButton, che e' sempre lo stesso.")]
+        [SerializeField] private bool useDeviceTrigger = true;
+        [Tooltip("Soglia sopra la quale il grilletto analogico conta come premuto, usata solo se " +
+                 "il dispositivo non espone il bottone digitale.")]
+        [Range(0.1f, 0.9f)]
+        [SerializeField] private float triggerPressPoint = 0.6f;
 
         [Tooltip("CONFERMA = grip DESTRO ('tengo'). Non si usa piu' il tasto A: su Quest e' " +
                  "prenotato dal menu di sistema e la pressione non arriva all'applicazione. " +
@@ -109,12 +119,13 @@ namespace Artemis.Inventory
         private float nextOriginSearch;
         private bool prevRightGrip, prevLeftGrip;
         private bool rightGripNow, leftGripNow;
+        private bool prevTrigger;
+        private float triggerValueNow;
 
         public string StepHint => mode switch
         {
             ToolMode.Measure => HasPending ? "RIGHT grip to confirm  ·  LEFT grip to discard"
                                            : "MEASURE — aim at the stem base and pull the trigger",
-            ToolMode.Mark    => "MARK — aim at a surveyed tree to toggle its mark",
             ToolMode.Remove  => "REMOVE — aim at a surveyed tree to delete it",
             _ => ""
         };
@@ -123,7 +134,13 @@ namespace Artemis.Inventory
 
         private void Awake()
         {
-            if (Instance != null && Instance != this) { Destroy(this); return; }
+            // Il piu' recente PRENDE il posto, non si suicida. Il pattern precedente
+            // (if Instance != null -> Destroy(this)) presuppone che Instance sia sempre valido,
+            // ma in architettura rev.2 i componenti si ricostruiscono a ogni scena: se Instance
+            // punta ancora a quello morto della scena precedente, il nuovo si distruggeva da solo
+            // e la classe restava senza istanza VIVA — silenziosamente, per il resto della
+            // sessione. E su Quest uscire alla home SOSPENDE l'app: le statiche sopravvivono,
+            // quindi nemmeno "riaprire" rimetteva le cose a posto.
             Instance = this;
 
             triggerAction = BuildAction("SurveyTrigger", triggerBindings);
@@ -162,8 +179,10 @@ namespace Artemis.Inventory
                 : $"grips bind R{(confirmAction != null ? confirmAction.controls.Count : 0)}" +
                   $"/L{(cancelAction != null ? cancelAction.controls.Count : 0)}";
 
+            string trig = useDeviceTrigger ? $"trigger dev {triggerValueNow:F2}" : $"trigger binds {tc}";
+
             Diagnostics =
-                $"trigger binds {tc} · {grips} · " +
+                $"{trig} · {grips} · " +
                 $"origin {(rayOrigin != null ? rayOrigin.name : "MISSING")} · " +
                 $"pulls {triggerCount} · aims {measureAttempts} · hits {rayHits}";
         }
@@ -211,7 +230,11 @@ namespace Artemis.Inventory
 
             RefreshDiagnostics();
 
-            if (triggerAction == null || !triggerAction.WasPressedThisFrame()) return;
+            bool triggerEdge = useDeviceTrigger
+                ? TriggerEdge(UnityEngine.XR.XRNode.RightHand, ref prevTrigger, out triggerValueNow)
+                : (triggerAction != null && triggerAction.WasPressedThisFrame());
+
+            if (!triggerEdge) return;
             triggerCount++;                 // il grilletto E' arrivato: da qui in poi e' altro
             if (rayOrigin == null) { SetStatus("Right controller not found"); return; }
 
@@ -222,9 +245,8 @@ namespace Artemis.Inventory
 
             switch (mode)
             {
-                case ToolMode.Measure: OnMeasure(ray);      break;
-                case ToolMode.Mark:    OnPickStem(true);    break;
-                case ToolMode.Remove:  OnPickStem(false);   break;
+                case ToolMode.Measure: OnMeasure(ray);   break;
+                case ToolMode.Remove:  RemoveAimed();    break;
             }
         }
 
@@ -237,6 +259,28 @@ namespace Artemis.Inventory
             now = false;
             var dev = UnityEngine.XR.InputDevices.GetDeviceAtXRNode(node);
             if (dev.isValid) dev.TryGetFeatureValue(UnityEngine.XR.CommonUsages.gripButton, out now);
+            bool edge = now && !prev;
+            prev = now;
+            return edge;
+        }
+
+        /// Grilletto letto dal dispositivo: prima il bottone digitale, e se il dispositivo non lo
+        /// espone si ripiega sull'asse analogico con una soglia. Come per i grip, si rileva il
+        /// FRONTE: tenendolo premuto non si misura in continuazione.
+        private bool TriggerEdge(UnityEngine.XR.XRNode node, ref bool prev, out float value)
+        {
+            value = 0f;
+            bool now = false;
+            var dev = UnityEngine.XR.InputDevices.GetDeviceAtXRNode(node);
+            if (dev.isValid)
+            {
+                if (!dev.TryGetFeatureValue(UnityEngine.XR.CommonUsages.triggerButton, out now))
+                {
+                    dev.TryGetFeatureValue(UnityEngine.XR.CommonUsages.trigger, out value);
+                    now = value >= triggerPressPoint;
+                }
+                else dev.TryGetFeatureValue(UnityEngine.XR.CommonUsages.trigger, out value);
+            }
             bool edge = now && !prev;
             prev = now;
             return edge;
@@ -314,9 +358,10 @@ namespace Artemis.Inventory
 
         // ---- marca / rimuovi --------------------------------------------------------------------
 
-        /// Si punta il MARKER dell'albero: e' un oggetto vero con collider, quindi basta un
-        /// raycast su tutti i layer e poi si risale al record tramite il tag StemMarker.
-        private void OnPickStem(bool toggleMark)
+        /// Rimuove un albero GIA' SALVATO puntando il suo segno di misura. Il volume da colpire
+        /// e' la capsula invisibile attorno al fusto, non la fascia sottile: si punta l'albero,
+        /// non il tratto di vernice.
+        private void RemoveAimed()
         {
             var ray = new Ray(rayOrigin.position, rayOrigin.forward);
             var hits = Physics.RaycastAll(ray, maxRayDistance, ~0, QueryTriggerInteraction.Collide);
@@ -329,8 +374,8 @@ namespace Artemis.Inventory
 
                 var inv = StemInventory.Instance;
                 if (inv == null) return;
-                if (toggleMark) { inv.ToggleMark(marker.StemId); SetStatus($"Tree #{marker.StemId} mark toggled"); }
-                else            { inv.RemoveStem(marker.StemId); SetStatus($"Tree #{marker.StemId} deleted"); }
+                inv.RemoveStem(marker.StemId);
+                SetStatus($"Tree #{marker.StemId} deleted  ·  {inv.Count} left");
                 return;
             }
             SetStatus("No surveyed tree under the pointer");

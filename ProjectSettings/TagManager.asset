@@ -40,9 +40,9 @@ TagManager:
   - UI
   - PlotTerrain
   - HUD
-  - 
-  - 
-  - 
+  - MiniMap
+  - SimTree
+  - SimGround
   - 
   - 
   - 

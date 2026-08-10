@@ -44,7 +44,13 @@ namespace Artemis.Inventory
 
         private void Awake()
         {
-            if (Instance != null && Instance != this) { Destroy(this); return; }
+            // Il piu' recente PRENDE il posto, non si suicida. Il pattern precedente
+            // (if Instance != null -> Destroy(this)) presuppone che Instance sia sempre valido,
+            // ma in architettura rev.2 i componenti si ricostruiscono a ogni scena: se Instance
+            // punta ancora a quello morto della scena precedente, il nuovo si distruggeva da solo
+            // e la classe restava senza istanza VIVA — silenziosamente, per il resto della
+            // sessione. E su Quest uscire alla home SOSPENDE l'app: le statiche sopravvivono,
+            // quindi nemmeno "riaprire" rimetteva le cose a posto.
             Instance = this;
         }
 

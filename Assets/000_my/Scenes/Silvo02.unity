@@ -277,6 +277,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LCCRendererVR
   m_manager: {fileID: 531072823}
   m_FilePath: http://www.perclabresearch.it/LCC/Silvo02/Silvo02.lcc2
+  splatDepthWrite: 1
+  skipInEditor: 1
 --- !u!4 &453542428
 Transform:
   m_ObjectHideFlags: 0
@@ -529,6 +531,8 @@ MonoBehaviour:
     m_Bits: 64
   probeHeight: 100
   groundOffset: 0.05
+  freezeUntilPlaced: 1
+  maxFreezeSeconds: 8
   giveUpAfterSeconds: 10
   retryInterval: 0.25
 --- !u!4 &1675062203
@@ -540,7 +544,7 @@ Transform:
   m_GameObject: {fileID: 1675062201}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.65, y: 3.33, z: 22.67}
+  m_LocalPosition: {x: -7.28, y: 4.41, z: 20.15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

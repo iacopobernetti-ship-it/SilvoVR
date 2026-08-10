@@ -42,6 +42,10 @@ namespace Artemis.Vr
 
         [Tooltip("La scena hub: piano semplice, nessuno splat. Ci si torna dalla HUD.")]
         [SerializeField] private string baseSceneName = "Base";
+        [Tooltip("La scena della simulazione: soprassuolo ricostruito con alberi 3D su suolo " +
+                 "piatto. Una sola per tutte le aree — si costruisce dall'inventario dell'area " +
+                 "da cui si e' entrati.")]
+        [SerializeField] private string simulationSceneName = "Simulation";
         [Tooltip("Etichetta del pulsante per tornare alla Base.")]
         [SerializeField] private string baseLabel = "Base";
 
@@ -49,6 +53,23 @@ namespace Artemis.Vr
         [SerializeField] private List<AreaDef> areas = new List<AreaDef>();
 
         public static AreaFlow Instance { get; private set; }
+
+        /// <summary>
+        /// L'area da cui si e' entrati in Simulation. E' STATICA di proposito: l'istanza di
+        /// AreaFlow muore col cambio scena (architettura rev.2, niente persistenza), mentre
+        /// questo dato deve sopravvivere proprio a quel passaggio — serve a Simulation per
+        /// sapere quale inventario ricostruire, e serve al ritorno per riportare il giocatore
+        /// nell'area giusta. E' l'unico stato che attraversa le scene, ed e' una stringa.
+        /// </summary>
+        public static string OriginArea { get; private set; } = "";
+
+        public string SimulationSceneName => simulationSceneName;
+        public bool IsOnSimulation => CurrentScene == simulationSceneName;
+
+        /// <summary>Siamo in un'area di saggio (non Base, non Simulation). Serve ai pannelli per
+        /// registrarsi SOLO dove hanno senso: una HUD piena di linguette inutili invita a premere
+        /// pulsanti a caso.</summary>
+        public bool IsOnArea => !IsOnBase && !IsOnSimulation;
 
         /// <summary>Nome scena di destinazione, appena parte un caricamento.</summary>
         public event Action<string> OnLoadStarted;
@@ -66,13 +87,42 @@ namespace Artemis.Vr
 
         private void Awake()
         {
-            if (Instance != null && Instance != this) { Destroy(gameObject); return; }
+            // Il piu' recente PRENDE il posto, non si suicida. Il pattern precedente
+            // (if Instance != null -> Destroy(this)) presuppone che Instance sia sempre valido,
+            // ma in architettura rev.2 i componenti si ricostruiscono a ogni scena: se Instance
+            // punta ancora a quello morto della scena precedente, il nuovo si distruggeva da solo
+            // e la classe restava senza istanza VIVA — silenziosamente, per il resto della
+            // sessione. E su Quest uscire alla home SOSPENDE l'app: le statiche sopravvivono,
+            // quindi nemmeno "riaprire" rimetteva le cose a posto.
             Instance = this;
         }
 
         private void OnDestroy() { if (Instance == this) Instance = null; }
 
         public void GoToBase() => GoTo(baseSceneName);
+
+        /// <summary>
+        /// Entra in Simulation ricordando da dove. Chiamabile solo da un'area: dalla Base non
+        /// avrebbe un inventario da cui costruire il soprassuolo.
+        /// </summary>
+        public void GoToSimulation()
+        {
+            if (IsOnSimulation) return;
+            if (CurrentScene == baseSceneName)
+            {
+                Debug.LogWarning("[AreaFlow] la simulazione si apre da un'area di saggio, non dalla Base.");
+                return;
+            }
+            OriginArea = CurrentScene;
+            GoTo(simulationSceneName);
+        }
+
+        /// <summary>Torna all'area da cui si era entrati in Simulation.</summary>
+        public void ReturnFromSimulation()
+        {
+            string back = !string.IsNullOrWhiteSpace(OriginArea) ? OriginArea : baseSceneName;
+            GoTo(back);
+        }
 
         public void GoToArea(string sceneName) => GoTo(sceneName);
 
@@ -82,7 +132,7 @@ namespace Artemis.Vr
             if (IsBusy) { Debug.LogWarning($"[AreaFlow] caricamento gia' in corso — '{sceneName}' ignorato."); return; }
             if (CurrentScene == sceneName) return;
 
-            bool known = sceneName == baseSceneName ||
+            bool known = sceneName == baseSceneName || sceneName == simulationSceneName ||
                          areas.Exists(a => string.Equals(a.sceneName, sceneName, StringComparison.OrdinalIgnoreCase));
             if (!known)
             {
@@ -121,6 +171,9 @@ namespace Artemis.Vr
             { Debug.LogWarning($"[AreaFlow] nessuna area di indice {index} (ne sono dichiarate {areas.Count})."); return; }
             GoToArea(areas[index].sceneName);
         }
+
+        [ContextMenu("Vai a: Simulation")]
+        private void CtxSim() => GoToSimulation();
 
         [ContextMenu("Stato: dove siamo")]
         private void CtxState() =>

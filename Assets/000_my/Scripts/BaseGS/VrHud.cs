@@ -83,6 +83,12 @@ namespace Artemis.Vr
         [SerializeField] private string leftControllerName = "Left Controller";
         [SerializeField] private string rightControllerName = "Right Controller";
 
+        [Header("Schede")]
+        [Tooltip("Titolo della scheda da aprire all'avvio. Senza questo, si apre la PRIMA che si " +
+                 "registra — cioe' l'ordine dipende da quello dei componenti sull'oggetto App, " +
+                 "che cambia ogni volta che se ne aggiunge uno. Vuoto = prima registrata.")]
+        [SerializeField] private string defaultTab = "Areas";
+
         [Header("Dimensioni pannello (px a scala 0.001 = mm)")]
         [SerializeField] private Vector2 panelSize = new Vector2(440, 520);
 
@@ -132,7 +138,13 @@ namespace Artemis.Vr
 
         private void Awake()
         {
-            if (Instance != null && Instance != this) { Destroy(gameObject); return; }
+            // Il piu' recente PRENDE il posto, non si suicida. Il pattern precedente
+            // (if Instance != null -> Destroy(this)) presuppone che Instance sia sempre valido,
+            // ma in architettura rev.2 i componenti si ricostruiscono a ogni scena: se Instance
+            // punta ancora a quello morto della scena precedente, il nuovo si distruggeva da solo
+            // e la classe restava senza istanza VIVA — silenziosamente, per il resto della
+            // sessione. E su Quest uscire alla home SOSPENDE l'app: le statiche sopravvivono,
+            // quindi nemmeno "riaprire" rimetteva le cose a posto.
             Instance = this;
 
             CheckTmpEssentials();
@@ -328,7 +340,12 @@ namespace Artemis.Vr
             tab.button.onClick.AddListener(() => SelectTab(key));
             tabs[title] = tab;
 
+            // La scheda di partenza e' quella dichiarata, non la prima arrivata. Se non e'
+            // ancora stata registrata si tiene aperta la prima, e si passa a quella dichiarata
+            // appena compare: cosi' l'ordine dei componenti non conta piu'.
             if (tabs.Count == 1) SelectTab(title);
+            else if (!string.IsNullOrWhiteSpace(defaultTab) && title == defaultTab) SelectTab(title);
+
             return pageRt;
         }
 

@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/000_my/Scenes/Silvo04.unity
     guid: a6caecc45136cab4daad203a5b63bae0
+  - enabled: 1
+    path: Assets/000_my/Scenes/Simulation.unity
+    guid: 6bd2d5f747f387a49ab27105e5aefba2
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 1bbdc97ab43549c4e94ff1810d9ab3ee, type: 2}

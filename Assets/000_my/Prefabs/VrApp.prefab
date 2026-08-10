@@ -89,7 +89,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7656407366041539701}
-  - component: {fileID: 942856691388523926}
   - component: {fileID: 3953101153814487708}
   - component: {fileID: 3630129020567892051}
   - component: {fileID: 8053850244150438096}
@@ -98,6 +97,9 @@ GameObject:
   - component: {fileID: 1436091382625593045}
   - component: {fileID: 607916531571241930}
   - component: {fileID: 1560061252709654640}
+  - component: {fileID: 1886339600850255694}
+  - component: {fileID: 1619504335442013470}
+  - component: {fileID: 7917810450227838553}
   m_Layer: 0
   m_Name: App
   m_TagString: Untagged
@@ -120,33 +122,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 9148489708477179002}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &942856691388523926
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8551464854873973653}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cf869f517d1f56740b44c53b28f7aae7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Artemis.Vr.AreaFlow
-  baseSceneName: Base
-  baseLabel: Base
-  areas:
-  - sceneName: Silvo01
-    label: Silvo01
-    areaM2: 400
-  - sceneName: Silvo02
-    label: Silvo02
-    areaM2: 400
-  - sceneName: Silvo03
-    label: Silvo03
-    areaM2: 400
-  - sceneName: Silvo04
-    label: Silvo04
-    areaM2: 400
 --- !u!114 &3953101153814487708
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -245,6 +220,8 @@ MonoBehaviour:
   - <XRController>{RightHand}/triggerPressed
   - <XRController>{RightHand}/triggerButton
   useDeviceGrips: 1
+  useDeviceTrigger: 1
+  triggerPressPoint: 0.6
   confirmBindings:
   - <XRController>{RightHand}/primaryButton
   cancelBindings:
@@ -314,6 +291,73 @@ MonoBehaviour:
   sliderTrackColor: {r: 0, g: 0, b: 0, a: 0.35}
   handleColor: {r: 0.88, g: 0.9, b: 0.94, a: 1}
   viewportColor: {r: 0, g: 0, b: 0, a: 0.25}
+--- !u!114 &1886339600850255694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8551464854873973653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d93337ff62f2fb74baa9230f9e419f3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Artemis.Regeneration.MartellataViewerVR
+  terrainLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  rayLength: 200
+  cutColor: {r: 1, g: 0.25, b: 0.12, a: 1}
+  breastHeight: 1.3
+  ringWidthFactor: 1.35
+  ringMinRadius: 0.22
+  ringThickness: 0.06
+  blazeSize: 0.5
+  gapColor: {r: 0.25, g: 0.9, b: 0.35, a: 1}
+  outlineWidth: 0.14
+  outlineLift: 0.08
+  outlineSubdivisions: 6
+--- !u!114 &1619504335442013470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8551464854873973653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c289f1843da83994fb85351de2da1fe6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Artemis.Vr.AreaFlow
+  baseSceneName: Base
+  simulationSceneName: Simulation
+  baseLabel: Base
+  areas:
+  - sceneName: Silvo01
+    label: 
+    areaM2: 400
+  - sceneName: Silvo02
+    label: 
+    areaM2: 400
+  - sceneName: Silvo03
+    label: 
+    areaM2: 400
+  - sceneName: Silvo04
+    label: 
+    areaM2: 400
+--- !u!114 &7917810450227838553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8551464854873973653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 371c6b89b0ef88546ab9c0014416ee68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Artemis.Regeneration.SimulationAccessPanel
+  tabTitle: Marking
 --- !u!1001 &3505568972668490914
 PrefabInstance:
   m_ObjectHideFlags: 0

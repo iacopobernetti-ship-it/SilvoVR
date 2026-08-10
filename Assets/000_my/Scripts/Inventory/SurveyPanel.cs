@@ -31,7 +31,7 @@ namespace Artemis.Inventory
         private float resetArmedUntil;
         private VrSurveyTool bound;
 
-        private Image measureImg, markImg, removeImg, resetImg;
+        private Image measureImg, removeImg, resetImg;
         private Button confirmBtn, cancelBtn;
         private RectTransform confirmRow;
         private TMP_Text hintLabel, pendingLabel, statsLabel, statusLabel, diagLabel, resetLabel;
@@ -67,7 +67,13 @@ namespace Artemis.Inventory
         private void TryBuild()
         {
             var hud = VrHud.Instance;
-            if (hud == null) return;                 // unica dipendenza reale
+            if (hud == null) return;
+
+            // Il rilievo ha senso solo in un'area di saggio: in Base non c'e' bosco, in
+            // Simulation il soprassuolo e' ricostruito e non si misura.
+            var flow = AreaFlow.Instance;
+            if (flow == null) return;                // aspetta, non rinuncia
+            if (!flow.IsOnArea) { enabled = false; return; }
 
             var page = hud.CreateTab(tabTitle);
 
@@ -77,11 +83,13 @@ namespace Artemis.Inventory
             // esistono anche se lo strumento arriva dopo, e non catturano un riferimento morto.
             // Tre pulsanti in RIGA invece che in colonna: piu' quadrati, quindi molto piu'
             // facili da centrare col ray rispetto a barre lunghe e strette.
+            // Due soli modi. "Mark" e' stato tolto: marcare un albero in area non alimentava
+            // nulla — la martellata si fa in Simulation — ed era un pulsante che non si capiva
+            // cosa facesse, cioe' un invito a premerlo per scoprirlo.
             var modeRow = hud.MakeRow(page);
-            var (mBtn, mImg) = hud.MakeButton(modeRow, "Measure",  () => VrSurveyTool.Instance?.SetMode(VrSurveyTool.ToolMode.Measure));
-            var (kBtn, kImg) = hud.MakeButton(modeRow, "Mark",   () => VrSurveyTool.Instance?.SetMode(VrSurveyTool.ToolMode.Mark));
-            var (xBtn, xImg) = hud.MakeButton(modeRow, "Remove", () => VrSurveyTool.Instance?.SetMode(VrSurveyTool.ToolMode.Remove));
-            measureImg = mImg; markImg = kImg; removeImg = xImg;
+            var (mBtn, mImg) = hud.MakeButton(modeRow, "Measure", () => VrSurveyTool.Instance?.SetMode(VrSurveyTool.ToolMode.Measure));
+            var (xBtn, xImg) = hud.MakeButton(modeRow, "Remove",  () => VrSurveyTool.Instance?.SetMode(VrSurveyTool.ToolMode.Remove));
+            measureImg = mImg; removeImg = xImg;
 
             pendingLabel = hud.MakeLabel(page, "", 20);
 
@@ -186,7 +194,6 @@ namespace Artemis.Inventory
         {
             Color idle = hud.ButtonColor, on = hud.ActiveColor;
             if (measureImg != null) measureImg.color = tool != null && tool.Mode == VrSurveyTool.ToolMode.Measure ? on : idle;
-            if (markImg    != null) markImg.color    = tool != null && tool.Mode == VrSurveyTool.ToolMode.Mark    ? on : idle;
             if (removeImg  != null) removeImg.color  = tool != null && tool.Mode == VrSurveyTool.ToolMode.Remove  ? on : idle;
         }
 

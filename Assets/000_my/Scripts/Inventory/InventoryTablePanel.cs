@@ -32,7 +32,10 @@ namespace Artemis.Inventory
         [SerializeField] private float rowHeight = 46f;
         [Tooltip("Corpo del testo delle righe. Si auto-riduce se non ci sta.")]
         [SerializeField] private float rowFontSize = 20f;
-        [SerializeField] private Color markedRowColor = new Color(0.55f, 0.32f, 0.10f, 1f);
+        [Tooltip("Colore della riga armata per l'eliminazione (primo tocco).")]
+        [SerializeField] private Color armedRowColor = new Color(0.75f, 0.25f, 0.20f, 1f);
+        [Tooltip("Secondi entro cui confermare l'eliminazione toccando di nuovo la riga.")]
+        [SerializeField] private float rowConfirmSeconds = 4f;
 
         [Header("Slider di scorrimento (VERTICALE, a destra della tabella)")]
         [Tooltip("Larghezza della barra (px). 44 = 4.4 cm: allargala se fatichi ad agganciarla col ray.")]
@@ -57,6 +60,8 @@ namespace Artemis.Inventory
         private float nextRefresh;
         private StemInventory bound;
         private int lastSignature = -1;
+        private int armedRow = -1;
+        private float armedUntil;
 
         private TMP_Text header;
         private RectTransform content;
@@ -102,6 +107,10 @@ namespace Artemis.Inventory
         {
             var hud = VrHud.Instance;
             if (hud == null) return;
+
+            var flow = Artemis.Vr.AreaFlow.Instance;
+            if (flow == null) return;                       // aspetta, non rinuncia
+            if (!flow.IsOnArea) { enabled = false; return; }
 
             var page = hud.CreateTab(tabTitle);
             header = hud.MakeLabel(page, "", 18);
@@ -228,6 +237,8 @@ namespace Artemis.Inventory
                 return;
             }
 
+            if (armedRow >= 0 && Time.time > armedUntil) { armedRow = -1; lastSignature = -1; }
+
             int sig = Signature(inv);
             if (sig == lastSignature) return;
             lastSignature = sig;
@@ -250,8 +261,9 @@ namespace Artemis.Inventory
                 var go = new GameObject($"Row_{id}", typeof(RectTransform), typeof(Image), typeof(Button));
                 go.transform.SetParent(content, false);
 
+                bool armed = id == armedRow && Time.time <= armedUntil;
                 var img = go.GetComponent<Image>();
-                img.color = rec.Marked ? markedRowColor : hud.ButtonColor;
+                img.color = armed ? armedRowColor : hud.ButtonColor;
 
                 var le = go.AddComponent<LayoutElement>();
                 le.preferredHeight = rowHeight; le.flexibleWidth = 1; le.flexibleHeight = 0;
@@ -259,8 +271,9 @@ namespace Artemis.Inventory
                 var tGo = new GameObject("Label", typeof(RectTransform), typeof(TextMeshProUGUI));
                 tGo.transform.SetParent(go.transform, false);
                 var t = tGo.GetComponent<TextMeshProUGUI>();
-                t.text = $"#{id,-3}  d {rec.Dbh * 100f,5:F1} cm   h {rec.Height,4:F1} m" +
-                         (rec.Marked ? "   ◆" : "");
+                t.text = armed
+                    ? $"#{id}  tap again to DELETE"
+                    : $"#{id,-3}  d {rec.Dbh * 100f,5:F1} cm   h {rec.Height,4:F1} m";
                 t.fontSize = rowFontSize; t.alignment = TextAlignmentOptions.Left; t.color = Color.white;
                 t.enableAutoSizing = true;
                 t.fontSizeMax = rowFontSize;
@@ -273,7 +286,7 @@ namespace Artemis.Inventory
 
                 var btn = go.GetComponent<Button>();
                 btn.targetGraphic = img;
-                btn.onClick.AddListener(() => StemInventory.Instance?.ToggleMark(id));
+                btn.onClick.AddListener(() => OnRowClicked(id));
 
                 rows.Add(go);
             }
@@ -282,6 +295,22 @@ namespace Artemis.Inventory
             // scorrimento su un'altezza ancora vecchia.
             LayoutRebuilder.ForceRebuildLayoutImmediate(content);
             ApplyScroll();
+        }
+
+        /// Toccare una riga ELIMINA l'albero, a due tocchi: il primo arma la riga (che diventa
+        /// rossa e lo dichiara), il secondo esegue. E' la via per correggere una misura sbagliata
+        /// senza doverla cercare nel bosco — utile quando l'albero e' lontano o nascosto.
+        private void OnRowClicked(int stemId)
+        {
+            if (armedRow == stemId && Time.time <= armedUntil)
+            {
+                armedRow = -1;
+                StemInventory.Instance?.RemoveStem(stemId);
+                return;
+            }
+            armedRow = stemId;
+            armedUntil = Time.time + rowConfirmSeconds;
+            lastSignature = -1;                              // ridisegna con la riga armata
         }
 
         private void ApplyScroll()

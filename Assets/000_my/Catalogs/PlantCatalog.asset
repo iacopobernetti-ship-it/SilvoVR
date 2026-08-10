@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fcb7764cde0cf643bf3374239fc174e, type: 3}
+  m_Name: PlantCatalog
+  m_EditorClassIdentifier: Assembly-CSharp::Artemis.Regeneration.PlantCatalog
+  species:
+  - name: Abies alba
+    adult: {fileID: 4076853225855038774, guid: 301b3a03aedf34b40894d410e3bbe00a, type: 3}
+    young: {fileID: 5921822067142665452, guid: b7c46b4afe026694aafb9e8dc0aaff04, type: 3}
+    sinkDepth: 0.5
+    youngSinkDepth: -1
+    selectionRadiusFactor: -1
+  - name: Abies alba
+    adult: {fileID: 7947171677206565852, guid: 20f75970edbd6b843b888ff219c80fc7, type: 3}
+    young: {fileID: 8161425778312120441, guid: 6c471ddbc67f0ec449b8e5345d55594f, type: 3}
+    sinkDepth: 0.5
+    youngSinkDepth: -1
+    selectionRadiusFactor: -1
+  - name: Abies alba
+    adult: {fileID: 5083839556370631492, guid: 279265cacdbd02145a447945d8b8f5d0, type: 3}
+    young: {fileID: 8022396368634430731, guid: 40090c8e85667ae42bb70095ee180751, type: 3}
+    sinkDepth: 0.5
+    youngSinkDepth: -1
+    selectionRadiusFactor: -1
+  - name: Abies alba
+    adult: {fileID: 5413509358911408948, guid: fc3c3d3fa5e020542891962555c98b23, type: 3}
+    young: {fileID: 6836128063979157187, guid: f6cf23550f155574e84e4a998a5be88d, type: 3}
+    sinkDepth: 0
+    youngSinkDepth: -1
+    selectionRadiusFactor: -1
