@@ -59,6 +59,14 @@ namespace Artemis.Vr
             // Un salto diretto ad un'altra area perderebbe il lavoro senza avvisare.
             if (flow.IsOnSimulation) { enabled = false; return; }
 
+            // Senza sessione la HUD mostra solo la scheda Session: si ASPETTA, non si rinuncia,
+            // perche' fra un istante la connessione potrebbe esserci.
+            if (!Artemis.Session.VrSession.WorkAllowed) return;
+
+            // La scelta dell'area e' del docente. Gli studenti non hanno questa scheda proprio:
+            // un pulsante disabilitato inviterebbe comunque a premerlo e a chiedersi perche'.
+            if (!Artemis.Session.VrSession.CanCommand) { enabled = false; return; }
+
             var page = hud.CreateTab("Areas");
 
             hud.MakeLabel(page, "Choose the sample plot", 20);
@@ -122,6 +130,14 @@ namespace Artemis.Vr
             // In Simulation NO: da li' si esce con "Back to plot", che salva la martellata.
             // Un salto diretto ad un'altra area perderebbe il lavoro senza avvisare.
             if (flow.IsOnSimulation) { enabled = false; return; }
+
+            // Senza sessione la HUD mostra solo la scheda Session: si ASPETTA, non si rinuncia,
+            // perche' fra un istante la connessione potrebbe esserci.
+            if (!Artemis.Session.VrSession.WorkAllowed) return;
+
+            // La scelta dell'area e' del docente. Gli studenti non hanno questa scheda proprio:
+            // un pulsante disabilitato inviterebbe comunque a premerlo e a chiedersi perche'.
+            if (!Artemis.Session.VrSession.CanCommand) { enabled = false; return; }
 
             string current = flow.CurrentScene;
             foreach (var kv in buttonImages)

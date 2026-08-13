@@ -21,6 +21,18 @@ namespace Artemis.Session
         [Tooltip("Punto di spawn. Vuoto = il transform di questo oggetto.")]
         [SerializeField] private Transform spawnPoint;
 
+        [Tooltip("Nella scena Simulation il suolo e' GENERATO da StandBuilder, con centro e lato " +
+                 "che dipendono dagli alberi dell'inventario: un punto di spawn fisso puo' " +
+                 "cadere vicino al bordo o fuori dal piano. Con questo attivo il rig viene posato " +
+                 "al centro del quadrato effettivamente costruito, qualunque esso sia.")]
+        [SerializeField] private bool useGeneratedGroundCentre = true;
+
+        [Header("Sparpagliamento in sessione")]
+        [Tooltip("Raggio entro cui distanziare i partecipanti attorno allo spawn (m). 0 = tutti " +
+                 "sullo stesso punto. Serve in multiplayer: senza, la classe si materializza " +
+                 "compenetrata nello stesso metro quadrato.")]
+        [SerializeField] private float scatterRadius = 1.2f;
+
         [Header("Aggancio al suolo")]
         [SerializeField] private bool snapToGround = true;
         [Tooltip("Layer del collider terreno di questa scena.")]
@@ -95,6 +107,17 @@ namespace Artemis.Session
 
             var spawn = spawnPoint != null ? spawnPoint : transform;
             Vector3 pos = spawn.position;
+            float scatterLimit = scatterRadius;
+
+            if (useGeneratedGroundCentre && TryGeneratedGround(out Vector2 c, out float side))
+            {
+                pos = new Vector3(c.x, pos.y, c.y);
+                // Lo sparpagliamento non deve poter spingere nessuno oltre il bordo: si limita
+                // a un terzo del semilato, che su un quadrato piccolo tiene tutti ben dentro.
+                scatterLimit = Mathf.Min(scatterRadius, side * 0.5f / 3f);
+            }
+
+            pos += ScatterOffset(scatterLimit);
 
             if (snapToGround)
             {
@@ -123,6 +146,44 @@ namespace Artemis.Session
             placed = true;
             Unfreeze();
             Debug.Log($"[XrRigPlacer] rig XR posato a {pos} in '{gameObject.scene.name}'.");
+        }
+
+        /// <summary>
+        /// Scostamento dallo spawn, uno diverso per ciascun partecipante.
+        ///
+        /// DETERMINISTICO e non casuale: l'angolo aureo (137.5 gradi) distribuisce gli indici
+        /// successivi in modo uniforme attorno al cerchio senza mai ripetersi, quindi due
+        /// partecipanti non finiscono mai nello stesso punto — cosa che con il caso puro
+        /// succederebbe eccome, e proprio in aula davanti a tutti. In piu' ognuno sa in anticipo
+        /// dove si materializzera', il che rende le prove ripetibili.
+        ///
+        /// Si sposta il RIG, non l'avatar: spostare l'avatar separerebbe la figura dalla persona,
+        /// e si vedrebbe il compagno mezzo metro a lato di dove punta davvero il suo raggio.
+        /// </summary>
+        private Vector3 ScatterOffset(float radius)
+        {
+            if (radius <= 0.01f) return Vector3.zero;
+
+            var nm = Unity.Netcode.NetworkManager.Singleton;
+            if (nm == null || !nm.IsListening) return Vector3.zero;   // da soli, nessuno da evitare
+
+            float a = nm.LocalClientId * 137.508f * Mathf.Deg2Rad;    // angolo aureo
+            return new Vector3(Mathf.Cos(a), 0f, Mathf.Sin(a)) * radius;
+        }
+
+        /// Centro e lato del suolo generato, quando in scena c'e' uno StandBuilder che ha gia'
+        /// costruito. Si interroga per riflessione? No: si usa direttamente, ma con una ricerca
+        /// tollerante, perche' nelle scene-area lo StandBuilder non esiste affatto ed e' giusto
+        /// che questo componente continui a funzionare come prima.
+        private bool TryGeneratedGround(out Vector2 centre, out float side)
+        {
+            centre = Vector2.zero; side = 0f;
+            var b = FindFirstObjectByType<Artemis.Regeneration.StandBuilder>();
+            if (b == null) return false;
+            if (b.SquareSide <= 0.01f) return false;    // non ha ancora costruito nulla
+            centre = b.SquareCenter;
+            side = b.SquareSide;
+            return true;
         }
 
         /// Suolo = superficie PIU' BASSA lungo la verticale (lezione canopy del desktop),

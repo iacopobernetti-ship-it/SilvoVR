@@ -1,43 +1,59 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Artemis.Inventory
 {
     /// <summary>
-    /// Un albero rilevato. Versione VR: struct semplice, SENZA INetworkSerializable — la rete
-    /// entra in Fase 4 e allora questa struttura verra' resa serializzabile per NetworkList
-    /// (PlotId dovra' diventare FixedString64Bytes, che e' l'unico cambiamento previsto).
+    /// Un albero rilevato. Da Fase 4 e' anche SERIALIZZABILE IN RETE: il docente pubblica il suo
+    /// inventario e la simulazione lo ricostruisce identica su ogni visore.
     ///
-    /// PlotId e' una STRINGA: il nome della scena-area (Silvo01…). Nel desktop era un intero con
-    /// tutta una catena di compatibilita' per gli inventari vecchi; qui i file nascono adesso,
-    /// non c'e' legacy da preservare, e l'id numerico era gia' dichiarato in via di dismissione.
+    /// L'AREA NON STA QUI, ed e' una scelta. Nel desktop ogni record portava il proprio plotId
+    /// perche' un inventario poteva mescolare piu' aree; qui non puo': un file per area, e in
+    /// rete l'area e' in SessionState.PlotId. Ripeterla per stelo sarebbe ridondante e — dettaglio
+    /// pratico che ha deciso la questione — costringerebbe a un FixedString64Bytes, l'unico tipo
+    /// stringa ammesso da NetworkList, che pero' JsonUtility non serializza in modo leggibile:
+    /// avremmo sistemato la rete rompendo i file su disco.
     ///
-    /// Cosa e' MISURATO e cosa e' DERIVATO: si misurano la posizione in pianta (Base.x, Base.z)
-    /// e il diametro a 1.30 m (fit di cerchio sulla mesh). L'altezza NON si misura: viene dalla
-    /// curva ipsometrica al momento del rilievo ed e' conservata qui per non ricalcolarla.
+    /// Tutti i campi sono unmanaged, requisito di NetworkList: int, Vector3, float, bool.
+    ///
+    /// Cosa e' MISURATO e cosa e' DERIVATO: si misurano posizione in pianta e diametro a 1.30 m.
+    /// L'altezza viene dalla curva ipsometrica al momento del rilievo ed e' conservata qui.
     /// </summary>
     [Serializable]
-    public struct StemRecord
+    public struct StemRecord : INetworkSerializable, IEquatable<StemRecord>
     {
         public int     StemId;
-        public string  PlotId;      // nome della scena-area
-        public Vector3 Base;        // posizione mondo del punto cliccato (SUPERFICIE del fusto)
-        public Vector3 Axis;        // asse del fusto a quota base, dal fit di cerchio
-        public float   Dbh;         // metri (dal fit di cerchio)
-        public float   Height;      // metri (dalla curva ipsometrica)
-        public bool    Marked;      // marcatura di rilievo, on/off
+        public Vector3 Base;        // punto cliccato (superficie del fusto)
+        public Vector3 Axis;        // asse del fusto, dal fit di cerchio
+        public float   Dbh;         // metri
+        public float   Height;      // metri
+        public bool    Marked;
 
         public Vector2 PlanXY => new Vector2(Base.x, Base.z);
 
-        /// <summary>
-        /// Dove disegnare il segno di misura. E' l'ASSE del fusto, non il punto cliccato: quello
-        /// sta sulla superficie della corteccia e una fascia centrata li' risulterebbe sbilenca.
-        /// I file scritti prima che Axis esistesse hanno il campo a zero: in quel caso si ripiega
-        /// sul punto cliccato, che e' comunque meglio di un segno all'origine del mondo.
-        /// </summary>
-        public Vector3 MarkAnchor => Axis.sqrMagnitude > 0.0001f ? Axis : Base;
-
         /// <summary>Area basimetrica del singolo fusto in m² (πd²/4). Sommata da' G.</summary>
         public float BasalArea => Mathf.PI * Dbh * Dbh * 0.25f;
+
+        /// <summary>Dove disegnare il segno di misura: l'ASSE, non il punto cliccato, che sta
+        /// sulla corteccia e darebbe un anello sbilenco. Ripiega sul punto per i dati vecchi.</summary>
+        public Vector3 MarkAnchor => Axis.sqrMagnitude > 0.0001f ? Axis : Base;
+
+        public void NetworkSerialize<T>(BufferSerializer<T> s) where T : IReaderWriter
+        {
+            s.SerializeValue(ref StemId);
+            s.SerializeValue(ref Base);
+            s.SerializeValue(ref Axis);
+            s.SerializeValue(ref Dbh);
+            s.SerializeValue(ref Height);
+            s.SerializeValue(ref Marked);
+        }
+
+        public bool Equals(StemRecord o) =>
+            StemId == o.StemId && Base.Equals(o.Base) && Axis.Equals(o.Axis) &&
+            Dbh.Equals(o.Dbh) && Height.Equals(o.Height) && Marked == o.Marked;
+
+        public override bool Equals(object obj) => obj is StemRecord o && Equals(o);
+        public override int GetHashCode() => StemId;
     }
 }

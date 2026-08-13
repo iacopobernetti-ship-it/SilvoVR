@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using Artemis.Vr;
 using Artemis.Inventory;
+using Artemis.Session;
 
 namespace Artemis.Regeneration
 {
@@ -21,6 +22,7 @@ namespace Artemis.Regeneration
         private float nextRefresh;
 
         private Image showImg;
+        private Button openBtn;
         private TMP_Text showLabel, infoLabel, statusLabel;
 
         private void Update()
@@ -38,13 +40,19 @@ namespace Artemis.Regeneration
             if (hud == null || flow == null) return;
 
             // Solo nelle aree: la Base non ha inventario, la Simulation ha la sua scheda.
+            if (!VrSession.WorkAllowed) return;
             if (flow.IsOnBase || flow.IsOnSimulation) { enabled = false; return; }
 
             var page = hud.CreateTab(tabTitle);
             infoLabel = hud.MakeLabel(page, "", 17);
 
             var row = hud.MakeRow(page);
-            hud.MakeButton(row, "Open\nsimulation", () => AreaFlow.Instance?.GoToSimulation());
+            // Aprire la simulazione porta dentro l'intera classe: decide il docente.
+            var (oBtn, oImg) = hud.MakeButton(row, "Open\nsimulation", () =>
+            {
+                if (VrSession.CanCommand) AreaFlow.Instance?.GoToSimulation();
+            });
+            openBtn = oBtn;
             var (sBtn, sImg) = hud.MakeButton(row, "Show last\nmarking", OnShowClicked);
             showImg = sImg;
             showLabel = sBtn.GetComponentInChildren<TMP_Text>();
@@ -77,9 +85,22 @@ namespace Artemis.Regeneration
             bool showing = v != null && v.IsShowing;
 
             infoLabel.text = trees == 0
-                ? "survey some trees first: the simulation is built from this plot's inventory"
+                ? (VrSession.IsStudent
+                    ? "waiting for the teacher — the stand comes from their inventory"
+                    : "SURVEY SOME TREES FIRST: the simulation is built from this plot's inventory")
                 : $"{trees} trees surveyed here" + (hasMarking ? "  ·  a marking is saved" : "  ·  no marking yet");
 
+            // Nascosto, non grigio: aprire la simulazione e' una decisione del docente.
+            // In piu' resta INERTE finche' non c'e' un inventario: la simulazione si costruisce
+            // dai rilievi del docente, e aprirla a mani vuote porta la classe davanti a un prato
+            // senza che nulla spieghi perche'. Meglio fermarsi qui, dove la causa e' evidente.
+            bool canOpen = VrSession.CanCommand && trees > 0;
+            if (openBtn != null)
+            {
+                if (openBtn.gameObject.activeSelf != VrSession.CanCommand)
+                    openBtn.gameObject.SetActive(VrSession.CanCommand);
+                openBtn.interactable = canOpen;
+            }
             if (showLabel != null) showLabel.text = showing ? "Hide\nmarking" : "Show last\nmarking";
             if (showImg != null) showImg.color = showing ? hud.ActiveColor : hud.ButtonColor;
 

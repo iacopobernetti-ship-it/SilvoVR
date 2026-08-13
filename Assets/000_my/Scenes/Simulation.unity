@@ -246,6 +246,7 @@ GameObject:
   - component: {fileID: 660816980}
   - component: {fileID: 660816979}
   - component: {fileID: 660816978}
+  - component: {fileID: 660816982}
   m_Layer: 0
   m_Name: SimTools
   m_TagString: Untagged
@@ -307,6 +308,10 @@ MonoBehaviour:
   - <XRController>{RightHand}/triggerButton
   cellColor: {r: 0.75, g: 0.78, b: 0.82, a: 1}
   markedCellColor: {r: 0.95, g: 0.2, b: 0.12, a: 1}
+  proposedCellColor: {r: 0.98, g: 0.82, b: 0.2, a: 1}
+  flagPoleHeight: 1.7
+  flagRadius: 0.65
+  flagSlots: 4
   lineWidth: 0.1
   markedLineWidth: 0.22
   lift: 0.04
@@ -326,6 +331,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &660816982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 660816977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15891b08bd0c256429ac87a22be3a023, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Artemis.Session.SimulationSyncVR
+  builder: {fileID: 1210512531}
 --- !u!1 &1085496440
 GameObject:
   m_ObjectHideFlags: 0

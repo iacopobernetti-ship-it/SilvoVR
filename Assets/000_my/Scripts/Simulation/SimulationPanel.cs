@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using Artemis.Vr;
 using Artemis.Inventory;
+using Artemis.Session;
 
 namespace Artemis.Regeneration
 {
@@ -28,7 +29,8 @@ namespace Artemis.Regeneration
 
         private Button fellBtn;
         private Image fellImg;
-        private TMP_Text markedLabel, standLabel, fisLabel, statusLabel;
+        private RectTransform commandRow, backRow;
+        private TMP_Text markedLabel, standLabel, fisLabel, statusLabel, diagLabel;
         private TMP_Text clearLabel;
         private Image clearImg;
 
@@ -55,23 +57,25 @@ namespace Artemis.Regeneration
             // La scheda esiste solo dove c'e' un soprassuolo da martellare.
             builder = FindFirstObjectByType<StandBuilder>();
             if (builder == null) { enabled = false; return; }
+            if (!VrSession.WorkAllowed) return;
 
             var page = hud.CreateTab(tabTitle);
 
             standLabel  = hud.MakeLabel(page, "", 18);
             markedLabel = hud.MakeLabel(page, "", 20);
 
-            var row = hud.MakeRow(page);
-            var (f, fi) = hud.MakeButton(row, "Fell marked", OnFellClicked);
-            var (c, ci) = hud.MakeButton(row, "Clear marks", OnClearClicked);
+            commandRow = hud.MakeRow(page);
+            var (f, fi) = hud.MakeButton(commandRow, "Fell marked", OnFellClicked);
+            var (c, ci) = hud.MakeButton(commandRow, "Clear marks", OnClearClicked);
             fellBtn = f; fellImg = fi;
             clearImg = ci; clearLabel = c.GetComponentInChildren<TMP_Text>();
 
-            var backRow = hud.MakeRow(page);
+            backRow = hud.MakeRow(page);
             hud.MakeButton(backRow, "Back to plot\n(saves marking)", OnBackClicked);
 
             fisLabel    = hud.MakeLabel(page, "", 16);
             statusLabel = hud.MakeLabel(page, "", 15);
+            diagLabel   = hud.MakeLabel(page, "", 12);
 
             built = true;
             Refresh();
@@ -81,6 +85,7 @@ namespace Artemis.Regeneration
 
         private void OnFellClicked()
         {
+            if (!VrSession.CanCommand) return;      // abbatte solo il docente
             var t = Tool();
             if (t == null || t.MarkedCount == 0) return;
             t.FellMarked();
@@ -105,6 +110,8 @@ namespace Artemis.Regeneration
         /// Una martellata vuota non e' un risultato da conservare, e' un giro a vuoto.
         private void OnBackClicked()
         {
+            // In sessione riporta indietro la classe intera, quindi decide il docente.
+            if (!VrSession.CanCommand) return;
             if (builder != null)
             {
                 if (builder.FelledCount > 0) builder.SaveMartellata();
@@ -138,12 +145,28 @@ namespace Artemis.Regeneration
                               $"{builder.YoungCount} seedlings";
 
             int marks = t != null ? t.MarkedCount : 0;
-            markedLabel.text = marks == 0
-                ? "aim at a tree and pull the trigger to mark it"
-                : $"{marks} marked for felling";
+            int props = t != null ? t.ProposedCount : 0;
 
-            if (fellBtn != null) fellBtn.interactable = marks > 0;
-            if (fellImg != null) fellImg.color = marks > 0 ? hud.ActiveColor : hud.ButtonColor;
+            if (VrSession.IsStudent)
+                markedLabel.text = props == 0
+                    ? "aim at a tree and pull the trigger to propose it"
+                    : $"{props} trees proposed by the class  ·  {marks} marked by the teacher";
+            else
+                markedLabel.text = marks == 0
+                    ? (props > 0 ? $"{props} proposed by students — mark the ones you agree with"
+                                 : "aim at a tree and pull the trigger to mark it")
+                    : $"{marks} marked for felling  ·  {props} student proposals";
+
+            // Agli studenti i comandi si NASCONDONO invece di restare grigi: un pulsante inerte
+            // invita comunque a premerlo, e a chiedersi perche' non risponde.
+            bool canAct = VrSession.CanCommand;
+            if (commandRow != null && commandRow.gameObject.activeSelf != canAct)
+                commandRow.gameObject.SetActive(canAct);
+            if (backRow != null && backRow.gameObject.activeSelf != canAct)
+                backRow.gameObject.SetActive(canAct);
+
+            if (fellBtn != null) fellBtn.interactable = canAct && marks > 0;
+            if (fellImg != null) fellImg.color = (canAct && marks > 0) ? hud.ActiveColor : hud.ButtonColor;
 
             bool armed = Time.time <= clearArmedUntil;
             if (clearLabel != null) clearLabel.text = armed ? $"CONFIRM: clear {marks}" : "Clear marks";
@@ -158,6 +181,12 @@ namespace Artemis.Regeneration
                   $"·  limiting: {builder.LastLimiting}";
 
             statusLabel.text = t != null ? t.Status : "";
+
+            if (diagLabel != null)
+            {
+                var sync = FindFirstObjectByType<Artemis.Session.SimulationSyncVR>();
+                diagLabel.text = sync != null ? sync.Diagnostics : "";
+            }
         }
     }
 }

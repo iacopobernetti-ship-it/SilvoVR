@@ -278,7 +278,7 @@ MonoBehaviour:
   m_manager: {fileID: 531072823}
   m_FilePath: http://www.perclabresearch.it/LCC/Silvo02/Silvo02.lcc2
   splatDepthWrite: 1
-  skipInEditor: 1
+  skipInEditor: 0
 --- !u!4 &453542428
 Transform:
   m_ObjectHideFlags: 0

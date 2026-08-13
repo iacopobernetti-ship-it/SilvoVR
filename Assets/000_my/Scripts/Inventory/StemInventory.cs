@@ -109,7 +109,9 @@ namespace Artemis.Inventory
         {
             var rec = new StemRecord
             {
-                StemId = nextStemId++, PlotId = PlotId,
+                // L'area non si scrive nel record: sta gia' nell'intestazione del file, ed e'
+                // per costruzione quella corrente (un file per area).
+                StemId = nextStemId++,
                 Base = basePos, Axis = axis, Dbh = dbh, Height = height, Marked = false
             };
             stems.Add(rec);

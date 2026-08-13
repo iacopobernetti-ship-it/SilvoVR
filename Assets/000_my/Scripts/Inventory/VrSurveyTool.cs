@@ -42,7 +42,8 @@ namespace Artemis.Inventory
         [Tooltip("PIU' percorsi per la stessa azione: il primo che il runtime riconosce vince. " +
                  "I layout dei controller variano fra OpenXR, Meta e versioni dell'Input System, " +
                  "e indovinare il nome esatto a priori non e' possibile — meglio provarne diversi.")]
-        [SerializeField] private string[] triggerBindings =
+        [SerializeField]
+        private string[] triggerBindings =
         {
             "<XRController>{RightHand}/trigger",
             "<XRController>{RightHand}/triggerPressed",
@@ -68,7 +69,8 @@ namespace Artemis.Inventory
         [Tooltip("CONFERMA = grip DESTRO ('tengo'). Non si usa piu' il tasto A: su Quest e' " +
                  "prenotato dal menu di sistema e la pressione non arriva all'applicazione. " +
                  "I grip sono liberi perche' non ci sono oggetti afferrabili in scena.")]
-        [SerializeField] private string[] confirmBindings =
+        [SerializeField]
+        private string[] confirmBindings =
         {
             "<XRController>{RightHand}/gripPressed",
             "<XRController>{RightHand}/grip",
@@ -76,7 +78,8 @@ namespace Artemis.Inventory
         };
         [Tooltip("ANNULLA = grip SINISTRO ('scarto'). Mano diversa dalla conferma: e' molto " +
                  "difficile scartare per sbaglio una misura appena presa.")]
-        [SerializeField] private string[] cancelBindings =
+        [SerializeField]
+        private string[] cancelBindings =
         {
             "<XRController>{LeftHand}/gripPressed",
             "<XRController>{LeftHand}/grip",
@@ -85,8 +88,8 @@ namespace Artemis.Inventory
 
         [Header("Fit del diametro a 1.30 m")]
         [SerializeField] private float breastHeight = 1.30f;
-        [SerializeField] private int   rayCount     = 24;
-        [SerializeField] private float ringRadius   = 0.75f;
+        [SerializeField] private int rayCount = 24;
+        [SerializeField] private float ringRadius = 0.75f;
 
         [Header("Regole di rilievo")]
         [Tooltip("Rifiuta un albero la cui base disti in pianta meno di questo (m) da uno gia' " +
@@ -105,10 +108,10 @@ namespace Artemis.Inventory
         private ToolMode mode = ToolMode.Measure;
         public ToolMode Mode => mode;
 
-        public bool  HasPending    { get; private set; }
-        public float PendingDbh    { get; private set; }   // metri
+        public bool HasPending { get; private set; }
+        public float PendingDbh { get; private set; }   // metri
         public float PendingHeight { get; private set; }   // metri
-        public string Status       { get; private set; } = "";
+        public string Status { get; private set; } = "";
         public event Action OnStateChanged;
 
         private Vector3 pendingBase;
@@ -126,7 +129,7 @@ namespace Artemis.Inventory
         {
             ToolMode.Measure => HasPending ? "RIGHT grip to confirm  ·  LEFT grip to discard"
                                            : "MEASURE — aim at the stem base and pull the trigger",
-            ToolMode.Remove  => "REMOVE — aim at a surveyed tree to delete it",
+            ToolMode.Remove => "REMOVE — aim at a surveyed tree to delete it",
             _ => ""
         };
 
@@ -145,7 +148,7 @@ namespace Artemis.Inventory
 
             triggerAction = BuildAction("SurveyTrigger", triggerBindings);
             confirmAction = BuildAction("SurveyConfirm", confirmBindings);
-            cancelAction  = BuildAction("SurveyCancel",  cancelBindings);
+            cancelAction = BuildAction("SurveyCancel", cancelBindings);
         }
 
         /// Un'azione con PIU' binding: l'Input System ignora silenziosamente i percorsi che non
@@ -214,18 +217,18 @@ namespace Artemis.Inventory
             if (useDeviceGrips)
             {
                 confirmEdge = GripEdge(UnityEngine.XR.XRNode.RightHand, ref prevRightGrip, out rightGripNow);
-                cancelEdge  = GripEdge(UnityEngine.XR.XRNode.LeftHand,  ref prevLeftGrip,  out leftGripNow);
+                cancelEdge = GripEdge(UnityEngine.XR.XRNode.LeftHand, ref prevLeftGrip, out leftGripNow);
             }
             else
             {
                 confirmEdge = confirmAction != null && confirmAction.WasPressedThisFrame();
-                cancelEdge  = cancelAction  != null && cancelAction.WasPressedThisFrame();
+                cancelEdge = cancelAction != null && cancelAction.WasPressedThisFrame();
             }
 
             if (HasPending)
             {
                 if (confirmEdge) { ConfirmPending(); return; }
-                if (cancelEdge)  { CancelPending();  return; }
+                if (cancelEdge) { CancelPending(); return; }
             }
 
             RefreshDiagnostics();
@@ -243,10 +246,27 @@ namespace Artemis.Inventory
             var ray = new Ray(rayOrigin.position, rayOrigin.forward);
             if (VrHud.Instance != null && VrHud.Instance.RayHitsPanel(ray, out _)) return;
 
+            Act(ray);
+        }
+
+        /// <summary>
+        /// Ingresso alternativo per il grilletto, con un raggio fornito da fuori. Serve al
+        /// puntatore a mouse dell'Editor: in Editor senza visore la catena XRI non si accende
+        /// e il grilletto non arriva mai, quindi la HUD e gli strumenti sarebbero incollaudabili.
+        /// In build questa strada non viene mai percorsa.
+        /// </summary>
+        public void ExternalTrigger(Ray ray)
+        {
+            triggerCount++;
+            Act(ray);
+        }
+
+        private void Act(Ray ray)
+        {
             switch (mode)
             {
-                case ToolMode.Measure: OnMeasure(ray);   break;
-                case ToolMode.Remove:  RemoveAimed();    break;
+                case ToolMode.Measure: OnMeasure(ray); break;
+                case ToolMode.Remove: RemoveAimed(ray); break;
             }
         }
 
@@ -316,15 +336,15 @@ namespace Artemis.Inventory
             if (!m.Ok)
             { SetStatus("Diameter fit failed — aim at a cleaner stem base"); return; }
 
-            pendingBase   = hit.point;
+            pendingBase = hit.point;
             // TrunkSampler restituisce il centro del cerchio adattato a quota di petto: e'
             // l'ASSE del fusto. Riportato a quota base, e' il punto su cui centrare il segno —
             // il punto cliccato invece sta sulla corteccia e darebbe un anello sbilenco.
-            pendingAxis   = new Vector3(m.Center.x, hit.point.y, m.Center.z);
-            PendingDbh    = m.Dbh;
+            pendingAxis = new Vector3(m.Center.x, hit.point.y, m.Center.z);
+            PendingDbh = m.Dbh;
             PendingHeight = Hypsometry.Height(m.Dbh);
-            HasPending    = true;
-            Status        = "";
+            HasPending = true;
+            Status = "";
             ShowPreview();
             Raise();
         }
@@ -361,9 +381,8 @@ namespace Artemis.Inventory
         /// Rimuove un albero GIA' SALVATO puntando il suo segno di misura. Il volume da colpire
         /// e' la capsula invisibile attorno al fusto, non la fascia sottile: si punta l'albero,
         /// non il tratto di vernice.
-        private void RemoveAimed()
+        private void RemoveAimed(Ray ray)
         {
-            var ray = new Ray(rayOrigin.position, rayOrigin.forward);
             var hits = Physics.RaycastAll(ray, maxRayDistance, ~0, QueryTriggerInteraction.Collide);
             Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
 

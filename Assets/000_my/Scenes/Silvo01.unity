@@ -277,6 +277,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LCCRendererVR
   m_manager: {fileID: 531072823}
   m_FilePath: http://www.perclabresearch.it/LCC/Silvo01/Silvo01.lcc2
+  splatDepthWrite: 1
+  skipInEditor: 0
 --- !u!4 &453542428
 Transform:
   m_ObjectHideFlags: 0
@@ -476,6 +478,8 @@ MonoBehaviour:
     m_Bits: 64
   probeHeight: 100
   groundOffset: 0.05
+  freezeUntilPlaced: 1
+  maxFreezeSeconds: 8
   giveUpAfterSeconds: 10
   retryInterval: 0.25
 --- !u!4 &1675062203

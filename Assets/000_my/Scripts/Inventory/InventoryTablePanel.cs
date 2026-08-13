@@ -110,6 +110,7 @@ namespace Artemis.Inventory
 
             var flow = Artemis.Vr.AreaFlow.Instance;
             if (flow == null) return;                       // aspetta, non rinuncia
+            if (!Artemis.Session.VrSession.WorkAllowed) return;   // attende la sessione
             if (!flow.IsOnArea) { enabled = false; return; }
 
             var page = hud.CreateTab(tabTitle);

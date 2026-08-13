@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Artemis.Vr;
+using Artemis.Session;
 
 namespace Artemis.Regeneration
 {
@@ -12,8 +13,15 @@ namespace Artemis.Regeneration
     /// una selezione e la si esegue dalla scheda "Felling" della HUD, come nella pratica reale
     /// dove si percorre il popolamento segnando, e solo dopo si taglia.
     ///
-    /// Erede di PointerRay, ma molto piu' magro: cadono i ruoli (docente/studenti), le candidature
-    /// e le scorciatoie da tastiera — tutto materiale di Fase 4 o del mondo desktop.
+    /// IN SESSIONE i ruoli si separano: lo STUDENTE propone (una pianta alla volta, segnalata da
+    /// una bandierina del suo colore, visibile a tutti), il DOCENTE martella davvero e solo lui
+    /// puo' abbattere. Le proposte passano da un RPC al server; i segni del docente li scrive lui,
+    /// che il server lo e'.
+    ///
+    /// I colori: la BANDIERINA porta il colore di chi propone — serve a sapere chi ha proposto
+    /// cosa. Il POLIGONO invece resta uguale per tutti (giallo = proposto, rosso = martellato):
+    /// il poligono dice qualcosa sul BOSCO, non su chi l'ha detto, e colorarlo per proponente
+    /// darebbe l'idea sbagliata che quella porzione di bosco "appartenga" a qualcuno.
     ///
     /// Il segno NON e' sull'albero ma a TERRA: si accende il POLIGONO DI VORONOI della pianta.
     /// E' la scelta piu' istruttiva delle due — quello che conta in una martellata non e' il
@@ -38,7 +46,8 @@ namespace Artemis.Regeneration
         [Range(0.1f, 0.9f)]
         [SerializeField] private float triggerPressPoint = 0.6f;
 
-        [SerializeField] private string[] triggerBindings =
+        [SerializeField]
+        private string[] triggerBindings =
         {
             "<XRController>{RightHand}/trigger",
             "<XRController>{RightHand}/triggerPressed",
@@ -48,8 +57,17 @@ namespace Artemis.Regeneration
         [Header("Poligoni di Voronoi")]
         [Tooltip("Colore del poligono di una pianta NON segnata.")]
         [SerializeField] private Color cellColor = new Color(0.75f, 0.78f, 0.82f, 1f);
-        [Tooltip("Colore del poligono di una pianta SEGNATA per l'abbattimento.")]
+        [Tooltip("Colore del poligono di una pianta MARTELLATA dal docente.")]
         [SerializeField] private Color markedCellColor = new Color(0.95f, 0.20f, 0.12f, 1f);
+        [Tooltip("Colore del poligono di una pianta PROPOSTA da uno o piu' studenti. Uguale per " +
+                 "tutti i proponenti: il colore di chi propone sta sulla bandierina.")]
+        [SerializeField] private Color proposedCellColor = new Color(0.98f, 0.82f, 0.20f, 1f);
+
+        [Header("Bandierine delle proposte")]
+        [SerializeField] private float flagPoleHeight = 1.7f;
+        [SerializeField] private float flagRadius = 0.65f;
+        [Tooltip("Quante bandierine attorno allo stesso albero prima di sovrapporle.")]
+        [SerializeField] private int flagSlots = 4;
         [SerializeField] private float lineWidth = 0.10f;
         [Tooltip("Spessore del poligono segnato: oltre al colore cambia anche il tratto, cosi' " +
                  "resta leggibile anche di sbieco e da lontano.")]
@@ -66,11 +84,13 @@ namespace Artemis.Regeneration
         private InputAction triggerAction;
         private float nextOriginSearch;
         private bool prevTrigger;
-        private Material cellMat, markedMat;
-        private Transform cellRoot;
+        private Material cellMat, markedMat, proposedMat;
+        private Transform cellRoot, flagRoot;
+        private string lastNetSignature = "";
 
         public IReadOnlyCollection<int> Marked => marked;
         public int MarkedCount => marked.Count;
+        public int ProposedCount => proposed.Count;
         public string Status { get; private set; } = "";
         public event Action OnMarkingChanged;
 
@@ -103,8 +123,9 @@ namespace Artemis.Regeneration
         private void Start()
         {
             if (builder == null) builder = FindFirstObjectByType<StandBuilder>();
-            cellMat   = Artemis.Inventory.StemMarkerSpawner.MakeUnlit(cellColor, "M_Cell");
+            cellMat = Artemis.Inventory.StemMarkerSpawner.MakeUnlit(cellColor, "M_Cell");
             markedMat = Artemis.Inventory.StemMarkerSpawner.MakeUnlit(markedCellColor, "M_CellMarked");
+            proposedMat = Artemis.Inventory.StemMarkerSpawner.MakeUnlit(proposedCellColor, "M_CellProposed");
             if (builder != null) builder.OnRebuilt += OnStandRebuilt;
             BuildCells();
         }
@@ -114,6 +135,8 @@ namespace Artemis.Regeneration
         private void OnStandRebuilt()
         {
             marked.Clear();
+            proposed.Clear();
+            lastNetSignature = "";
             BuildCells();
             OnMarkingChanged?.Invoke();
         }
@@ -123,7 +146,8 @@ namespace Artemis.Regeneration
         private void Update()
         {
             EnsureRayOrigin();
-            bool edge = useDeviceTrigger ? TriggerEdge() 
+            SyncFromSession();
+            bool edge = useDeviceTrigger ? TriggerEdge()
                                          : (triggerAction != null && triggerAction.WasPressedThisFrame());
             if (!edge) return;
             if (rayOrigin == null) { SetStatus("Right controller not found"); return; }
@@ -131,13 +155,34 @@ namespace Artemis.Regeneration
             var ray = new Ray(rayOrigin.position, rayOrigin.forward);
             if (VrHud.Instance != null && VrHud.Instance.RayHitsPanel(ray, out _)) return;
 
+            Act(ray);
+        }
+
+        /// <summary>
+        /// Ingresso alternativo per il grilletto, con raggio fornito da fuori: lo usa il
+        /// puntatore a mouse dell'Editor, dove la catena XRI non si accende. In build non viene
+        /// mai percorso.
+        /// </summary>
+        public void ExternalTrigger(Ray ray) => Act(ray);
+
+        private void Act(Ray ray)
+        {
             if (!Physics.Raycast(ray, out var hit, maxRayDistance, treeLayer))
             { SetStatus("No tree under the pointer"); return; }
 
             var tree = hit.collider.GetComponentInParent<StandTree>();
             if (tree == null) { SetStatus("No tree under the pointer"); return; }
 
-            Toggle(tree.StemId);
+            var st = SessionState.Instance;
+            if (st != null && st.IsSpawned)
+            {
+                if (VrSession.IsTeacher) st.ToggleTeacherMark(tree.StemId);
+                else st.RequestCandidacyRpc(tree.StemId, PlayerPalette.IndexFor(
+                        Unity.Netcode.NetworkManager.Singleton.LocalClientId));
+                return;                       // la vista si aggiorna quando lo stato replica
+            }
+
+            Toggle(tree.StemId);              // fuori sessione: tutto locale
         }
 
         /// Fronte di salita del grilletto letto dal dispositivo (bottone digitale, o asse
@@ -193,12 +238,97 @@ namespace Artemis.Regeneration
         /// <summary>Abbatte gli alberi segnati: e' il pulsante della scheda Felling.</summary>
         public void FellMarked()
         {
+            var st = SessionState.Instance;
+            if (st != null && st.IsSpawned)
+            {
+                // Il turno lo registra la sessione, con il suo seme: ogni visore riapplica lo
+                // stesso abbattimento e ottiene la stessa rinnovazione, compreso chi si e'
+                // collegato dopo. Le proposte degli studenti cadono insieme agli alberi.
+                if (!VrSession.IsTeacher) { SetStatus("only the teacher can fell"); return; }
+                st.CommitMarking();
+                return;
+            }
+
             if (builder == null || marked.Count == 0) return;
             int n = marked.Count;
             var ids = new List<int>(marked);
             marked.Clear();                     // i segni cadono con gli alberi; le celle le
             builder.FellMany(ids);              // ridisegna OnRebuilt a fine abbattimento
             SetStatus($"{n} trees felled — regeneration computed");
+        }
+
+        // ---- stato condiviso ---------------------------------------------------------------------
+
+        /// Ricalca sulla vista locale cio' che dice la sessione. Una firma a buon mercato evita
+        /// di ricostruire bandierine e colori a ogni frame: si rifa' solo quando qualcosa cambia.
+        private void SyncFromSession()
+        {
+            var st = SessionState.Instance;
+            if (st == null || !st.IsSpawned) return;
+
+            var sb = new System.Text.StringBuilder();
+            foreach (var c in st.Candidacies) sb.Append(c.ClientId).Append(':').Append(c.StemId).Append(',');
+            sb.Append('|');
+            foreach (var m in st.TeacherMarks) sb.Append(m).Append(',');
+            string sig = sb.ToString();
+            if (sig == lastNetSignature) return;
+            lastNetSignature = sig;
+
+            marked.Clear();
+            foreach (var m in st.TeacherMarks) marked.Add(m);
+
+            proposed.Clear();
+            foreach (var c in st.Candidacies) proposed.Add(c.StemId);
+
+            ApplyCellColors();
+            RebuildFlags(st);
+            OnMarkingChanged?.Invoke();
+        }
+
+        private readonly HashSet<int> proposed = new HashSet<int>();
+
+        /// Una bandierina per proposta, del colore del proponente, disposta attorno al fusto in
+        /// slot fissi: piu' studenti possono proporre lo stesso albero e restano distinguibili.
+        private void RebuildFlags(SessionState st)
+        {
+            if (flagRoot != null) Destroy(flagRoot.gameObject);
+            if (builder == null) return;
+
+            var rootGo = new GameObject("ProposalFlags");
+            rootGo.transform.SetParent(transform, false);
+            rootGo.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+            flagRoot = rootGo.transform;
+
+            var perStem = new Dictionary<int, int>();
+            foreach (var c in st.Candidacies)
+            {
+                if (!builder.TryGetBase(c.StemId, out var basePos)) continue;
+                perStem.TryGetValue(c.StemId, out int k);
+                perStem[c.StemId] = k + 1;
+
+                float a = Mathf.PI * 2f * (k % Mathf.Max(1, flagSlots)) / Mathf.Max(1, flagSlots);
+                var pos = basePos + new Vector3(Mathf.Cos(a), 0f, Mathf.Sin(a)) * flagRadius;
+                CreateFlag(pos, PlayerPalette.Color(c.ColorIndex));
+            }
+        }
+
+        private void CreateFlag(Vector3 basePos, Color color)
+        {
+            var mat = Artemis.Inventory.StemMarkerSpawner.MakeUnlit(color, "M_Flag");
+
+            var pole = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            var pc = pole.GetComponent<Collider>(); if (pc != null) Destroy(pc);
+            pole.transform.SetParent(flagRoot, false);
+            pole.transform.position = basePos + Vector3.up * (flagPoleHeight * 0.5f);
+            pole.transform.localScale = new Vector3(0.05f, flagPoleHeight * 0.5f, 0.05f);
+            var pr = pole.GetComponent<Renderer>(); if (pr != null) pr.sharedMaterial = mat;
+
+            var flag = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            var fc = flag.GetComponent<Collider>(); if (fc != null) Destroy(fc);
+            flag.transform.SetParent(flagRoot, false);
+            flag.transform.position = basePos + Vector3.up * (flagPoleHeight - 0.14f) + Vector3.right * 0.17f;
+            flag.transform.localScale = new Vector3(0.34f, 0.20f, 0.03f);
+            var fr = flag.GetComponent<Renderer>(); if (fr != null) fr.sharedMaterial = mat;
         }
 
         // ---- poligoni di Voronoi ---------------------------------------------------------------
@@ -249,10 +379,15 @@ namespace Artemis.Regeneration
             {
                 var lr = kv.Value;
                 if (lr == null) continue;
+                // Tre stati, in ordine di precedenza: martellato dal docente, proposto da
+                // qualcuno, normale.
                 bool isMarked = marked.Contains(kv.Key);
-                lr.material = isMarked ? markedMat : cellMat;
-                lr.startColor = lr.endColor = isMarked ? markedCellColor : cellColor;
-                lr.widthMultiplier = isMarked ? markedLineWidth : lineWidth;
+                bool isProposed = !isMarked && proposed.Contains(kv.Key);
+
+                lr.material = isMarked ? markedMat : (isProposed ? proposedMat : cellMat);
+                lr.startColor = lr.endColor = isMarked ? markedCellColor
+                                            : (isProposed ? proposedCellColor : cellColor);
+                lr.widthMultiplier = (isMarked || isProposed) ? markedLineWidth : lineWidth;
             }
         }
 

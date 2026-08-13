@@ -55,6 +55,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9148489708477179002}
+  - component: {fileID: 2671434952831279108}
+  - component: {fileID: 339764291066039261}
   m_Layer: 0
   m_Name: VrApp
   m_TagString: Untagged
@@ -80,6 +82,41 @@ Transform:
   - {fileID: 7656407366041539701}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2671434952831279108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5700560761635042002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2881d2f2f8b3edd44a089ecca78ddd11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Artemis.Session.VrSession
+  sessionName: SilvoVR-Aula1
+  maxPlayers: 10
+  requireSession: 1
+--- !u!114 &339764291066039261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5700560761635042002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e465a09aa1430584880acf7f2a1ea36b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Artemis.EditorTools.EditorMousePointer
+  active: 1
+  disableWhenHmdPresent: 1
+  moveSpeed: 3
+  fastMultiplier: 3
+  lookSpeed: 3
+  maxRayDistance: 60
+  drawCrosshair: 1
+  crosshairColor: {r: 1, g: 0.9, b: 0.2, a: 0.9}
 --- !u!1 &8551464854873973653
 GameObject:
   m_ObjectHideFlags: 0
@@ -100,6 +137,8 @@ GameObject:
   - component: {fileID: 1886339600850255694}
   - component: {fileID: 1619504335442013470}
   - component: {fileID: 7917810450227838553}
+  - component: {fileID: 7124169272037603662}
+  - component: {fileID: 3421358828015674413}
   m_Layer: 0
   m_Name: App
   m_TagString: Untagged
@@ -149,6 +188,7 @@ MonoBehaviour:
   freezeWhenHandWithin: 0.45
   leftControllerName: Left Controller
   rightControllerName: Right Controller
+  defaultTab: Areas
   panelSize: {x: 500, y: 500}
   alwaysOnTop: 0
   uiRenderQueue: 4000
@@ -283,7 +323,8 @@ MonoBehaviour:
   minViewportHeight: 90
   rowHeight: 46
   rowFontSize: 20
-  markedRowColor: {r: 0.55, g: 0.32, b: 0.1, a: 1}
+  armedRowColor: {r: 0.75, g: 0.25, b: 0.2, a: 1}
+  rowConfirmSeconds: 4
   sliderWidth: 44
   handleHeight: 64
   sliderEndMargin: 14
@@ -313,6 +354,7 @@ MonoBehaviour:
   ringMinRadius: 0.22
   ringThickness: 0.06
   blazeSize: 0.5
+  showGapOutlines: 0
   gapColor: {r: 0.25, g: 0.9, b: 0.35, a: 1}
   outlineWidth: 0.14
   outlineLift: 0.08
@@ -358,6 +400,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Artemis.Regeneration.SimulationAccessPanel
   tabTitle: Marking
+--- !u!114 &7124169272037603662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8551464854873973653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 803332a1bf373174bb08e4f9d13bdc4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Artemis.Session.SessionPanel
+  tabTitle: Session
+--- !u!114 &3421358828015674413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8551464854873973653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46adebb2ddc62a848927013866b00c8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Artemis.Session.AvatarDebugPanel
+  tabTitle: Avatars
+  refreshSeconds: 0.5
 --- !u!1001 &3505568972668490914
 PrefabInstance:
   m_ObjectHideFlags: 0

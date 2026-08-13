@@ -156,6 +156,27 @@ namespace Artemis.Regeneration
         // Last FIS evaluation, exposed for the HUD documentation panel.
         public float LastLightPct { get; private set; }
         public float LastAridity { get; private set; }
+
+        // ---- clima condiviso (Fase 4) ------------------------------------------------------
+        private bool hasSharedClimate;
+        private float sharedAridity;
+        private string sharedScenario = "";
+        private int sharedStart, sharedEnd;
+
+        /// <summary>Scenario e aridita' ricevuti dalla sessione. Da quel momento il FIS usa
+        /// questi e non piu' la propria interrogazione all'API.</summary>
+        public void SetSharedClimate(string scenario, int startYear, int endYear, float aridity01)
+        {
+            sharedScenario = scenario ?? "";
+            sharedStart = startYear; sharedEnd = endYear;
+            sharedAridity = Mathf.Clamp01(aridity01);
+            hasSharedClimate = true;
+        }
+
+        public bool HasSharedClimate => hasSharedClimate;
+        public string SharedScenario => sharedScenario;
+        public string SharedPeriod => $"{sharedStart}-{sharedEnd}";
+        public float SharedAridity => sharedAridity;
         public float LastResidualGha { get; private set; }
         public float LastSuitability { get; private set; }
         public string LastLimiting { get; private set; } = "-";
@@ -209,6 +230,20 @@ namespace Artemis.Regeneration
             // L'area di provenienza la ricorda AreaFlow: si entra in Simulation DA un'area, e il
             // soprassuolo e' quello del suo inventario. Non c'e' nulla da scegliere ne' da
             // digitare — se non si viene da nessuna parte, resta il solo pavimento.
+            // IN SESSIONE, chi non e' il docente NON costruisce dai propri file: il soprassuolo
+            // della lezione e' quello del docente e arriva replicato. Senza questo controllo ogni
+            // studente costruirebbe il PROPRIO bosco (dai propri rilievi) e lo vedrebbe sostituire
+            // un istante dopo — o, peggio, resterebbe con quello se la pubblicazione tardasse:
+            // due persone convinte di guardare lo stesso bosco, che invece e' diverso.
+            var nm = Unity.Netcode.NetworkManager.Singleton;
+            if (nm != null && nm.IsListening && !nm.IsServer)
+            {
+                Debug.Log("[StandBuilder] studente in sessione: attendo il soprassuolo del docente.");
+                CurrentAreaId = Artemis.Vr.AreaFlow.OriginArea;
+                if (buildEmptyPlaneOnStart) Build(new List<StemRecord>());
+                return;
+            }
+
             string origin = Artemis.Vr.AreaFlow.OriginArea;
             if (!string.IsNullOrWhiteSpace(origin)) { BuildFromArea(origin); return; }
 
@@ -341,8 +376,13 @@ namespace Artemis.Regeneration
                 plotId = CurrentAreaId
             };
 
-            var c = FutureClimateClient.Instance;
-            if (c != null) { d.scenario = c.Scenario; d.startYear = c.StartYear; d.endYear = c.EndYear; }
+            if (hasSharedClimate)
+            { d.scenario = sharedScenario; d.startYear = sharedStart; d.endYear = sharedEnd; }
+            else
+            {
+                var c = FutureClimateClient.Instance;
+                if (c != null) { d.scenario = c.Scenario; d.startYear = c.StartYear; d.endYear = c.EndYear; }
+            }
 
             d.lightPct = LastLightPct; d.aridity = LastAridity; d.residualGha = LastResidualGha;
             d.diversity = StationDiversity; d.suitability = LastSuitability; d.limiting = LastLimiting;
@@ -411,8 +451,13 @@ namespace Artemis.Regeneration
             }
 
             float residualGha = StandMetrics.Compute(ResidualStems, plotAreaM2).BasalAreaHa;
-            float aridity = (FutureClimateClient.Instance != null && FutureClimateClient.Instance.HasData)
-                ? FutureClimateClient.Instance.Aridity01 : fallbackAridity;
+            // In sessione il clima e' quello PUBBLICATO dal docente: gli studenti non interrogano
+            // l'API — dieci visori sullo stesso endpoint sono dieci richieste identiche — e
+            // soprattutto devono valutare il FIS sullo stesso numero, altrimenti la stessa
+            // martellata darebbe rinnovazioni diverse su schermi diversi.
+            float aridity = hasSharedClimate ? sharedAridity
+                : (FutureClimateClient.Instance != null && FutureClimateClient.Instance.HasData)
+                    ? FutureClimateClient.Instance.Aridity01 : fallbackAridity;
             LastAridity = aridity; LastResidualGha = residualGha;   // for the HUD
 
             foreach (var gap in gaps)

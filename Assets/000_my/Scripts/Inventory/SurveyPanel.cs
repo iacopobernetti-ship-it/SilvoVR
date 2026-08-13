@@ -73,6 +73,7 @@ namespace Artemis.Inventory
             // Simulation il soprassuolo e' ricostruito e non si misura.
             var flow = AreaFlow.Instance;
             if (flow == null) return;                // aspetta, non rinuncia
+            if (!Artemis.Session.VrSession.WorkAllowed) return;   // attende la sessione
             if (!flow.IsOnArea) { enabled = false; return; }
 
             var page = hud.CreateTab(tabTitle);

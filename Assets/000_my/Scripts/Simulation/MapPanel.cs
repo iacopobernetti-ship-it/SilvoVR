@@ -67,6 +67,7 @@ namespace Artemis.Regeneration
 
             builder = FindFirstObjectByType<StandBuilder>();
             if (builder == null) { enabled = false; return; }    // solo nella simulazione
+            if (!Artemis.Session.VrSession.WorkAllowed) return;  // attende la sessione
 
             miniLayer = LayerMask.NameToLayer(miniMapLayerName);
             if (miniLayer < 0)

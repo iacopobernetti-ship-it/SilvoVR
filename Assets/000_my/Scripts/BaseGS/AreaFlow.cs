@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 using UnityEngine.SceneManagement;
 
 namespace Artemis.Vr
@@ -64,6 +65,9 @@ namespace Artemis.Vr
         public static string OriginArea { get; private set; } = "";
 
         public string SimulationSceneName => simulationSceneName;
+
+        /// <summary>Chi puo' cambiare scena adesso: il docente, o chiunque fuori sessione.</summary>
+        public static bool CanSwitch => Artemis.Session.VrSession.CanCommand;
         public bool IsOnSimulation => CurrentScene == simulationSceneName;
 
         /// <summary>Siamo in un'area di saggio (non Base, non Simulation). Serve ai pannelli per
@@ -105,6 +109,19 @@ namespace Artemis.Vr
         /// Entra in Simulation ricordando da dove. Chiamabile solo da un'area: dalla Base non
         /// avrebbe un inventario da cui costruire il soprassuolo.
         /// </summary>
+        /// <summary>
+        /// Ricorda l'area di provenienza a OGNI cambio scena, non solo quando si preme il
+        /// pulsante: gli studenti non lo premono mai — li porta il docente — e senza questo la
+        /// loro simulazione non saprebbe da quale area proviene.
+        /// </summary>
+        private void OnSceneLoaded(Scene s, LoadSceneMode m)
+        {
+            if (s.name != simulationSceneName && s.name != baseSceneName) OriginArea = s.name;
+        }
+
+        private void OnEnable()  { SceneManager.sceneLoaded += OnSceneLoaded; }
+        private void OnDisable() { SceneManager.sceneLoaded -= OnSceneLoaded; }
+
         public void GoToSimulation()
         {
             if (IsOnSimulation) return;
@@ -137,6 +154,29 @@ namespace Artemis.Vr
             if (!known)
             {
                 Debug.LogError($"[AreaFlow] scena '{sceneName}' non dichiarata (ne' Base ne' area).");
+                return;
+            }
+
+            // ---- in sessione comanda il docente -------------------------------------------
+            var nm = NetworkManager.Singleton;
+            if (nm != null && nm.IsListening)
+            {
+                if (!nm.IsServer)
+                {
+                    // Gli studenti non chiamano mai questo metodo (la scheda Areas non esiste
+                    // per loro), ma se ci arrivassero da un'altra strada devono essere fermati
+                    // qui: due client che caricano scene diverse sono due lezioni separate.
+                    Debug.Log("[AreaFlow] solo il docente cambia scena.");
+                    return;
+                }
+
+                // Caricamento di rete: la scena si carica su TUTTI, docente compreso. Un solo
+                // percorso di codice, quindi il docente non puo' vedere qualcosa di diverso
+                // dagli studenti — ed e' NGO a portare anche chi si collega a lezione iniziata.
+                OnLoadStarted?.Invoke(sceneName);
+                var status = nm.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
+                if (status != SceneEventProgressStatus.Started)
+                    Debug.LogError($"[AreaFlow] LoadScene di rete '{sceneName}' fallito: {status}");
                 return;
             }
 
