@@ -70,8 +70,10 @@ namespace Artemis.Regeneration
             fellBtn = f; fellImg = fi;
             clearImg = ci; clearLabel = c.GetComponentInChildren<TMP_Text>();
 
-            backRow = hud.MakeRow(page);
-            hud.MakeButton(backRow, "Back to plot\n(saves marking)", OnBackClicked);
+            // Il ritorno all'area NON sta nella scheda: va nella barra dei comandi, sempre
+            // visibile. Chi apre Climate o Map non deve ritrovarsi senza via d'uscita.
+            backRow = hud.CommandBar();
+            hud.MakeButton(backRow, "◀  Back to plot  (saves marking)", OnBackClicked);
 
             fisLabel    = hud.MakeLabel(page, "", 16);
             statusLabel = hud.MakeLabel(page, "", 15);

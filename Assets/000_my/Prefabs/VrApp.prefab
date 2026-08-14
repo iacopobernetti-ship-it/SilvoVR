@@ -138,7 +138,6 @@ GameObject:
   - component: {fileID: 1619504335442013470}
   - component: {fileID: 7917810450227838553}
   - component: {fileID: 7124169272037603662}
-  - component: {fileID: 3421358828015674413}
   m_Layer: 0
   m_Name: App
   m_TagString: Untagged
@@ -413,20 +412,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Artemis.Session.SessionPanel
   tabTitle: Session
---- !u!114 &3421358828015674413
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8551464854873973653}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46adebb2ddc62a848927013866b00c8e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Artemis.Session.AvatarDebugPanel
-  tabTitle: Avatars
-  refreshSeconds: 0.5
 --- !u!1001 &3505568972668490914
 PrefabInstance:
   m_ObjectHideFlags: 0

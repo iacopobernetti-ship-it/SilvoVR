@@ -110,6 +110,16 @@ namespace Artemis.Session
             st.SetPlot(builder.CurrentAreaId, area);
             st.PublishInventory(new List<StemRecord>(stems));
             published = true;
+
+            // Il soprassuolo appena pubblicato E' quello che il docente ha GIA' costruito in
+            // locale (StandBuilder.Start l'ha caricato dal suo file un attimo fa): si marca la
+            // versione come gia' costruita, altrimenti al frame successivo SyncInventory vedrebbe
+            // un inventario condiviso "nuovo" e lo ricostruirebbe identico — doppio build, doppio
+            // riposizionamento del rig, doppio OnRebuilt. Era visibile nel log come una coppia
+            // di "rig riposizionato" a pochi frame di distanza, e raddoppiava esattamente la
+            // finestra in cui rig e CharacterController passano di mano.
+            builtInventoryVersion = Version(st);
+
             Debug.Log($"[SimulationSyncVR] condiviso il soprassuolo di '{builder.CurrentAreaId}' " +
                       $"({stems.Count} alberi, {area:F0} m²).");
         }

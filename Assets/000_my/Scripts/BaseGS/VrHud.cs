@@ -119,6 +119,7 @@ namespace Artemis.Vr
 
         private Canvas canvas;
         private RectTransform tabBar;
+        private RectTransform commandBar;
         private RectTransform pageArea;
         private EventSystem mine;
         private TMP_Text diagnostics;
@@ -306,6 +307,36 @@ namespace Artemis.Vr
 
 
         // ------------------------------------------------------------------ API per i pannelli
+
+        /// <summary>
+        /// La barra dei comandi SEMPRE VISIBILI, sotto le pagine e sopra la diagnostica: quello
+        /// che ci metti resta a schermo qualunque scheda sia aperta.
+        ///
+        /// Serve per i comandi da cui dipende la possibilita' di proseguire — il ritorno all'area
+        /// dalla simulazione, per esempio. Metterli dentro una scheda significa che chi ne apre
+        /// un'altra si trova senza via d'uscita, e non e' una svista da correggere caso per caso:
+        /// e' una categoria di comandi che non appartiene a nessuna scheda.
+        /// </summary>
+        public RectTransform CommandBar()
+        {
+            if (commandBar != null) return commandBar;
+
+            var go = new GameObject("CommandBar", typeof(RectTransform), typeof(HorizontalLayoutGroup));
+            go.transform.SetParent(canvas.transform, false);
+            commandBar = go.GetComponent<RectTransform>();
+            commandBar.anchorMin = new Vector2(0, 0); commandBar.anchorMax = new Vector2(1, 0);
+            commandBar.pivot = new Vector2(0.5f, 0);
+            commandBar.offsetMin = new Vector2(8, 46); commandBar.offsetMax = new Vector2(-8, 110);
+
+            var hlg = go.GetComponent<HorizontalLayoutGroup>();
+            hlg.spacing = 8;
+            hlg.childControlWidth = true; hlg.childControlHeight = true;
+            hlg.childForceExpandWidth = true; hlg.childForceExpandHeight = true;
+
+            // Le pagine si accorciano per far posto: la barra non deve coprirle.
+            pageArea.offsetMin = new Vector2(0, 114);
+            return commandBar;
+        }
 
         /// <summary>Registra una scheda e restituisce la colonna dove il pannello costruisce i
         /// suoi controlli. Idempotente. La prima scheda registrata diventa quella attiva.</summary>

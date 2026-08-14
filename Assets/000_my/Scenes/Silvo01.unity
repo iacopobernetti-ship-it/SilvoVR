@@ -279,6 +279,10 @@ MonoBehaviour:
   m_FilePath: http://www.perclabresearch.it/LCC/Silvo01/Silvo01.lcc2
   splatDepthWrite: 1
   skipInEditor: 0
+  maxBufferSplat10k: 200
+  maxRenderSplats10k: 100
+  startLod: 0
+  detailLevel: 50
 --- !u!4 &453542428
 Transform:
   m_ObjectHideFlags: 0
@@ -472,6 +476,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Artemis.Session.XrRigPlacer
   spawnPoint: {fileID: 0}
+  useGeneratedGroundCentre: 1
+  scatterRadius: 1.2
   snapToGround: 1
   groundLayer:
     serializedVersion: 2
