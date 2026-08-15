@@ -247,7 +247,6 @@ GameObject:
   - component: {fileID: 660816979}
   - component: {fileID: 660816978}
   - component: {fileID: 660816982}
-  - component: {fileID: 660816983}
   m_Layer: 0
   m_Name: SimTools
   m_TagString: Untagged
@@ -346,23 +345,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Artemis.Session.SimulationSyncVR
   builder: {fileID: 1210512531}
   waitBeforeComplaining: 3
---- !u!114 &660816983
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 660816977}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8418f85697ab2bc4aa91d7e7aec5089e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Artemis.EditorTools.RigMoveProbe
-  jumpThreshold: 1
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  fallThreshold: 0.5
 --- !u!1 &1085496440
 GameObject:
   m_ObjectHideFlags: 0

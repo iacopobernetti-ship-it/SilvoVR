@@ -860,5 +860,42 @@ namespace Artemis.Regeneration
             Gizmos.color = Color.yellow;
             foreach (var s in sites) Gizmos.DrawSphere(new Vector3(s.x, y, s.y), 0.15f);
         }
+        public void RestoreStand()
+        {
+            if (felled.Count == 0 && youngGOs.Count == 0) return;
+
+            // 1. via la rinnovazione: e' nata dall'abbattimento che stiamo annullando.
+            foreach (var g in youngGOs) if (g != null) Destroy(g);
+            youngGOs.Clear();
+            youngRecords.Clear();
+
+            // 2. rimettere in piedi gli abbattuti. I record non se ne sono mai andati: `current`
+            //    e' l'inventario, e l'abbattimento toglie l'ALBERO, non il dato.
+            int restored = 0;
+            foreach (var s in current)
+            {
+                if (!felled.Contains(s.StemId)) continue;
+                if (trees.ContainsKey(s.StemId)) continue;   // gia' in piedi: non duplicare
+                SpawnAdult(s);
+                restored++;
+            }
+            felled.Clear();
+
+            // 3. selettori nuovi -> CellIndex da riassegnare.
+            RecomputeVoronoi();
+
+            // 4. gli indici dell'ultima valutazione FIS non descrivono piu' nulla di esistente:
+            //    azzerarli evita che la HUD continui a mostrare la luce di una buca richiusa.
+            LastLightPct = 0f;
+            LastSuitability = 0f;
+            LastLimiting = "-";
+            LastResidualGha = StandMetrics.Compute(ResidualStems, plotAreaM2).BasalAreaHa;
+
+            Debug.Log($"[StandBuilder] soprassuolo ripristinato: {restored} alberi rimessi in piedi, " +
+                      "rinnovazione rimossa, suolo intatto.");
+
+            OnRebuilt?.Invoke();
+        }
+
     }
 }

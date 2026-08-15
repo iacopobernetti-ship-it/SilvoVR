@@ -138,6 +138,7 @@ GameObject:
   - component: {fileID: 1619504335442013470}
   - component: {fileID: 7917810450227838553}
   - component: {fileID: 7124169272037603662}
+  - component: {fileID: 2777304861528326542}
   m_Layer: 0
   m_Name: App
   m_TagString: Untagged
@@ -174,7 +175,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Artemis.Vr.VrHud
   distance: 0.6
   heightOffset: -0.8
-  azimuthDegrees: -20
+  azimuthDegrees: 0
   trackHeadYaw: 0
   trackHeadPitch: 0
   trackHeadRoll: 0
@@ -287,6 +288,7 @@ MonoBehaviour:
   breastHeight: 1.3
   bandThickness: 0.06
   bandOversize: 1.03
+  bandSegments: 32
   unmarkedColor: {r: 0.2, g: 0.7, b: 0.25, a: 1}
   markedColor: {r: 0.95, g: 0.55, b: 0.1, a: 1}
   pickHeight: 1.6
@@ -412,6 +414,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Artemis.Session.SessionPanel
   tabTitle: Session
+--- !u!114 &2777304861528326542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8551464854873973653}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d49a2ce570adb174c9ebb45810e6f11d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Artemis.EditorTools.FrameTimeProbe
+  budgetMs: 13.9
+  windowSeconds: 0.5
+  show: 1
 --- !u!1001 &3505568972668490914
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -279,10 +279,10 @@ MonoBehaviour:
   m_FilePath: http://www.perclabresearch.it/LCC/Silvo04/Silvo04.lcc2
   splatDepthWrite: 1
   skipInEditor: 0
-  maxBufferSplat10k: 200
-  maxRenderSplats10k: 100
-  startLod: 0
-  detailLevel: 50
+  maxBufferSplat10k: 0
+  maxRenderSplats10k: 0
+  startLod: 2
+  detailLevel: 0
 --- !u!4 &453542428
 Transform:
   m_ObjectHideFlags: 0
@@ -507,8 +507,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -7635826562936255635, guid: f57f7fd07535dc542ba3555cebd30c3b, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: f57f7fd07535dc542ba3555cebd30c3b, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 142391b48fca6ea4680f617346be9aae, type: 2}
     - target: {fileID: 919132149155446097, guid: f57f7fd07535dc542ba3555cebd30c3b, type: 3}
       propertyPath: m_Name
       value: Silvo04_terrain

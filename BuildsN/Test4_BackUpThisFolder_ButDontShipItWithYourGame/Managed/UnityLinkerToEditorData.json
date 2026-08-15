@@ -1147,9 +1147,7 @@
         "dependencies": [
           {
             "name": "BoxCollider",
-            "scenes": [
-              "Assets/000_my/Scenes/Base.unity"
-            ],
+            "scenes": [],
             "dependencyType": 0,
             "icon": null
           },

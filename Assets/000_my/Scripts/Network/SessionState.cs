@@ -77,6 +77,22 @@ namespace Artemis.Session
         public readonly NetworkVariable<int> EndYear = new NetworkVariable<int>(2060);
         public readonly NetworkVariable<float> Aridity = new NetworkVariable<float>(0.4f);
 
+        /// <summary>
+        /// I DUE indici da cui nasce l'aridita' composita, pubblicati insieme a lei.
+        ///
+        /// Perche' viaggiano in rete: lo studente non interroga l'API — dieci visori sullo stesso
+        /// endpoint sono dieci richieste identiche — quindi il suo FutureClimateClient e' fermo ai
+        /// valori iniziali e non ha nulla di vero da mostrare. Senza questi due numeri la sua HUD
+        /// puo' dire soltanto "aridita' 0.81", che e' il risultato senza le ragioni: l'indice di
+        /// De Martonne estivo e la temperatura del trimestre piu' caldo sono esattamente cio' che
+        /// rende leggibile il confronto fra ssp126 e ssp585, che e' il punto della lezione.
+        /// </summary>
+        public readonly NetworkVariable<float> SummerTempC = new NetworkVariable<float>(0f);
+        public readonly NetworkVariable<float> DeMartonneSummer = new NetworkVariable<float>(0f);
+
+        /// <summary>Vero quando il docente ha gia' pubblicato una misura climatica vera.</summary>
+        public bool HasClimateData => DeMartonneSummer.Value > 0.001f || SummerTempC.Value > 0.001f;
+
         // ---- martellata --------------------------------------------------------------------------
         public NetworkList<NetCandidacy> Candidacies;   // proposte degli studenti
         public NetworkList<int> TeacherMarks;           // segni del docente, non ancora abbattuti
@@ -123,12 +139,20 @@ namespace Artemis.Session
             ClearMarkingInternal();
         }
 
-        public void SetClimate(string scenario, int startYear, int endYear, float aridity01)
+        /// <summary>
+        /// Pubblica lo scenario climatico E i due indici che lo spiegano. La firma estesa ha
+        /// sostituito quella a quattro argomenti: pubblicare la sola aridita' dava allo studente
+        /// un numero senza contesto, e il confronto fra scenari e' il cuore della lezione.
+        /// </summary>
+        public void SetClimate(string scenario, int startYear, int endYear, float aridity01,
+                               float summerTempC, float deMartonneSummer)
         {
             if (!IsServer) return;
             Scenario.Value = scenario ?? "ssp245";
             StartYear.Value = startYear; EndYear.Value = endYear;
             Aridity.Value = Mathf.Clamp01(aridity01);
+            SummerTempC.Value = summerTempC;
+            DeMartonneSummer.Value = deMartonneSummer;
         }
 
         public List<StemRecord> ReadInventory()
@@ -192,6 +216,19 @@ namespace Artemis.Session
         }
 
         public void ClearMarking() { if (IsServer) ClearMarkingInternal(); }
+
+        /// <summary>
+        /// Riporta il bosco a PRIMA della martellata: si cancellano i turni di abbattimento, i
+        /// segni e le proposte. Non si "dis-abbatte" nulla — sono i client a ricostruire il
+        /// soprassuolo dall'inventario condiviso quando vedono i turni tornare indietro
+        /// (SimulationSyncVR), che e' l'unico modo di far ricomparire anche la rinnovazione
+        /// sparita e le celle di Voronoi originali.
+        ///
+        /// Serve in aula piu' di quanto sembri: la stessa martellata va rifatta sotto scenari
+        /// climatici diversi, ed e' proprio quel confronto la lezione. Senza reset l'unico modo
+        /// era uscire e rientrare in Simulation.
+        /// </summary>
+        public void ResetStand() { if (IsServer) ClearMarkingInternal(); }
 
         private void ClearMarkingInternal()
         {

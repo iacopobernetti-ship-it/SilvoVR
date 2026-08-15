@@ -105,6 +105,28 @@ namespace Artemis.Inventory
 
         public static VrSurveyTool Instance { get; private set; }
 
+        /// <summary>
+        /// Lo strumento e' VIVO solo in un'area di saggio.
+        ///
+        /// Vive nel prefab VrApp, quindi il componente ESISTE anche in Base e in Simulation, dove
+        /// misurare un fusto non ha alcun senso: in Simulation il soprassuolo e' ricostruito e la
+        /// pressione del grilletto appartiene alla martellata. Senza questa guardia i due
+        /// strumenti leggevano il grilletto CIASCUNO PER CONTO PROPRIO nel proprio Update, quindi
+        /// una sola pressione faceva partire una martellata E una misura fantasma — da cui il
+        /// disco giallo di anteprima che restava acceso in mezzo al bosco simulato, e che
+        /// sopravviveva all'abbattimento perche' non aveva niente a che vedere con esso.
+        /// </summary>
+        public bool ActiveHere
+        {
+            get
+            {
+                var flow = AreaFlow.Instance;
+                return flow == null || flow.IsOnArea;   // senza AreaFlow non si nega nulla
+            }
+        }
+
+        private bool wasActiveHere = true;
+
         private ToolMode mode = ToolMode.Measure;
         public ToolMode Mode => mode;
 
@@ -211,6 +233,15 @@ namespace Artemis.Inventory
 
         private void Update()
         {
+            // Fuori da un'area lo strumento tace del tutto: niente input, niente diagnostica,
+            // e l'eventuale anteprima in sospeso viene ritirata una volta sola all'uscita.
+            if (!ActiveHere)
+            {
+                if (wasActiveHere) { wasActiveHere = false; ClearPending(); }
+                return;
+            }
+            wasActiveHere = true;
+
             EnsureRayOrigin();
 
             bool confirmEdge, cancelEdge;
@@ -257,6 +288,7 @@ namespace Artemis.Inventory
         /// </summary>
         public void ExternalTrigger(Ray ray)
         {
+            if (!ActiveHere) return;        // stessa regola dell'input dal dispositivo
             triggerCount++;
             Act(ray);
         }

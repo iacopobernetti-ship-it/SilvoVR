@@ -54,7 +54,22 @@ namespace Artemis.Inventory
             Instance = this;
         }
 
-        private void Start() => LoadFromDisk();
+        /// <summary>
+        /// L'inventario appartiene a un'AREA DI SAGGIO. Fuori da li' non si carica nulla e non si
+        /// scrive nulla: il PlotId e' il nome della scena, quindi in Simulation l'inventario si
+        /// chiamerebbe "Simulation" e il suo file conterrebbe misure prese su un soprassuolo
+        /// ricostruito — dati senza significato, che pero' vengono disegnati come veri.
+        /// </summary>
+        private bool ActiveHere
+        {
+            get
+            {
+                var flow = AreaFlow.Instance;
+                return flow == null || flow.IsOnArea;
+            }
+        }
+
+        private void Start() { if (ActiveHere) LoadFromDisk(); }
 
         private void OnDestroy() { if (Instance == this) Instance = null; }
 
@@ -157,7 +172,9 @@ namespace Artemis.Inventory
         private void Changed()
         {
             OnInventoryChanged?.Invoke();
-            if (autoSave && !suppressSave) InventoryStore.Save(PlotId, stems);
+            // Non si scrive su disco fuori da un'area: e' la seconda meta' della stessa regola,
+            // e impedisce che un file fantasma nasca di nuovo.
+            if (autoSave && !suppressSave && ActiveHere) InventoryStore.Save(PlotId, stems);
         }
     }
 }

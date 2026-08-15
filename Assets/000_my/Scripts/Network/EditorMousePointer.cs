@@ -188,15 +188,30 @@ namespace Artemis.EditorTools
             return true;
         }
 
+        /// <summary>
         /// Equivalente del grilletto: gli strumenti espongono un ingresso diretto proprio perche'
         /// in Editor la catena XRI non si accende.
+        ///
+        /// L'ORDINE E' IL PUNTO. La versione precedente provava PRIMA il VrSurveyTool e usciva
+        /// se lo trovava — ma il VrSurveyTool vive nel prefab VrApp, quindi ESISTE IN OGNI SCENA,
+        /// Simulation compresa. Risultato: in Simulation ogni clic diventava una misura
+        /// dendrometrica invece di una martellata. Da fuori sembravano tre guasti diversi e
+        /// scollegati: lo studente su PC "marcava" con un disco giallo che non si condivideva con
+        /// nessuno (era l'anteprima di misura, non una proposta), il docente su PC non riusciva a
+        /// martellare, e non riusciva nemmeno ad abbattere — perche' "Fell marked" resta inerte
+        /// finche' i segni sono zero, e zero restavano.
+        ///
+        /// Il SimMarkTool invece e' locale alla scena Simulation (sta su SimTools): la sua
+        /// presenza E' la scena. Cercarlo per primo equivale a scegliere lo strumento dal
+        /// contesto, che e' l'unico criterio sensato.
+        /// </summary>
         private void PullTrigger(Ray ray)
         {
-            var survey = Artemis.Inventory.VrSurveyTool.Instance;
-            if (survey != null) { survey.ExternalTrigger(ray); return; }
-
             var mark = Artemis.Regeneration.SimMarkTool.Instance;
-            if (mark != null) mark.ExternalTrigger(ray);
+            if (mark != null) { mark.ExternalTrigger(ray); return; }
+
+            var survey = Artemis.Inventory.VrSurveyTool.Instance;
+            if (survey != null) survey.ExternalTrigger(ray);
         }
 
         // ---- mirino -----------------------------------------------------------------------------------

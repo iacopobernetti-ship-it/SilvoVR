@@ -151,6 +151,29 @@ namespace Artemis.Session
         private void SyncFelling(SessionState st)
         {
             int total = st.RoundCount;
+
+            // REGRESSIONE dei turni = il docente ha premuto "Reset stand".
+            //
+            // Un abbattimento non si annulla da se': gli alberi sono stati distrutti e la
+            // rinnovazione e' nata. Si RIPRISTINA il solo popolamento — gli abbattuti tornano in
+            // piedi dai record dell'inventario, che non se ne sono mai andati, e le piantine
+            // spariscono — lasciando intatti suolo, muri e luce.
+            //
+            // Non si usa BuildShared, che ricostruirebbe tutto: il quadrato di suolo nasce dallo
+            // stesso inventario e verrebbe rifatto identico, ma nel frattempo il suo collider
+            // sparirebbe per un frame — e in quel frame la gravita' lavora indisturbata. Era
+            // esattamente la caduta nel vuoto che gli studenti prendevano dopo il reset.
+            if (total < appliedRounds)
+            {
+                Debug.Log($"[SimulationSyncVR] turni tornati da {appliedRounds} a {total}: " +
+                          "ripristino il popolamento (il suolo resta dov'e').");
+                builder.RestoreStand();
+                appliedRounds = 0;
+
+                // Restano da riapplicare i turni superstiti: dopo un reset completo sono zero,
+                // ma il ciclo qui sotto copre gratis anche un eventuale annullamento parziale.
+            }
+
             if (appliedRounds >= total) return;
 
             for (int round = appliedRounds; round < total; round++)
