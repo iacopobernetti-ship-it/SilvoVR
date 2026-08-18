@@ -277,11 +277,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LCCRendererVR
   m_manager: {fileID: 531072823}
   m_FilePath: http://www.perclabresearch.it/LCC/Silvo01/Silvo01.lcc2
+  source: 1
+  localRelativePath: LCC/Silvo01/Silvo01.lcc2
   splatDepthWrite: 1
   skipInEditor: 0
   maxBufferSplat10k: 0
   maxRenderSplats10k: 0
-  startLod: 2
+  startLod: 0
   detailLevel: 0
 --- !u!4 &453542428
 Transform:

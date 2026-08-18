@@ -1,3 +1,4 @@
+using System.IO;
 using LCCCore;
 using UnityEngine;
 
@@ -49,8 +50,26 @@ using UnityEngine;
 /// </summary>
 public class LCCRendererVR : MonoBehaviour
 {
+    public enum SplatSource
+    {
+        HttpUrl,          // come sempre: l'URL in m_FilePath
+        PersistentData,   // cartella scrivibile sul visore, riempita con adb push
+        StreamingAssets   // solo Editor/PC: su Android sta DENTRO l'apk e non e' un percorso
+    }
+
     public LCCManager m_manager;
+
+    [Tooltip("URL http dello splat. Usato quando Source = HttpUrl.")]
     public string m_FilePath;
+
+    [Header("Sorgente dei dati")]
+    [Tooltip("Da dove leggere lo splat. PersistentData serve a misurare quanto pesa la RETE: " +
+             "stessi dati, stessa scena, ma letti dal disco del visore.")]
+    [SerializeField] private SplatSource source = SplatSource.HttpUrl;
+
+    [Tooltip("Percorso RELATIVO del file .lcc/.lcc2 dentro la cartella scelta, separatori '/'. " +
+             "Esempio: LCC/Silvo01/Silvo01.lcc — accanto al file deve stare la sua cartella 'data'.")]
+    [SerializeField] private string localRelativePath = "LCC/Silvo01/Silvo01.lcc";
 
     [Tooltip("Attiva la scrittura Z degli splat: senza, il pass LCC copre la UI world-space. " +
              "Se dovesse costare in prestazioni, si spegne da qui e si misura.")]
@@ -95,15 +114,71 @@ public class LCCRendererVR : MonoBehaviour
             return;
         }
         m_manager.SetPlatformType(PlatformType.PC);
-        ApplySplatBudget();
-        m_renderer = m_manager.GetRender(this.gameObject.transform);
-        m_renderer.Load(m_FilePath, onProgress, onLoaded);
 #else
         m_manager.SetPlatformType(PlatformType.Quest);
+#endif
+        string path = ResolvePath();
+        if (string.IsNullOrEmpty(path)) return;      // ResolvePath ha gia' spiegato perche'
+
         ApplySplatBudget();
         m_renderer = m_manager.GetRender(this.gameObject.transform);
-        m_renderer.Load(m_FilePath, onProgress, onLoaded);
-#endif
+        m_renderer.Load(path, onProgress, onLoaded);
+    }
+
+    /// <summary>
+    /// Dove sta lo splat, secondo la sorgente scelta. Fallisce RUMOROSAMENTE e con il percorso
+    /// stampato: un file locale assente e' l'errore piu' probabile di tutta questa via, e senza
+    /// il percorso a schermo si finisce a indovinare se ha sbagliato l'adb push o il campo.
+    /// </summary>
+    private string ResolvePath()
+    {
+        switch (source)
+        {
+            case SplatSource.HttpUrl:
+                Debug.Log($"[LCCRendererVR] '{gameObject.scene.name}': sorgente HTTP → {m_FilePath}");
+                return m_FilePath;
+
+            case SplatSource.PersistentData:
+                {
+                    string p = Path.Combine(Application.persistentDataPath, localRelativePath);
+                    if (!File.Exists(p))
+                    {
+                        Debug.LogError($"[LCCRendererVR] '{gameObject.scene.name}': file NON trovato in\n  {p}\n" +
+                                       "Copialo sul visore con:\n" +
+                                       "  adb push <cartella_locale> /sdcard/Android/data/<package>/files/LCC/\n" +
+                                       "La cartella 'data' dello splat deve stare accanto al file.");
+                        return null;
+                    }
+                    Debug.Log($"[LCCRendererVR] '{gameObject.scene.name}': sorgente LOCALE → {p}");
+                    return p;
+                }
+
+            case SplatSource.StreamingAssets:
+                {
+                    string p = Path.Combine(Application.streamingAssetsPath, localRelativePath);
+
+                    // Su Android StreamingAssets non e' una cartella: sta DENTRO l'apk compresso e il
+                    // percorso e' un URL 'jar:file://…' che solo UnityWebRequest sa aprire. L'SDK LCC
+                    // apre i file con IO nativo, quindi qui non c'e' niente da leggere. Si dice, non
+                    // si prova: fallire dopo trenta secondi di caricamento a vuoto sarebbe peggio.
+                    if (Application.platform == RuntimePlatform.Android || p.Contains("jar:"))
+                    {
+                        Debug.LogError("[LCCRendererVR] StreamingAssets non e' leggibile su Android: sta " +
+                                       "dentro l'apk e non e' un percorso di file. Usa PersistentData " +
+                                       "con adb push (per provare), oppure servira' una copia " +
+                                       "all'avvio guidata da un manifesto (per il pilot).");
+                        return null;
+                    }
+                    if (!File.Exists(p))
+                    {
+                        Debug.LogError($"[LCCRendererVR] file NON trovato in\n  {p}");
+                        return null;
+                    }
+                    Debug.Log($"[LCCRendererVR] '{gameObject.scene.name}': sorgente StreamingAssets → {p}");
+                    return p;
+                }
+        }
+        return null;
     }
 
     /// <summary>
@@ -137,6 +212,35 @@ public class LCCRendererVR : MonoBehaviour
             Debug.Log($"[LCCRendererVR] '{gameObject.scene.name}': splat a schermo al default SDK " +
                       "(VR: 600 k).");
         }
+    }
+
+    [Header("Rilascio")]
+    [Tooltip("Chiama Dispose sul renderer quando la scena si scarica. Il buffer degli splat e' " +
+             "un'allocazione GLOBALE dell'SDK e — documentazione alla mano — viene rilasciato " +
+             "SOLO col Dispose dei renderer: distruggere il GameObject non basta, perche' la " +
+             "memoria sta dal lato nativo e Unity non ne sa nulla. Senza, ogni area visitata ne " +
+             "lascia una copia e il visore rallenta progressivamente a forza di cambiare scena. " +
+             "Interruttore per l'A/B: spegnendolo si torna al comportamento precedente.")]
+    public bool disposeOnDestroy = true;
+
+    /// <summary>
+    /// Rilascio ESPLICITO all'uscita dalla scena.
+    ///
+    /// Da non confondere con il riuso Dispose+Load a caldo, che fu provato con una sonda e
+    /// bocciato su Quest: quello serviva a NON cambiare scena, e resta bocciato. Qui il cambio
+    /// scena resta il meccanismo di sempre — si aggiunge solo la restituzione della memoria
+    /// mentre si esce, che e' cio' che non e' mai stato fatto.
+    ///
+    /// Niente try/catch, per la stessa ragione di SetZDepth: se fallisce deve dirlo.
+    /// </summary>
+    private void OnDestroy()
+    {
+        if (!disposeOnDestroy || m_renderer == null) return;
+
+        m_renderer.Dispose();
+        m_renderer = null;
+        Debug.Log($"[LCCRendererVR] '{gameObject.scene.name}': renderer disposed " +
+                  "(buffer splat restituito all'SDK).");
     }
 
     private void onProgress(float v)
