@@ -63,9 +63,19 @@ public class LCCRendererVR : MonoBehaviour
     public string m_FilePath;
 
     [Header("Sorgente dei dati")]
-    [Tooltip("Da dove leggere lo splat. PersistentData serve a misurare quanto pesa la RETE: " +
-             "stessi dati, stessa scena, ma letti dal disco del visore.")]
+    [Tooltip("Usa la sorgente decisa per TUTTO il progetto (asset SplatSourceConfig in una " +
+             "cartella Resources). Acceso e' la condizione normale: la sorgente e' una proprieta' " +
+             "della build, non dell'area, e tenerla in un posto solo evita che una scena resti " +
+             "indietro. Spegnilo se una singola area deve fare eccezione.")]
+    [SerializeField] private bool useProjectSource = true;
+
+    [Tooltip("Sorgente di QUESTA scena. Vale solo se 'Use Project Source' e' spento, oppure se " +
+             "l'asset di configurazione non esiste.")]
     [SerializeField] private SplatSource source = SplatSource.HttpUrl;
+
+    /// <summary>Sorgente effettivamente in vigore qui.</summary>
+    public SplatSource EffectiveSource =>
+        useProjectSource ? Artemis.Vr.SplatSourceConfig.Resolve(source) : source;
 
     [Tooltip("Percorso RELATIVO del file .lcc/.lcc2 dentro la cartella scelta, separatori '/'. " +
              "Esempio: LCC/Silvo01/Silvo01.lcc — accanto al file deve stare la sua cartella 'data'.")]
@@ -132,51 +142,51 @@ public class LCCRendererVR : MonoBehaviour
     /// </summary>
     private string ResolvePath()
     {
-        switch (source)
+        switch (EffectiveSource)
         {
             case SplatSource.HttpUrl:
                 Debug.Log($"[LCCRendererVR] '{gameObject.scene.name}': sorgente HTTP → {m_FilePath}");
                 return m_FilePath;
 
             case SplatSource.PersistentData:
+            {
+                string p = Path.Combine(Application.persistentDataPath, localRelativePath);
+                if (!File.Exists(p))
                 {
-                    string p = Path.Combine(Application.persistentDataPath, localRelativePath);
-                    if (!File.Exists(p))
-                    {
-                        Debug.LogError($"[LCCRendererVR] '{gameObject.scene.name}': file NON trovato in\n  {p}\n" +
-                                       "Copialo sul visore con:\n" +
-                                       "  adb push <cartella_locale> /sdcard/Android/data/<package>/files/LCC/\n" +
-                                       "La cartella 'data' dello splat deve stare accanto al file.");
-                        return null;
-                    }
-                    Debug.Log($"[LCCRendererVR] '{gameObject.scene.name}': sorgente LOCALE → {p}");
-                    return p;
+                    Debug.LogError($"[LCCRendererVR] '{gameObject.scene.name}': file NON trovato in\n  {p}\n" +
+                                   "Copialo sul visore con:\n" +
+                                   "  adb push <cartella_locale> /sdcard/Android/data/<package>/files/LCC/\n" +
+                                   "La cartella 'data' dello splat deve stare accanto al file.");
+                    return null;
                 }
+                Debug.Log($"[LCCRendererVR] '{gameObject.scene.name}': sorgente LOCALE → {p}");
+                return p;
+            }
 
             case SplatSource.StreamingAssets:
-                {
-                    string p = Path.Combine(Application.streamingAssetsPath, localRelativePath);
+            {
+                string p = Path.Combine(Application.streamingAssetsPath, localRelativePath);
 
-                    // Su Android StreamingAssets non e' una cartella: sta DENTRO l'apk compresso e il
-                    // percorso e' un URL 'jar:file://…' che solo UnityWebRequest sa aprire. L'SDK LCC
-                    // apre i file con IO nativo, quindi qui non c'e' niente da leggere. Si dice, non
-                    // si prova: fallire dopo trenta secondi di caricamento a vuoto sarebbe peggio.
-                    if (Application.platform == RuntimePlatform.Android || p.Contains("jar:"))
-                    {
-                        Debug.LogError("[LCCRendererVR] StreamingAssets non e' leggibile su Android: sta " +
-                                       "dentro l'apk e non e' un percorso di file. Usa PersistentData " +
-                                       "con adb push (per provare), oppure servira' una copia " +
-                                       "all'avvio guidata da un manifesto (per il pilot).");
-                        return null;
-                    }
-                    if (!File.Exists(p))
-                    {
-                        Debug.LogError($"[LCCRendererVR] file NON trovato in\n  {p}");
-                        return null;
-                    }
-                    Debug.Log($"[LCCRendererVR] '{gameObject.scene.name}': sorgente StreamingAssets → {p}");
-                    return p;
+                // Su Android StreamingAssets non e' una cartella: sta DENTRO l'apk compresso e il
+                // percorso e' un URL 'jar:file://…' che solo UnityWebRequest sa aprire. L'SDK LCC
+                // apre i file con IO nativo, quindi qui non c'e' niente da leggere. Si dice, non
+                // si prova: fallire dopo trenta secondi di caricamento a vuoto sarebbe peggio.
+                if (Application.platform == RuntimePlatform.Android || p.Contains("jar:"))
+                {
+                    Debug.LogError("[LCCRendererVR] StreamingAssets non e' leggibile su Android: sta " +
+                                   "dentro l'apk e non e' un percorso di file. Usa PersistentData " +
+                                   "con adb push (per provare), oppure servira' una copia " +
+                                   "all'avvio guidata da un manifesto (per il pilot).");
+                    return null;
                 }
+                if (!File.Exists(p))
+                {
+                    Debug.LogError($"[LCCRendererVR] file NON trovato in\n  {p}");
+                    return null;
+                }
+                Debug.Log($"[LCCRendererVR] '{gameObject.scene.name}': sorgente StreamingAssets → {p}");
+                return p;
+            }
         }
         return null;
     }

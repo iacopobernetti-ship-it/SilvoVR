@@ -74,6 +74,7 @@ struct Vector2U5BU5D_tFEBBC94BCC6C9C88277BA04047D2B3FDB6ED7FDA;
 struct Vector3U5BU5D_tFF1859CCE176131B909E2044F76443064254679C;
 struct WordWrapStateU5BU5D_t473D59C9DBCC949CE72EF1EB471CBA152A6CEAC9;
 struct TextProcessingElementU5BU5D_tC3E97D1672C8DB6E1F91DB2C0987D0ED9A2E7113;
+struct Behaviour_t01970CFBBA658497AE30F311C447DB0440BAB7FA;
 struct Binder_t91BFCE95A7057FADF4D8A1A342AFE52872246235;
 struct CancellationTokenSource_tAAE1E0033BCFC233801F8CB4CED5C852B350CB7B;
 struct Canvas_t2DB4CEFDFF732884866C83F11ABF75F5AE8FFB26;
@@ -142,6 +143,7 @@ IL2CPP_EXTERN_C RuntimeClass* Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_i
 IL2CPP_EXTERN_C RuntimeClass* Path_t8A38A801D0219E8209C1B1D90D82D4D755D998BC_il2cpp_TypeInfo_var;
 IL2CPP_EXTERN_C RuntimeClass* Physics_t1244C2983AEAFA149425AFFC3DF53BC91C18ED56_il2cpp_TypeInfo_var;
 IL2CPP_EXTERN_C RuntimeClass* SplatInstaller_t24300B01C4C8E54D65253B336EA4A652EEDA701D_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* SplatSource_tD15C913394E87B31D920BC5A2B5E2FFB1BAEE98E_il2cpp_TypeInfo_var;
 IL2CPP_EXTERN_C RuntimeClass* TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB_il2cpp_TypeInfo_var;
 IL2CPP_EXTERN_C RuntimeClass* U3CInstallRoutineU3Ed__19_t8B81180FCCDDEAEE29B70AA18C460CB15679462A_il2cpp_TypeInfo_var;
 IL2CPP_EXTERN_C RuntimeClass* VrHud_t91FCF003682D29DA47B23D67B54D48766C6EE1DA_il2cpp_TypeInfo_var;
@@ -164,6 +166,7 @@ IL2CPP_EXTERN_C String_t* _stringLiteralAF8ABA6B9EEB83919542A3C120E42EEB2E5F3C66
 IL2CPP_EXTERN_C String_t* _stringLiteralB6640554DF0E7C349EF5A0734BB45CFFF2A041BD;
 IL2CPP_EXTERN_C String_t* _stringLiteralC2E40825BB5AF902F3A31B9B760886F659CBCABC;
 IL2CPP_EXTERN_C String_t* _stringLiteralC9818C2E24A71E6BCFCCD1A761DCCD5346A636E0;
+IL2CPP_EXTERN_C String_t* _stringLiteralCE1569793E36B5F9D333ED9E6C2962745CE53105;
 IL2CPP_EXTERN_C String_t* _stringLiteralDA39A3EE5E6B4B0D3255BFEF95601890AFD80709;
 IL2CPP_EXTERN_C String_t* _stringLiteralDD89269658D9A55F97CE9294E6853701D1348C7E;
 IL2CPP_EXTERN_C String_t* _stringLiteralF4379BA7D2BB5C25C01516D3DF1637C7FF5B7F53;
@@ -559,7 +562,7 @@ struct __StaticArrayInitTypeSizeU3D28_t523FB00435F599517548D4C121316CFE1B43E6C2
 };
 #pragma pack(pop, tp)
 #pragma pack(push, tp, 1)
-struct __StaticArrayInitTypeSizeU3D2858_tBD1121F45E0610BAC3DFA527B6CA4B31A8D35F26 
+struct __StaticArrayInitTypeSizeU3D2891_t0E2870E6A9C46DF06CB49D6B7B531746BFBDCD9F 
 {
 	union
 	{
@@ -569,7 +572,7 @@ struct __StaticArrayInitTypeSizeU3D2858_tBD1121F45E0610BAC3DFA527B6CA4B31A8D35F2
 			{
 			};
 		};
-		uint8_t __StaticArrayInitTypeSizeU3D2858_tBD1121F45E0610BAC3DFA527B6CA4B31A8D35F26__padding[2858];
+		uint8_t __StaticArrayInitTypeSizeU3D2891_t0E2870E6A9C46DF06CB49D6B7B531746BFBDCD9F__padding[2891];
 	};
 };
 #pragma pack(pop, tp)
@@ -589,7 +592,7 @@ struct __StaticArrayInitTypeSizeU3D32_tC3894D25C1E879699FE1C9BAB1BBF2787B405069
 };
 #pragma pack(pop, tp)
 #pragma pack(push, tp, 1)
-struct __StaticArrayInitTypeSizeU3D3422_t8052D5E8E759E40C1E5B91DAD9C5D94A3882CE5A 
+struct __StaticArrayInitTypeSizeU3D3475_t56D651EA385BAC02F06C0A877AC977E54BBA365C 
 {
 	union
 	{
@@ -599,7 +602,7 @@ struct __StaticArrayInitTypeSizeU3D3422_t8052D5E8E759E40C1E5B91DAD9C5D94A3882CE5
 			{
 			};
 		};
-		uint8_t __StaticArrayInitTypeSizeU3D3422_t8052D5E8E759E40C1E5B91DAD9C5D94A3882CE5A__padding[3422];
+		uint8_t __StaticArrayInitTypeSizeU3D3475_t56D651EA385BAC02F06C0A877AC977E54BBA365C__padding[3475];
 	};
 };
 #pragma pack(pop, tp)
@@ -877,6 +880,10 @@ struct VertexSortingOrder_t95B7AEDBDCAACC3459B6476E5CCC594A6422FFA8
 	int32_t ___value__;
 };
 struct VerticalAlignmentOptions_tCEF70AF60282B71AEEE14D51253CE6A61E72D855 
+{
+	int32_t ___value__;
+};
+struct SplatSource_tD15C913394E87B31D920BC5A2B5E2FFB1BAEE98E 
 {
 	int32_t ___value__;
 };
@@ -1673,9 +1680,9 @@ struct List_1_t9C8E57F9F12FDB51DAAB696934615B4D8586F987_StaticFields
 };
 struct U3CPrivateImplementationDetailsU3E_t0F5473E849A5A5185A9F4C5246F0C32816C49FCA_StaticFields
 {
-	__StaticArrayInitTypeSizeU3D3422_t8052D5E8E759E40C1E5B91DAD9C5D94A3882CE5A ___009C3A5AAEDDF73339B2AEDB611D0047B80EB9AEB5E368C60F192A868552523A;
-	__StaticArrayInitTypeSizeU3D2858_tBD1121F45E0610BAC3DFA527B6CA4B31A8D35F26 ___6DF7EECCBCCDFB9034E47B3D9DF66294B4C4B203888DE096EB6E7F63EAF221D8;
+	__StaticArrayInitTypeSizeU3D3475_t56D651EA385BAC02F06C0A877AC977E54BBA365C ___50DD1D2A8EA29B9124B599B1D2E8D12079354DD97713E2B557A6AAF044009493;
 	__StaticArrayInitTypeSizeU3D32_tC3894D25C1E879699FE1C9BAB1BBF2787B405069 ___91D942AAB8D705F42E41784D8E50749A603FC12549C913C7759B90DA0A81EBAB;
+	__StaticArrayInitTypeSizeU3D2891_t0E2870E6A9C46DF06CB49D6B7B531746BFBDCD9F ___A4062ABB6AD30CC532CB2E7E803CA6A53E869C7522E1F608EC0C282E7E86396E;
 	__StaticArrayInitTypeSizeU3D28_t523FB00435F599517548D4C121316CFE1B43E6C2 ___EC3C5DBA85D7DEBE7280D9411892083E8FCFCB0F36EF21B67B6BCAA741F14680;
 	__StaticArrayInitTypeSizeU3D16_tFB2D94E174C3DFBC336BBEE6AD92E07462831A23 ___EF89DECE24081ACE2FB585C2AF70C967C9FB5C9C167195ABA036FED515C2CF53;
 };
@@ -1925,6 +1932,9 @@ IL2CPP_EXTERN_C IL2CPP_NO_INLINE IL2CPP_METHOD_ATTR void List_1_AddWithResize_m4
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Physics_set_queriesHitBackfaces_mC212AF1484AF3ECBF1922F52B56F78E16BDE31AF (bool ___0_value, const RuntimeMethod* method) ;
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB (RuntimeObject* ___0_message, const RuntimeMethod* method) ;
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MonoBehaviour__ctor_m592DB0105CA0BC97AA1C5F4AD27B12D68A3B7C1E (MonoBehaviour_t532A11E69716D348D8AA7F854AFCBFCB8AD17F71* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t SplatSourceConfig_Resolve_m29BA226767B4ECC810A340C28305FEBB40B17159 (int32_t ___0_fallback, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* String_Format_mA8DBB4C2516B9723C5A41E6CB1E2FAF4BBE96DD8 (String_t* ___0_format, RuntimeObject* ___1_arg0, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Behaviour_set_enabled_mF1DCFE60EB09E0529FE9476CA804A3AA2D72B16A (Behaviour_t01970CFBBA658497AE30F311C447DB0440BAB7FA* __this, bool ___0_value, const RuntimeMethod* method) ;
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* SplatInstaller_InstallRoutine_m3DF61BE3307FB439621DE8C675F5D24FAAD0DE6B (SplatInstaller_t24300B01C4C8E54D65253B336EA4A652EEDA701D* __this, const RuntimeMethod* method) ;
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B* MonoBehaviour_StartCoroutine_m4CAFF732AA28CD3BDC5363B44A863575530EC812 (MonoBehaviour_t532A11E69716D348D8AA7F854AFCBFCB8AD17F71* __this, RuntimeObject* ___0_routine, const RuntimeMethod* method) ;
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605 (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* ___0_x, Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* ___1_y, const RuntimeMethod* method) ;
@@ -2030,7 +2040,6 @@ inline bool Enumerator_MoveNext_mBB1FFC7828DDB54BD649E091C8060B543C6A6A90 (Enume
 {
 	return ((  bool (*) (Enumerator_t1D295E51FF964F00D40B5C6A167C73F6882C245D*, const RuntimeMethod*))Enumerator_MoveNext_m1C7C4EDF47EC0AB26B5FEF2B9C23FA6993397385_gshared)(__this, method);
 }
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* String_Format_mA8DBB4C2516B9723C5A41E6CB1E2FAF4BBE96DD8 (String_t* ___0_format, RuntimeObject* ___1_arg0, const RuntimeMethod* method) ;
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SplatInstaller_Done_m11FCBC7CBAA801F225FF8AA559872655BA222653 (SplatInstaller_t24300B01C4C8E54D65253B336EA4A652EEDA701D* __this, const RuntimeMethod* method) ;
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* Path_GetDirectoryName_m428BADBE493A3927B51A13DEF658929B430516F6 (String_t* ___0_path, const RuntimeMethod* method) ;
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR DirectoryInfo_tEAEEC018EB49B4A71907FFEAFE935FAA8F9C1FE2* Directory_CreateDirectory_m16EC5CE8561A997C6635E06DC24C77590F29D94F (String_t* ___0_path, const RuntimeMethod* method) ;
@@ -2098,7 +2107,7 @@ inline void List_1_AddWithResize_m45FD6D5C30E96CF39C92601DFD0285200ED6B92C (List
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 140816
+// Method Definition Index: 140822
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void PhysicsBootstrap_Awake_m62187D06018C7D2FAE5DE00F387F4AF7A65A4CC8 (PhysicsBootstrap_t6713FF926523E19A8775F2EC3BA08519F27275B8* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -2120,7 +2129,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void PhysicsBootstrap_Awake_m62187D06018C7D2F
 		return;
 	}
 }
-// Method Definition Index: 140817
+// Method Definition Index: 140823
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void PhysicsBootstrap__ctor_m964023797A015DA6FD91072B1A1D9313E0981899 (PhysicsBootstrap_t6713FF926523E19A8775F2EC3BA08519F27275B8* __this, const RuntimeMethod* method) 
 {
 	{
@@ -2136,7 +2145,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void PhysicsBootstrap__ctor_m964023797A015DA6
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 140818
+// Method Definition Index: 140824
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool SplatInstaller_get_Installing_m005FC0F883367FEA297AA5A2B905DBDC166D3FCB (const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -2152,7 +2161,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool SplatInstaller_get_Installing_m005FC0F88
 		return L_0;
 	}
 }
-// Method Definition Index: 140819
+// Method Definition Index: 140825
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SplatInstaller_set_Installing_mF4AF66C61251C41BDD952F59109A963133992E4B (bool ___0_value, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -2169,7 +2178,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SplatInstaller_set_Installing_mF4AF66C61
 		return;
 	}
 }
-// Method Definition Index: 140820
+// Method Definition Index: 140826
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float SplatInstaller_get_Progress01_m9511F3DD2D697D4AFE708F1C12A788C2B2B9AEA8 (const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -2185,7 +2194,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float SplatInstaller_get_Progress01_m9511F3DD
 		return L_0;
 	}
 }
-// Method Definition Index: 140821
+// Method Definition Index: 140827
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SplatInstaller_set_Progress01_mC54F689313704DCA5727BB00AF50A3B2ECA31B1D (float ___0_value, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -2202,7 +2211,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SplatInstaller_set_Progress01_mC54F68931
 		return;
 	}
 }
-// Method Definition Index: 140822
+// Method Definition Index: 140828
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* SplatInstaller_get_Status_m1BAFA4A6F165E052F2B77CF074E7837DC24BE6D6 (const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -2218,7 +2227,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* SplatInstaller_get_Status_m1BAFA4A6
 		return L_0;
 	}
 }
-// Method Definition Index: 140823
+// Method Definition Index: 140829
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SplatInstaller_set_Status_mF16BD8A66F173AA79B3D3323874439E0A67D4E86 (String_t* ___0_value, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -2236,20 +2245,57 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SplatInstaller_set_Status_mF16BD8A66F173
 		return;
 	}
 }
-// Method Definition Index: 140824
+// Method Definition Index: 140830
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SplatInstaller_Start_m543367D89C91874FC682563393D065A28AB31EA3 (SplatInstaller_t24300B01C4C8E54D65253B336EA4A652EEDA701D* __this, const RuntimeMethod* method) 
 {
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:68>
-		RuntimeObject* L_0;
-		L_0 = SplatInstaller_InstallRoutine_m3DF61BE3307FB439621DE8C675F5D24FAAD0DE6B(__this, NULL);
-		Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B* L_1;
-		L_1 = MonoBehaviour_StartCoroutine_m4CAFF732AA28CD3BDC5363B44A863575530EC812(__this, L_0, NULL);
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:69>
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&SplatSource_tD15C913394E87B31D920BC5A2B5E2FFB1BAEE98E_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteralCE1569793E36B5F9D333ED9E6C2962745CE53105);
+		s_Il2CppMethodInitialized = true;
+	}
+	int32_t V_0 = 0;
+	{
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:72>
+		int32_t L_0;
+		L_0 = SplatSourceConfig_Resolve_m29BA226767B4ECC810A340C28305FEBB40B17159(1, NULL);
+		V_0 = L_0;
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:73>
+		int32_t L_1 = V_0;
+		if ((((int32_t)L_1) == ((int32_t)1)))
+		{
+			goto IL_0028;
+		}
+	}
+	{
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:75>
+		int32_t L_2 = V_0;
+		int32_t L_3 = L_2;
+		RuntimeObject* L_4 = Box(SplatSource_tD15C913394E87B31D920BC5A2B5E2FFB1BAEE98E_il2cpp_TypeInfo_var, &L_3);
+		String_t* L_5;
+		L_5 = String_Format_mA8DBB4C2516B9723C5A41E6CB1E2FAF4BBE96DD8(_stringLiteralCE1569793E36B5F9D333ED9E6C2962745CE53105, L_4, NULL);
+		il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
+		Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(L_5, NULL);
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:76>
+		Behaviour_set_enabled_mF1DCFE60EB09E0529FE9476CA804A3AA2D72B16A(__this, (bool)0, NULL);
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:77>
+		return;
+	}
+
+IL_0028:
+	{
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:80>
+		RuntimeObject* L_6;
+		L_6 = SplatInstaller_InstallRoutine_m3DF61BE3307FB439621DE8C675F5D24FAAD0DE6B(__this, NULL);
+		Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B* L_7;
+		L_7 = MonoBehaviour_StartCoroutine_m4CAFF732AA28CD3BDC5363B44A863575530EC812(__this, L_6, NULL);
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:81>
 		return;
 	}
 }
-// Method Definition Index: 140825
+// Method Definition Index: 140831
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SplatInstaller_Update_m31C41DA15F974093353CA2991E400A771CD9FFB7 (SplatInstaller_t24300B01C4C8E54D65253B336EA4A652EEDA701D* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -2262,7 +2308,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SplatInstaller_Update_m31C41DA15F9740933
 		s_Il2CppMethodInitialized = true;
 	}
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:74>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:86>
 		TMP_Text_tE8D677872D43AD4B2AAF0D6101692A17D0B251A9* L_0 = __this->___label;
 		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
 		bool L_1;
@@ -2273,7 +2319,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SplatInstaller_Update_m31C41DA15F9740933
 		}
 	}
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:76>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:88>
 		float L_2;
 		L_2 = Time_get_unscaledTime_mAF4040B858903E1325D1C65B8BF1AC61460B2503(NULL);
 		float L_3 = __this->___nextAttach;
@@ -2283,19 +2329,19 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SplatInstaller_Update_m31C41DA15F9740933
 		}
 	}
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:76>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:88>
 		return;
 	}
 
 IL_001c:
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:77>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:89>
 		float L_4;
 		L_4 = Time_get_unscaledTime_mAF4040B858903E1325D1C65B8BF1AC61460B2503(NULL);
 		__this->___nextAttach = ((float)il2cpp_codegen_add(L_4, (0.5f)));
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:78>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:90>
 		SplatInstaller_Attach_m2BB4EFB42BEAA1A95D620BA5F0F67B33BB6B312A(__this, NULL);
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:79>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:91>
 		TMP_Text_tE8D677872D43AD4B2AAF0D6101692A17D0B251A9* L_5 = __this->___label;
 		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
 		bool L_6;
@@ -2306,13 +2352,13 @@ IL_001c:
 		}
 	}
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:79>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:91>
 		return;
 	}
 
 IL_0042:
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:82>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:94>
 		il2cpp_codegen_runtime_class_init_inline(SplatInstaller_t24300B01C4C8E54D65253B336EA4A652EEDA701D_il2cpp_TypeInfo_var);
 		bool L_7;
 		L_7 = SplatInstaller_get_Installing_m005FC0F883367FEA297AA5A2B905DBDC166D3FCB_inline(NULL);
@@ -2322,7 +2368,7 @@ IL_0042:
 		}
 	}
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:83>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:95>
 		TMP_Text_tE8D677872D43AD4B2AAF0D6101692A17D0B251A9* L_8 = __this->___label;
 		il2cpp_codegen_runtime_class_init_inline(SplatInstaller_t24300B01C4C8E54D65253B336EA4A652EEDA701D_il2cpp_TypeInfo_var);
 		String_t* L_9;
@@ -2340,7 +2386,7 @@ IL_0042:
 
 IL_006e:
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:84>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:96>
 		TMP_Text_tE8D677872D43AD4B2AAF0D6101692A17D0B251A9* L_14 = __this->___label;
 		NullCheck(L_14);
 		String_t* L_15;
@@ -2354,7 +2400,7 @@ IL_006e:
 		}
 	}
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:85>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:97>
 		TMP_Text_tE8D677872D43AD4B2AAF0D6101692A17D0B251A9* L_17 = __this->___label;
 		NullCheck(L_17);
 		VirtualActionInvoker1< String_t* >::Invoke(66, L_17, _stringLiteralDA39A3EE5E6B4B0D3255BFEF95601890AFD80709);
@@ -2362,11 +2408,11 @@ IL_006e:
 
 IL_0091:
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:86>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:98>
 		return;
 	}
 }
-// Method Definition Index: 140826
+// Method Definition Index: 140832
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* SplatInstaller_InstallRoutine_m3DF61BE3307FB439621DE8C675F5D24FAAD0DE6B (SplatInstaller_t24300B01C4C8E54D65253B336EA4A652EEDA701D* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -2385,7 +2431,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* SplatInstaller_InstallRoutine_
 		return L_1;
 	}
 }
-// Method Definition Index: 140827
+// Method Definition Index: 140833
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* SplatInstaller_StreamingUrl_m3A3E3E24040957539C1B5990D8EDA868EB2FCB66 (String_t* ___0_relative, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -2396,7 +2442,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* SplatInstaller_StreamingUrl_m3A3E3E
 		s_Il2CppMethodInitialized = true;
 	}
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:181>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:193>
 		il2cpp_codegen_runtime_class_init_inline(Application_tDB03BE91CDF0ACA614A5E0B67CFB77C44EB19B21_il2cpp_TypeInfo_var);
 		String_t* L_0;
 		L_0 = Application_get_streamingAssetsPath_mB904BCD9A7A4F18A52C175DE4A81F5DC3010CDB5(NULL);
@@ -2406,7 +2452,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* SplatInstaller_StreamingUrl_m3A3E3E
 		return L_2;
 	}
 }
-// Method Definition Index: 140828
+// Method Definition Index: 140834
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR List_1_t9C8E57F9F12FDB51DAAB696934615B4D8586F987* SplatInstaller_Parse_m321D8D9A6A7C29B9B32CEDB90C161D1F5B279859 (String_t* ___0_text, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -2425,11 +2471,11 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR List_1_t9C8E57F9F12FDB51DAAB696934615B4D8586F
 	int32_t V_4 = 0;
 	int64_t V_5 = 0;
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:185>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:197>
 		List_1_t9C8E57F9F12FDB51DAAB696934615B4D8586F987* L_0 = (List_1_t9C8E57F9F12FDB51DAAB696934615B4D8586F987*)il2cpp_codegen_object_new(List_1_t9C8E57F9F12FDB51DAAB696934615B4D8586F987_il2cpp_TypeInfo_var);
 		List_1__ctor_m9585E3C747694F102010D222B5D1EFFD4C450F08(L_0, List_1__ctor_m9585E3C747694F102010D222B5D1EFFD4C450F08_RuntimeMethod_var);
 		V_0 = L_0;
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:186>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:198>
 		String_t* L_1 = ___0_text;
 		bool L_2;
 		L_2 = String_IsNullOrEmpty_mEA9E3FB005AC28FE02E69FCF95A7B8456192B478(L_1, NULL);
@@ -2439,14 +2485,14 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR List_1_t9C8E57F9F12FDB51DAAB696934615B4D8586F
 		}
 	}
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:186>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:198>
 		List_1_t9C8E57F9F12FDB51DAAB696934615B4D8586F987* L_3 = V_0;
 		return L_3;
 	}
 
 IL_0010:
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:188>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:200>
 		String_t* L_4 = ___0_text;
 		NullCheck(L_4);
 		StringU5BU5D_t7674CD946EC0CE7B3AE0BE70E6EE85F2ECD9F248* L_5;
@@ -2458,18 +2504,18 @@ IL_0010:
 
 IL_001e:
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:188>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:200>
 		StringU5BU5D_t7674CD946EC0CE7B3AE0BE70E6EE85F2ECD9F248* L_6 = V_1;
 		int32_t L_7 = V_2;
 		NullCheck(L_6);
 		int32_t L_8 = L_7;
 		String_t* L_9 = (L_6)->GetAt(static_cast<il2cpp_array_size_t>(L_8));
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:190>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:202>
 		NullCheck(L_9);
 		String_t* L_10;
 		L_10 = String_Trim_mCD6D8C6D4CFD15225D12DB7D3E0544CA80FB8DA5(L_9, NULL);
 		V_3 = L_10;
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:191>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:203>
 		String_t* L_11 = V_3;
 		NullCheck(L_11);
 		int32_t L_12;
@@ -2480,13 +2526,13 @@ IL_001e:
 		}
 	}
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:192>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:204>
 		String_t* L_13 = V_3;
 		NullCheck(L_13);
 		int32_t L_14;
 		L_14 = String_LastIndexOf_m6BB3E7E1B48702D4C715FA423F8A822C053B290E(L_13, ((int32_t)124), NULL);
 		V_4 = L_14;
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:193>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:205>
 		int32_t L_15 = V_4;
 		if ((((int32_t)L_15) <= ((int32_t)0)))
 		{
@@ -2494,7 +2540,7 @@ IL_001e:
 		}
 	}
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:194>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:206>
 		String_t* L_16 = V_3;
 		int32_t L_17 = V_4;
 		NullCheck(L_16);
@@ -2508,7 +2554,7 @@ IL_001e:
 		}
 	}
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:195>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:207>
 		List_1_t9C8E57F9F12FDB51DAAB696934615B4D8586F987* L_20 = V_0;
 		String_t* L_21 = V_3;
 		int32_t L_22 = V_4;
@@ -2531,7 +2577,7 @@ IL_0067:
 
 IL_006b:
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:188>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:200>
 		int32_t L_27 = V_2;
 		StringU5BU5D_t7674CD946EC0CE7B3AE0BE70E6EE85F2ECD9F248* L_28 = V_1;
 		NullCheck(L_28);
@@ -2541,12 +2587,12 @@ IL_006b:
 		}
 	}
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:197>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:209>
 		List_1_t9C8E57F9F12FDB51DAAB696934615B4D8586F987* L_29 = V_0;
 		return L_29;
 	}
 }
-// Method Definition Index: 140829
+// Method Definition Index: 140835
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SplatInstaller_Done_m11FCBC7CBAA801F225FF8AA559872655BA222653 (SplatInstaller_t24300B01C4C8E54D65253B336EA4A652EEDA701D* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -2557,18 +2603,18 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SplatInstaller_Done_m11FCBC7CBAA801F225F
 		s_Il2CppMethodInitialized = true;
 	}
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:202>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:214>
 		il2cpp_codegen_runtime_class_init_inline(SplatInstaller_t24300B01C4C8E54D65253B336EA4A652EEDA701D_il2cpp_TypeInfo_var);
 		SplatInstaller_set_Installing_mF4AF66C61251C41BDD952F59109A963133992E4B_inline((bool)0, NULL);
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:203>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:215>
 		SplatInstaller_set_Progress01_mC54F689313704DCA5727BB00AF50A3B2ECA31B1D_inline((1.0f), NULL);
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:204>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:216>
 		SplatInstaller_set_Status_mF16BD8A66F173AA79B3D3323874439E0A67D4E86_inline(_stringLiteralDA39A3EE5E6B4B0D3255BFEF95601890AFD80709, NULL);
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:205>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:217>
 		return;
 	}
 }
-// Method Definition Index: 140830
+// Method Definition Index: 140836
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SplatInstaller_Fail_mBCFBD36F414F745A0AEE4734929EB01B1B43778D (SplatInstaller_t24300B01C4C8E54D65253B336EA4A652EEDA701D* __this, String_t* ___0_msg, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -2583,18 +2629,18 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SplatInstaller_Fail_mBCFBD36F414F745A0AE
 		s_Il2CppMethodInitialized = true;
 	}
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:209>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:221>
 		il2cpp_codegen_runtime_class_init_inline(SplatInstaller_t24300B01C4C8E54D65253B336EA4A652EEDA701D_il2cpp_TypeInfo_var);
 		SplatInstaller_set_Installing_mF4AF66C61251C41BDD952F59109A963133992E4B_inline((bool)0, NULL);
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:210>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:222>
 		SplatInstaller_set_Status_mF16BD8A66F173AA79B3D3323874439E0A67D4E86_inline(_stringLiteralDA39A3EE5E6B4B0D3255BFEF95601890AFD80709, NULL);
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:211>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:223>
 		String_t* L_0 = ___0_msg;
 		String_t* L_1;
 		L_1 = String_Concat_m9E3155FB84015C823606188F53B47CB44C444991(_stringLiteral24AF6E9B83801A470508D5CAAAFD0398E0C998CC, L_0, NULL);
 		il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
 		Debug_LogError_mB00B2B4468EF3CAF041B038D840820FB84C924B2(L_1, NULL);
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:212>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:224>
 		TMP_Text_tE8D677872D43AD4B2AAF0D6101692A17D0B251A9* L_2 = __this->___label;
 		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
 		bool L_3;
@@ -2605,7 +2651,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SplatInstaller_Fail_mBCFBD36F414F745A0AE
 		}
 	}
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:212>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:224>
 		TMP_Text_tE8D677872D43AD4B2AAF0D6101692A17D0B251A9* L_4 = __this->___label;
 		NullCheck(L_4);
 		VirtualActionInvoker1< String_t* >::Invoke(66, L_4, _stringLiteralF898197ED453D32EDE91A0B42A7E6C0B41723696);
@@ -2613,11 +2659,11 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SplatInstaller_Fail_mBCFBD36F414F745A0AE
 
 IL_003e:
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:213>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:225>
 		return;
 	}
 }
-// Method Definition Index: 140831
+// Method Definition Index: 140837
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SplatInstaller_Attach_m2BB4EFB42BEAA1A95D620BA5F0F67B33BB6B312A (SplatInstaller_t24300B01C4C8E54D65253B336EA4A652EEDA701D* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -2642,12 +2688,12 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SplatInstaller_Attach_m2BB4EFB42BEAA1A95
 	Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* V_2 = NULL;
 	GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* V_3 = NULL;
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:221>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:233>
 		il2cpp_codegen_runtime_class_init_inline(VrHud_t91FCF003682D29DA47B23D67B54D48766C6EE1DA_il2cpp_TypeInfo_var);
 		VrHud_t91FCF003682D29DA47B23D67B54D48766C6EE1DA* L_0;
 		L_0 = VrHud_get_Instance_m13A8E7FA8796AD1F11220D98B23E20CBA863F8ED_inline(NULL);
 		V_0 = L_0;
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:222>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:234>
 		VrHud_t91FCF003682D29DA47B23D67B54D48766C6EE1DA* L_1 = V_0;
 		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
 		bool L_2;
@@ -2658,13 +2704,13 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SplatInstaller_Attach_m2BB4EFB42BEAA1A95
 		}
 	}
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:222>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:234>
 		return;
 	}
 
 IL_0010:
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:223>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:235>
 		VrHud_t91FCF003682D29DA47B23D67B54D48766C6EE1DA* L_3 = V_0;
 		NullCheck(L_3);
 		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_4;
@@ -2673,7 +2719,7 @@ IL_0010:
 		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_5;
 		L_5 = Transform_Find_m3087032B0E1C5B96A2D2C27020BAEAE2DA08F932(L_4, _stringLiteral0BFEA0032A146938EA50944C316BB7EE181C9781, NULL);
 		V_1 = L_5;
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:224>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:236>
 		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_6 = V_1;
 		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
 		bool L_7;
@@ -2684,19 +2730,19 @@ IL_0010:
 		}
 	}
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:224>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:236>
 		return;
 	}
 
 IL_002b:
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:226>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:238>
 		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_8 = V_1;
 		NullCheck(L_8);
 		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_9;
 		L_9 = Transform_Find_m3087032B0E1C5B96A2D2C27020BAEAE2DA08F932(L_8, _stringLiteral3DA4158CA62E2099C09FE8689AA5E84BECBB0BE1, NULL);
 		V_2 = L_9;
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:227>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:239>
 		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_10 = V_2;
 		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
 		bool L_11;
@@ -2707,20 +2753,20 @@ IL_002b:
 		}
 	}
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:227>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:239>
 		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_12 = V_2;
 		NullCheck(L_12);
 		TMP_Text_tE8D677872D43AD4B2AAF0D6101692A17D0B251A9* L_13;
 		L_13 = Component_GetComponent_TisTMP_Text_tE8D677872D43AD4B2AAF0D6101692A17D0B251A9_m0C4C5268B54C7097888C6B109527A680772EBCB5(L_12, Component_GetComponent_TisTMP_Text_tE8D677872D43AD4B2AAF0D6101692A17D0B251A9_m0C4C5268B54C7097888C6B109527A680772EBCB5_RuntimeMethod_var);
 		__this->___label = L_13;
 		Il2CppCodeGenWriteBarrier((void**)(&__this->___label), (void*)L_13);
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:227>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:239>
 		return;
 	}
 
 IL_004d:
 	{
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:229>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:241>
 		TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* L_14 = (TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB*)(TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB*)SZArrayNew(TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB_il2cpp_TypeInfo_var, (uint32_t)2);
 		TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* L_15 = L_14;
 		RuntimeTypeHandle_t332A452B8B6179E4469B69525D0FE82A88030F7B L_16 = { reinterpret_cast<intptr_t> (RectTransform_t6C5DA5E41A89E0F488B001E45E58963480E543A5_0_0_0_var) };
@@ -2740,7 +2786,7 @@ IL_004d:
 		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_21 = (GameObject_t76FEDD663AB33C991A9C9A23129337651094216F*)il2cpp_codegen_object_new(GameObject_t76FEDD663AB33C991A9C9A23129337651094216F_il2cpp_TypeInfo_var);
 		GameObject__ctor_m721D643351E55308EA4F5F41B67D5446D11C61F0(L_21, _stringLiteral3DA4158CA62E2099C09FE8689AA5E84BECBB0BE1, L_18, NULL);
 		V_3 = L_21;
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:230>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:242>
 		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_22 = V_3;
 		NullCheck(L_22);
 		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_23;
@@ -2748,80 +2794,80 @@ IL_004d:
 		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_24 = V_1;
 		NullCheck(L_23);
 		Transform_SetParent_m9BDD7B7476714B2D7919B10BDC22CE75C0A0A195(L_23, L_24, (bool)0, NULL);
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:232>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:244>
 		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_25 = V_3;
 		NullCheck(L_25);
 		RectTransform_t6C5DA5E41A89E0F488B001E45E58963480E543A5* L_26;
 		L_26 = GameObject_GetComponent_TisRectTransform_t6C5DA5E41A89E0F488B001E45E58963480E543A5_m1592DCB5AA07291F73A76006F0913A64DFB8A9C4(L_25, GameObject_GetComponent_TisRectTransform_t6C5DA5E41A89E0F488B001E45E58963480E543A5_m1592DCB5AA07291F73A76006F0913A64DFB8A9C4_RuntimeMethod_var);
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:233>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:245>
 		RectTransform_t6C5DA5E41A89E0F488B001E45E58963480E543A5* L_27 = L_26;
 		Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 L_28;
 		memset((&L_28), 0, sizeof(L_28));
 		Vector2__ctor_m9525B79969AFFE3254B303A40997A56DEEB6F548_inline((&L_28), (0.0f), (0.0f), NULL);
 		NullCheck(L_27);
 		RectTransform_set_anchorMin_m931442ABE3368D6D4309F43DF1D64AB64B0F52E3(L_27, L_28, NULL);
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:234>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:246>
 		RectTransform_t6C5DA5E41A89E0F488B001E45E58963480E543A5* L_29 = L_27;
 		Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 L_30;
 		memset((&L_30), 0, sizeof(L_30));
 		Vector2__ctor_m9525B79969AFFE3254B303A40997A56DEEB6F548_inline((&L_30), (1.0f), (0.0f), NULL);
 		NullCheck(L_29);
 		RectTransform_set_anchorMax_m52829ABEDD229ABD3DA20BCA676FA1DCA4A39B7D(L_29, L_30, NULL);
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:235>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:247>
 		RectTransform_t6C5DA5E41A89E0F488B001E45E58963480E543A5* L_31 = L_29;
 		Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 L_32;
 		memset((&L_32), 0, sizeof(L_32));
 		Vector2__ctor_m9525B79969AFFE3254B303A40997A56DEEB6F548_inline((&L_32), (0.5f), (0.0f), NULL);
 		NullCheck(L_31);
 		RectTransform_set_pivot_m79D0177D383D432A93C2615F1932B739B1C6E146(L_31, L_32, NULL);
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:236>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:248>
 		RectTransform_t6C5DA5E41A89E0F488B001E45E58963480E543A5* L_33 = L_31;
 		Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 L_34;
 		memset((&L_34), 0, sizeof(L_34));
 		Vector2__ctor_m9525B79969AFFE3254B303A40997A56DEEB6F548_inline((&L_34), (8.0f), (82.0f), NULL);
 		NullCheck(L_33);
 		RectTransform_set_offsetMin_m07F38B4105C7CA9CC9FBDC9ED0DB008602880AB9(L_33, L_34, NULL);
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:237>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:249>
 		Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 L_35;
 		memset((&L_35), 0, sizeof(L_35));
 		Vector2__ctor_m9525B79969AFFE3254B303A40997A56DEEB6F548_inline((&L_35), (-8.0f), (120.0f), NULL);
 		NullCheck(L_33);
 		RectTransform_set_offsetMax_m5514D09D86516F2C0E25FA6D11A3A4274D3D002D(L_33, L_35, NULL);
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:239>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:251>
 		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_36 = V_3;
 		NullCheck(L_36);
 		TextMeshProUGUI_t101091AF4B578BB534C92E9D1EEAF0611636D957* L_37;
 		L_37 = GameObject_GetComponent_TisTextMeshProUGUI_t101091AF4B578BB534C92E9D1EEAF0611636D957_mBDBF977A8C7734F6EDD83FC65C6FDDE74427611E(L_36, GameObject_GetComponent_TisTextMeshProUGUI_t101091AF4B578BB534C92E9D1EEAF0611636D957_mBDBF977A8C7734F6EDD83FC65C6FDDE74427611E_RuntimeMethod_var);
 		__this->___label = L_37;
 		Il2CppCodeGenWriteBarrier((void**)(&__this->___label), (void*)L_37);
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:240>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:252>
 		TMP_Text_tE8D677872D43AD4B2AAF0D6101692A17D0B251A9* L_38 = __this->___label;
 		NullCheck(L_38);
 		TMP_Text_set_fontSize_m1C3A3BA2BC88E5E1D89375FD35A0AA91E75D3AAD(L_38, (18.0f), NULL);
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:241>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:253>
 		TMP_Text_tE8D677872D43AD4B2AAF0D6101692A17D0B251A9* L_39 = __this->___label;
 		NullCheck(L_39);
 		TMP_Text_set_alignment_mE5216A28797987CC19927ED3CB8DFAC438C6B95A(L_39, ((int32_t)514), NULL);
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:242>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:254>
 		TMP_Text_tE8D677872D43AD4B2AAF0D6101692A17D0B251A9* L_40 = __this->___label;
 		NullCheck(L_40);
 		VirtualActionInvoker1< bool >::Invoke(25, L_40, (bool)0);
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:243>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:255>
 		TMP_Text_tE8D677872D43AD4B2AAF0D6101692A17D0B251A9* L_41 = __this->___label;
 		Color_tD001788D726C3A7F1379BEED0260B9591F440C1F L_42;
 		memset((&L_42), 0, sizeof(L_42));
 		Color__ctor_m3786F0D6E510D9CFA544523A955870BD2A514C8C_inline((&L_42), (1.0f), (0.850000024f), (0.400000006f), (0.949999988f), NULL);
 		NullCheck(L_41);
 		VirtualActionInvoker1< Color_tD001788D726C3A7F1379BEED0260B9591F440C1F >::Invoke(23, L_41, L_42);
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:244>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:256>
 		TMP_Text_tE8D677872D43AD4B2AAF0D6101692A17D0B251A9* L_43 = __this->___label;
 		NullCheck(L_43);
 		VirtualActionInvoker1< String_t* >::Invoke(66, L_43, _stringLiteralDA39A3EE5E6B4B0D3255BFEF95601890AFD80709);
-		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:245>
+		//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:257>
 		return;
 	}
 }
-// Method Definition Index: 140832
+// Method Definition Index: 140838
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SplatInstaller__ctor_m202354A757715F936E80919A0EF74D7BE0DF1EB1 (SplatInstaller_t24300B01C4C8E54D65253B336EA4A652EEDA701D* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -2844,7 +2890,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SplatInstaller__ctor_m202354A757715F936E
 		return;
 	}
 }
-// Method Definition Index: 140833
+// Method Definition Index: 140839
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SplatInstaller__cctor_mC9598BE2D78E2FCD8B5C203042788453BD7BCAD6 (const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -2869,7 +2915,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SplatInstaller__cctor_mC9598BE2D78E2FCD8
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 140834
+// Method Definition Index: 140840
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CInstallRoutineU3Ed__19__ctor_mC4913F80555E3D6EAA8709EF333DE67E78B09D9A (U3CInstallRoutineU3Ed__19_t8B81180FCCDDEAEE29B70AA18C460CB15679462A* __this, int32_t ___0_U3CU3E1__state, const RuntimeMethod* method) 
 {
 	{
@@ -2879,7 +2925,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CInstallRoutineU3Ed__19__ctor_mC4913F8
 		return;
 	}
 }
-// Method Definition Index: 140835
+// Method Definition Index: 140841
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CInstallRoutineU3Ed__19_System_IDisposable_Dispose_mD5496D3F0627BE4376D1018076B5B4BFD6A3886D (U3CInstallRoutineU3Ed__19_t8B81180FCCDDEAEE29B70AA18C460CB15679462A* __this, const RuntimeMethod* method) 
 {
 	int32_t V_0 = 0;
@@ -3017,7 +3063,7 @@ IL_0058:
 		return;
 	}
 }
-// Method Definition Index: 140836
+// Method Definition Index: 140842
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool U3CInstallRoutineU3Ed__19_MoveNext_m5F9CD34B62B8AA3C6B63C0DCFF5D335FE6AFEC59 (U3CInstallRoutineU3Ed__19_t8B81180FCCDDEAEE29B70AA18C460CB15679462A* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -3109,14 +3155,14 @@ FAULT_04d0:
 IL_0027_1:
 			{
 				__this->___U3CU3E1__state = (-1);
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:92>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:104>
 				il2cpp_codegen_runtime_class_init_inline(SplatInstaller_t24300B01C4C8E54D65253B336EA4A652EEDA701D_il2cpp_TypeInfo_var);
 				SplatInstaller_set_Installing_mF4AF66C61251C41BDD952F59109A963133992E4B_inline((bool)1, NULL);
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:93>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:105>
 				SplatInstaller_set_Progress01_mC54F689313704DCA5727BB00AF50A3B2ECA31B1D_inline((0.0f), NULL);
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:94>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:106>
 				SplatInstaller_set_Status_mF16BD8A66F173AA79B3D3323874439E0A67D4E86_inline(_stringLiteral73E5C947834505C6CA3AFF8A8B0C73E2A4C8F98F, NULL);
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:96>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:108>
 				SplatInstaller_t24300B01C4C8E54D65253B336EA4A652EEDA701D* L_3 = V_2;
 				NullCheck(L_3);
 				String_t* L_4 = L_3->___rootFolder;
@@ -3128,16 +3174,16 @@ IL_0027_1:
 				String_t* L_8;
 				L_8 = SplatInstaller_StreamingUrl_m3A3E3E24040957539C1B5990D8EDA868EB2FCB66(L_7, NULL);
 				V_3 = L_8;
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:97>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:109>
 				V_4 = (String_t*)NULL;
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:99>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:111>
 				String_t* L_9 = V_3;
 				UnityWebRequest_t6233B8E22992FC2364A831C1ACB033EF3260C39F* L_10;
 				L_10 = UnityWebRequest_Get_m1A332EE069BB5052368307F254A5A7627BB5FD86(L_9, NULL);
 				__this->___U3CreqU3E5__6 = L_10;
 				Il2CppCodeGenWriteBarrier((void**)(&__this->___U3CreqU3E5__6), (void*)L_10);
 				__this->___U3CU3E1__state = ((int32_t)-3);
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:101>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:113>
 				UnityWebRequest_t6233B8E22992FC2364A831C1ACB033EF3260C39F* L_11 = __this->___U3CreqU3E5__6;
 				NullCheck(L_11);
 				UnityWebRequestAsyncOperation_t14BE94558FF3A2CFC2EFBE2511A3A88252042B8C* L_12;
@@ -3152,7 +3198,7 @@ IL_0027_1:
 IL_009a_1:
 			{
 				__this->___U3CU3E1__state = ((int32_t)-3);
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:102>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:114>
 				UnityWebRequest_t6233B8E22992FC2364A831C1ACB033EF3260C39F* L_13 = __this->___U3CreqU3E5__6;
 				NullCheck(L_13);
 				int32_t L_14;
@@ -3163,8 +3209,8 @@ IL_009a_1:
 				}
 			}
 			{
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:104>
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:105>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:116>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:117>
 				SplatInstaller_t24300B01C4C8E54D65253B336EA4A652EEDA701D* L_15 = V_2;
 				UnityWebRequest_t6233B8E22992FC2364A831C1ACB033EF3260C39F* L_16 = __this->___U3CreqU3E5__6;
 				NullCheck(L_16);
@@ -3174,14 +3220,14 @@ IL_009a_1:
 				L_18 = String_Concat_m8855A6DE10F84DA7F4EC113CADDB59873A25573B(_stringLiteralF4379BA7D2BB5C25C01516D3DF1637C7FF5B7F53, L_17, _stringLiteral472C746E8617400B601B118EAB292BA4585B446A, NULL);
 				NullCheck(L_15);
 				SplatInstaller_Fail_mBCFBD36F414F745A0AEE4734929EB01B1B43778D(L_15, L_18, NULL);
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:106>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:118>
 				V_0 = (bool)0;
 				goto IL_00ee_1;
 			}
 
 IL_00d4_1:
 			{
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:108>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:120>
 				UnityWebRequest_t6233B8E22992FC2364A831C1ACB033EF3260C39F* L_19 = __this->___U3CreqU3E5__6;
 				NullCheck(L_19);
 				DownloadHandler_t1B56C7D3F65D97A1E4B566A14A1E783EA8AE4EBB* L_20;
@@ -3190,7 +3236,7 @@ IL_00d4_1:
 				String_t* L_21;
 				L_21 = DownloadHandler_get_text_mA6DE5CB2647A21E577B963708DC3D0DA4DBFE7D8(L_20, NULL);
 				V_4 = L_21;
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:109>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:121>
 				U3CInstallRoutineU3Ed__19_U3CU3Em__Finally1_m45D45CED22D464B2DBD4BC6E9A70E465D2D05907(__this, NULL);
 				goto IL_00f9_1;
 			}
@@ -3205,13 +3251,13 @@ IL_00f9_1:
 			{
 				__this->___U3CreqU3E5__6 = (UnityWebRequest_t6233B8E22992FC2364A831C1ACB033EF3260C39F*)NULL;
 				Il2CppCodeGenWriteBarrier((void**)(&__this->___U3CreqU3E5__6), (void*)(UnityWebRequest_t6233B8E22992FC2364A831C1ACB033EF3260C39F*)NULL);
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:111>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:123>
 				String_t* L_22 = V_4;
 				il2cpp_codegen_runtime_class_init_inline(SplatInstaller_t24300B01C4C8E54D65253B336EA4A652EEDA701D_il2cpp_TypeInfo_var);
 				List_1_t9C8E57F9F12FDB51DAAB696934615B4D8586F987* L_23;
 				L_23 = SplatInstaller_Parse_m321D8D9A6A7C29B9B32CEDB90C161D1F5B279859(L_22, NULL);
 				V_5 = L_23;
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:112>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:124>
 				List_1_t9C8E57F9F12FDB51DAAB696934615B4D8586F987* L_24 = V_5;
 				NullCheck(L_24);
 				int32_t L_25;
@@ -3222,25 +3268,25 @@ IL_00f9_1:
 				}
 			}
 			{
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:112>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:124>
 				SplatInstaller_t24300B01C4C8E54D65253B336EA4A652EEDA701D* L_26 = V_2;
 				NullCheck(L_26);
 				SplatInstaller_Fail_mBCFBD36F414F745A0AEE4734929EB01B1B43778D(L_26, _stringLiteralC2E40825BB5AF902F3A31B9B760886F659CBCABC, NULL);
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:112>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:124>
 				V_0 = (bool)0;
 				goto IL_04d7;
 			}
 
 IL_0124_1:
 			{
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:116>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:128>
 				List_1_t9C8E57F9F12FDB51DAAB696934615B4D8586F987* L_27 = (List_1_t9C8E57F9F12FDB51DAAB696934615B4D8586F987*)il2cpp_codegen_object_new(List_1_t9C8E57F9F12FDB51DAAB696934615B4D8586F987_il2cpp_TypeInfo_var);
 				List_1__ctor_m9585E3C747694F102010D222B5D1EFFD4C450F08(L_27, List_1__ctor_m9585E3C747694F102010D222B5D1EFFD4C450F08_RuntimeMethod_var);
 				__this->___U3CtodoU3E5__2 = L_27;
 				Il2CppCodeGenWriteBarrier((void**)(&__this->___U3CtodoU3E5__2), (void*)L_27);
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:117>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:129>
 				__this->___U3CtodoBytesU3E5__3 = ((int64_t)0);
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:118>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:130>
 				List_1_t9C8E57F9F12FDB51DAAB696934615B4D8586F987* L_28 = V_5;
 				NullCheck(L_28);
 				Enumerator_t1D295E51FF964F00D40B5C6A167C73F6882C245D L_29;
@@ -3265,11 +3311,11 @@ FINALLY_01a8_1:
 
 IL_0142_2:
 					{
-						//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:118>
+						//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:130>
 						ValueTuple_2_t8418963FF4ACBEA95635FB52C32DE470951472C5 L_30;
 						L_30 = Enumerator_get_Current_mD8241F92A4B2C37E5119C1E446417DD78FFFE42C_inline((&V_6), Enumerator_get_Current_mD8241F92A4B2C37E5119C1E446417DD78FFFE42C_RuntimeMethod_var);
 						V_7 = L_30;
-						//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:120>
+						//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:132>
 						il2cpp_codegen_runtime_class_init_inline(Application_tDB03BE91CDF0ACA614A5E0B67CFB77C44EB19B21_il2cpp_TypeInfo_var);
 						String_t* L_31;
 						L_31 = Application_get_persistentDataPath_mC58BD3E1A20732E0A536491DBCAE6505B1624399(NULL);
@@ -3279,7 +3325,7 @@ IL_0142_2:
 						String_t* L_34;
 						L_34 = Path_Combine_m1ADAC05CDA2D1D61B172DF65A81E86592696BEAE(L_31, L_33, NULL);
 						V_8 = L_34;
-						//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:121>
+						//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:133>
 						String_t* L_35 = V_8;
 						bool L_36;
 						L_36 = File_Exists_m95E329ABBE3EAD6750FE1989BBA6884457136D4A(L_35, NULL);
@@ -3305,12 +3351,12 @@ IL_0142_2:
 
 IL_017c_2:
 					{
-						//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:122>
+						//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:134>
 						List_1_t9C8E57F9F12FDB51DAAB696934615B4D8586F987* L_42 = __this->___U3CtodoU3E5__2;
 						ValueTuple_2_t8418963FF4ACBEA95635FB52C32DE470951472C5 L_43 = V_7;
 						NullCheck(L_42);
 						List_1_Add_mA7CDDF140F219597B0D676AA1124CE5BAFFFDCC9_inline(L_42, L_43, List_1_Add_mA7CDDF140F219597B0D676AA1124CE5BAFFFDCC9_RuntimeMethod_var);
-						//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:123>
+						//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:135>
 						int64_t L_44 = __this->___U3CtodoBytesU3E5__3;
 						ValueTuple_2_t8418963FF4ACBEA95635FB52C32DE470951472C5 L_45 = V_7;
 						int64_t L_46 = L_45.___Item2;
@@ -3319,7 +3365,7 @@ IL_017c_2:
 
 IL_019d_2:
 					{
-						//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:118>
+						//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:130>
 						bool L_47;
 						L_47 = Enumerator_MoveNext_mBB1FFC7828DDB54BD649E091C8060B543C6A6A90((&V_6), Enumerator_MoveNext_mBB1FFC7828DDB54BD649E091C8060B543C6A6A90_RuntimeMethod_var);
 						if (L_47)
@@ -3339,7 +3385,7 @@ IL_019d_2:
 
 IL_01b6_1:
 			{
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:126>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:138>
 				List_1_t9C8E57F9F12FDB51DAAB696934615B4D8586F987* L_48 = __this->___U3CtodoU3E5__2;
 				NullCheck(L_48);
 				int32_t L_49;
@@ -3350,7 +3396,7 @@ IL_01b6_1:
 				}
 			}
 			{
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:128>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:140>
 				List_1_t9C8E57F9F12FDB51DAAB696934615B4D8586F987* L_50 = V_5;
 				NullCheck(L_50);
 				int32_t L_51;
@@ -3361,19 +3407,19 @@ IL_01b6_1:
 				L_54 = String_Format_mA8DBB4C2516B9723C5A41E6CB1E2FAF4BBE96DD8(_stringLiteral16E0E9F18F52A9A865C0B6EC48B1C6E7E0B75229, L_53, NULL);
 				il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
 				Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(L_54, NULL);
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:129>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:141>
 				SplatInstaller_t24300B01C4C8E54D65253B336EA4A652EEDA701D* L_55 = V_2;
 				NullCheck(L_55);
 				SplatInstaller_Done_m11FCBC7CBAA801F225FF8AA559872655BA222653(L_55, NULL);
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:130>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:142>
 				V_0 = (bool)0;
 				goto IL_04d7;
 			}
 
 IL_01eb_1:
 			{
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:133>
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:134>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:145>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:146>
 				List_1_t9C8E57F9F12FDB51DAAB696934615B4D8586F987* L_56 = __this->___U3CtodoU3E5__2;
 				NullCheck(L_56);
 				int32_t L_57;
@@ -3397,11 +3443,11 @@ IL_01eb_1:
 				L_69 = String_Concat_m9E3155FB84015C823606188F53B47CB44C444991(L_64, L_68, NULL);
 				il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
 				Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(L_69, NULL);
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:136>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:148>
 				__this->___U3CcopiedU3E5__4 = ((int64_t)0);
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:137>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:149>
 				__this->___U3CnU3E5__5 = 0;
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:138>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:150>
 				List_1_t9C8E57F9F12FDB51DAAB696934615B4D8586F987* L_70 = __this->___U3CtodoU3E5__2;
 				NullCheck(L_70);
 				Enumerator_t1D295E51FF964F00D40B5C6A167C73F6882C245D L_71;
@@ -3417,18 +3463,18 @@ IL_01eb_1:
 
 IL_0264_1:
 			{
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:138>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:150>
 				Enumerator_t1D295E51FF964F00D40B5C6A167C73F6882C245D* L_72 = (Enumerator_t1D295E51FF964F00D40B5C6A167C73F6882C245D*)(&__this->___U3CU3E7__wrap6);
 				ValueTuple_2_t8418963FF4ACBEA95635FB52C32DE470951472C5 L_73;
 				L_73 = Enumerator_get_Current_mD8241F92A4B2C37E5119C1E446417DD78FFFE42C_inline(L_72, Enumerator_get_Current_mD8241F92A4B2C37E5119C1E446417DD78FFFE42C_RuntimeMethod_var);
 				__this->___U3CeU3E5__8 = L_73;
 				Il2CppCodeGenWriteBarrier((void**)&(((&__this->___U3CeU3E5__8))->___Item1), (void*)NULL);
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:140>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:152>
 				int32_t L_74 = __this->___U3CnU3E5__5;
 				V_10 = L_74;
 				int32_t L_75 = V_10;
 				__this->___U3CnU3E5__5 = ((int32_t)il2cpp_codegen_add(L_75, 1));
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:141>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:153>
 				int32_t L_76 = __this->___U3CnU3E5__5;
 				int32_t L_77 = L_76;
 				RuntimeObject* L_78 = Box(il2cpp_defaults.int32_class, &L_77);
@@ -3442,7 +3488,7 @@ IL_0264_1:
 				L_83 = String_Format_mFB7DA489BD99F4670881FF50EC017BFB0A5C0987(_stringLiteral60A8BAB225A7EFDDD2FD1D449B992AF2F46970B0, L_78, L_82, NULL);
 				il2cpp_codegen_runtime_class_init_inline(SplatInstaller_t24300B01C4C8E54D65253B336EA4A652EEDA701D_il2cpp_TypeInfo_var);
 				SplatInstaller_set_Status_mF16BD8A66F173AA79B3D3323874439E0A67D4E86_inline(L_83, NULL);
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:143>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:155>
 				il2cpp_codegen_runtime_class_init_inline(Application_tDB03BE91CDF0ACA614A5E0B67CFB77C44EB19B21_il2cpp_TypeInfo_var);
 				String_t* L_84;
 				L_84 = Application_get_persistentDataPath_mC58BD3E1A20732E0A536491DBCAE6505B1624399(NULL);
@@ -3453,12 +3499,12 @@ IL_0264_1:
 				L_87 = Path_Combine_m1ADAC05CDA2D1D61B172DF65A81E86592696BEAE(L_84, L_86, NULL);
 				__this->___U3CdstU3E5__9 = L_87;
 				Il2CppCodeGenWriteBarrier((void**)(&__this->___U3CdstU3E5__9), (void*)L_87);
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:144>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:156>
 				String_t* L_88 = __this->___U3CdstU3E5__9;
 				String_t* L_89;
 				L_89 = Path_GetDirectoryName_m428BADBE493A3927B51A13DEF658929B430516F6(L_88, NULL);
 				V_9 = L_89;
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:145>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:157>
 				String_t* L_90 = V_9;
 				bool L_91;
 				L_91 = String_IsNullOrEmpty_mEA9E3FB005AC28FE02E69FCF95A7B8456192B478(L_90, NULL);
@@ -3468,7 +3514,7 @@ IL_0264_1:
 				}
 			}
 			{
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:145>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:157>
 				String_t* L_92 = V_9;
 				DirectoryInfo_tEAEEC018EB49B4A71907FFEAFE935FAA8F9C1FE2* L_93;
 				L_93 = Directory_CreateDirectory_m16EC5CE8561A997C6635E06DC24C77590F29D94F(L_92, NULL);
@@ -3476,13 +3522,13 @@ IL_0264_1:
 
 IL_02ea_1:
 			{
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:150>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:162>
 				String_t* L_94 = __this->___U3CdstU3E5__9;
 				String_t* L_95;
 				L_95 = String_Concat_m9E3155FB84015C823606188F53B47CB44C444991(L_94, _stringLiteralB6640554DF0E7C349EF5A0734BB45CFFF2A041BD, NULL);
 				__this->___U3CtmpU3E5__10 = L_95;
 				Il2CppCodeGenWriteBarrier((void**)(&__this->___U3CtmpU3E5__10), (void*)L_95);
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:151>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:163>
 				String_t* L_96 = __this->___U3CtmpU3E5__10;
 				bool L_97;
 				L_97 = File_Exists_m95E329ABBE3EAD6750FE1989BBA6884457136D4A(L_96, NULL);
@@ -3492,14 +3538,14 @@ IL_02ea_1:
 				}
 			}
 			{
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:151>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:163>
 				String_t* L_98 = __this->___U3CtmpU3E5__10;
 				File_Delete_mE29829DA504F3E1B8BCB78F21E2862C9ED7EC386(L_98, NULL);
 			}
 
 IL_0318_1:
 			{
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:153>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:165>
 				ValueTuple_2_t8418963FF4ACBEA95635FB52C32DE470951472C5* L_99 = (ValueTuple_2_t8418963FF4ACBEA95635FB52C32DE470951472C5*)(&__this->___U3CeU3E5__8);
 				String_t* L_100 = L_99->___Item1;
 				il2cpp_codegen_runtime_class_init_inline(SplatInstaller_t24300B01C4C8E54D65253B336EA4A652EEDA701D_il2cpp_TypeInfo_var);
@@ -3510,14 +3556,14 @@ IL_0318_1:
 				__this->___U3CreqU3E5__6 = L_102;
 				Il2CppCodeGenWriteBarrier((void**)(&__this->___U3CreqU3E5__6), (void*)L_102);
 				__this->___U3CU3E1__state = ((int32_t)-5);
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:155>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:167>
 				UnityWebRequest_t6233B8E22992FC2364A831C1ACB033EF3260C39F* L_103 = __this->___U3CreqU3E5__6;
 				String_t* L_104 = __this->___U3CtmpU3E5__10;
 				DownloadHandlerFile_tD1342A7B8173C9ECC7B3BB9E1A7631D7AEFBD902* L_105 = (DownloadHandlerFile_tD1342A7B8173C9ECC7B3BB9E1A7631D7AEFBD902*)il2cpp_codegen_object_new(DownloadHandlerFile_tD1342A7B8173C9ECC7B3BB9E1A7631D7AEFBD902_il2cpp_TypeInfo_var);
 				DownloadHandlerFile__ctor_m4AC24ABF5B27F08BFA648A14B7A4BBC538A23102(L_105, L_104, NULL);
 				NullCheck(L_103);
 				UnityWebRequest_set_downloadHandler_m6CB94492012097DFC44E5773D1A627753788292F(L_103, L_105, NULL);
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:156>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:168>
 				UnityWebRequest_t6233B8E22992FC2364A831C1ACB033EF3260C39F* L_106 = __this->___U3CreqU3E5__6;
 				NullCheck(L_106);
 				UnityWebRequestAsyncOperation_t14BE94558FF3A2CFC2EFBE2511A3A88252042B8C* L_107;
@@ -3532,7 +3578,7 @@ IL_0318_1:
 IL_0370_1:
 			{
 				__this->___U3CU3E1__state = ((int32_t)-5);
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:158>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:170>
 				UnityWebRequest_t6233B8E22992FC2364A831C1ACB033EF3260C39F* L_108 = __this->___U3CreqU3E5__6;
 				NullCheck(L_108);
 				int32_t L_109;
@@ -3543,7 +3589,7 @@ IL_0370_1:
 				}
 			}
 			{
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:160>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:172>
 				SplatInstaller_t24300B01C4C8E54D65253B336EA4A652EEDA701D* L_110 = V_2;
 				ValueTuple_2_t8418963FF4ACBEA95635FB52C32DE470951472C5* L_111 = (ValueTuple_2_t8418963FF4ACBEA95635FB52C32DE470951472C5*)(&__this->___U3CeU3E5__8);
 				String_t* L_112 = L_111->___Item1;
@@ -3555,14 +3601,14 @@ IL_0370_1:
 				L_115 = String_Concat_m093934F71A9B351911EE46311674ED463B180006(_stringLiteral796B045C20688AC1EDD5CB24E93B0AE409311C46, L_112, _stringLiteral9816E74B93E1C26A72AD4D2196C8A3C7A3C28924, L_114, NULL);
 				NullCheck(L_110);
 				SplatInstaller_Fail_mBCFBD36F414F745A0AEE4734929EB01B1B43778D(L_110, L_115, NULL);
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:161>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:173>
 				V_0 = (bool)0;
 				goto IL_03bd_1;
 			}
 
 IL_03b5_1:
 			{
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:163>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:175>
 				U3CInstallRoutineU3Ed__19_U3CU3Em__Finally3_mE10F06192D237111AD91FF776CC1B1D08694850F(__this, NULL);
 				goto IL_03c8_1;
 			}
@@ -3577,7 +3623,7 @@ IL_03c8_1:
 			{
 				__this->___U3CreqU3E5__6 = (UnityWebRequest_t6233B8E22992FC2364A831C1ACB033EF3260C39F*)NULL;
 				Il2CppCodeGenWriteBarrier((void**)(&__this->___U3CreqU3E5__6), (void*)(UnityWebRequest_t6233B8E22992FC2364A831C1ACB033EF3260C39F*)NULL);
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:165>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:177>
 				String_t* L_116 = __this->___U3CdstU3E5__9;
 				bool L_117;
 				L_117 = File_Exists_m95E329ABBE3EAD6750FE1989BBA6884457136D4A(L_116, NULL);
@@ -3587,23 +3633,23 @@ IL_03c8_1:
 				}
 			}
 			{
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:165>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:177>
 				String_t* L_118 = __this->___U3CdstU3E5__9;
 				File_Delete_mE29829DA504F3E1B8BCB78F21E2862C9ED7EC386(L_118, NULL);
 			}
 
 IL_03e7_1:
 			{
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:166>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:178>
 				String_t* L_119 = __this->___U3CtmpU3E5__10;
 				String_t* L_120 = __this->___U3CdstU3E5__9;
 				File_Move_mBC9450111E0144A55D893A720F19E612D658AC37(L_119, L_120, NULL);
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:168>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:180>
 				int64_t L_121 = __this->___U3CcopiedU3E5__4;
 				ValueTuple_2_t8418963FF4ACBEA95635FB52C32DE470951472C5* L_122 = (ValueTuple_2_t8418963FF4ACBEA95635FB52C32DE470951472C5*)(&__this->___U3CeU3E5__8);
 				int64_t L_123 = L_122->___Item2;
 				__this->___U3CcopiedU3E5__4 = ((int64_t)il2cpp_codegen_add(L_121, L_123));
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:169>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:181>
 				int64_t L_124 = __this->___U3CtodoBytesU3E5__3;
 				if ((((int64_t)L_124) > ((int64_t)((int64_t)0))))
 				{
@@ -3628,7 +3674,7 @@ IL_0436_1:
 			{
 				il2cpp_codegen_runtime_class_init_inline(SplatInstaller_t24300B01C4C8E54D65253B336EA4A652EEDA701D_il2cpp_TypeInfo_var);
 				SplatInstaller_set_Progress01_mC54F689313704DCA5727BB00AF50A3B2ECA31B1D_inline(G_B34_0, NULL);
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:170>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:182>
 				__this->___U3CdstU3E5__9 = (String_t*)NULL;
 				Il2CppCodeGenWriteBarrier((void**)(&__this->___U3CdstU3E5__9), (void*)(String_t*)NULL);
 				__this->___U3CtmpU3E5__10 = (String_t*)NULL;
@@ -3639,7 +3685,7 @@ IL_0436_1:
 
 IL_0455_1:
 			{
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:138>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:150>
 				Enumerator_t1D295E51FF964F00D40B5C6A167C73F6882C245D* L_129 = (Enumerator_t1D295E51FF964F00D40B5C6A167C73F6882C245D*)(&__this->___U3CU3E7__wrap6);
 				bool L_130;
 				L_130 = Enumerator_MoveNext_mBB1FFC7828DDB54BD649E091C8060B543C6A6A90(L_129, Enumerator_MoveNext_mBB1FFC7828DDB54BD649E091C8060B543C6A6A90_RuntimeMethod_var);
@@ -3663,8 +3709,8 @@ IL_0475_1:
 			{
 				Enumerator_t1D295E51FF964F00D40B5C6A167C73F6882C245D* L_131 = (Enumerator_t1D295E51FF964F00D40B5C6A167C73F6882C245D*)(&__this->___U3CU3E7__wrap6);
 				il2cpp_codegen_initobj(L_131, sizeof(Enumerator_t1D295E51FF964F00D40B5C6A167C73F6882C245D));
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:172>
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:173>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:184>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:185>
 				List_1_t9C8E57F9F12FDB51DAAB696934615B4D8586F987* L_132 = __this->___U3CtodoU3E5__2;
 				NullCheck(L_132);
 				int32_t L_133;
@@ -3685,11 +3731,11 @@ IL_0475_1:
 				L_142 = String_Concat_m9E3155FB84015C823606188F53B47CB44C444991(L_136, L_141, NULL);
 				il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
 				Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(L_142, NULL);
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:174>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:186>
 				SplatInstaller_t24300B01C4C8E54D65253B336EA4A652EEDA701D* L_143 = V_2;
 				NullCheck(L_143);
 				SplatInstaller_Done_m11FCBC7CBAA801F225FF8AA559872655BA222653(L_143, NULL);
-				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:175>
+				//<source_info:C:/Users/utente/Desktop/UnityFork/SilvoVR/Assets/000_my/Scripts/SplatInstaller.cs:187>
 				V_0 = (bool)0;
 				goto IL_04d7;
 			}
@@ -3706,7 +3752,7 @@ IL_04d7:
 		return L_144;
 	}
 }
-// Method Definition Index: 140837
+// Method Definition Index: 140843
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CInstallRoutineU3Ed__19_U3CU3Em__Finally1_m45D45CED22D464B2DBD4BC6E9A70E465D2D05907 (U3CInstallRoutineU3Ed__19_t8B81180FCCDDEAEE29B70AA18C460CB15679462A* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -3734,7 +3780,7 @@ IL_001a:
 		return;
 	}
 }
-// Method Definition Index: 140838
+// Method Definition Index: 140844
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CInstallRoutineU3Ed__19_U3CU3Em__Finally2_m8703A16BDE5E5EE8573200C537A70F6AD2164E3A (U3CInstallRoutineU3Ed__19_t8B81180FCCDDEAEE29B70AA18C460CB15679462A* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -3750,7 +3796,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CInstallRoutineU3Ed__19_U3CU3Em__Final
 		return;
 	}
 }
-// Method Definition Index: 140839
+// Method Definition Index: 140845
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CInstallRoutineU3Ed__19_U3CU3Em__Finally3_mE10F06192D237111AD91FF776CC1B1D08694850F (U3CInstallRoutineU3Ed__19_t8B81180FCCDDEAEE29B70AA18C460CB15679462A* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -3778,7 +3824,7 @@ IL_001b:
 		return;
 	}
 }
-// Method Definition Index: 140840
+// Method Definition Index: 140846
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* U3CInstallRoutineU3Ed__19_System_Collections_Generic_IEnumeratorU3CSystem_ObjectU3E_get_Current_mED91B5D1AEF11AEE38E2B9A876B47BA5B5564DA5 (U3CInstallRoutineU3Ed__19_t8B81180FCCDDEAEE29B70AA18C460CB15679462A* __this, const RuntimeMethod* method) 
 {
 	{
@@ -3786,7 +3832,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* U3CInstallRoutineU3Ed__19_Syst
 		return L_0;
 	}
 }
-// Method Definition Index: 140841
+// Method Definition Index: 140847
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CInstallRoutineU3Ed__19_System_Collections_IEnumerator_Reset_m2F1D2BF813C0CEF7FB426D7328E9415AA2E45940 (U3CInstallRoutineU3Ed__19_t8B81180FCCDDEAEE29B70AA18C460CB15679462A* __this, const RuntimeMethod* method) 
 {
 	{
@@ -3795,7 +3841,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CInstallRoutineU3Ed__19_System_Collect
 		IL2CPP_RAISE_MANAGED_EXCEPTION(L_0, ((RuntimeMethod*)il2cpp_codegen_initialize_runtime_metadata_inline((uintptr_t*)&U3CInstallRoutineU3Ed__19_System_Collections_IEnumerator_Reset_m2F1D2BF813C0CEF7FB426D7328E9415AA2E45940_RuntimeMethod_var)));
 	}
 }
-// Method Definition Index: 140842
+// Method Definition Index: 140848
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* U3CInstallRoutineU3Ed__19_System_Collections_IEnumerator_get_Current_mF3496E8CF4BB47B25FF296709CE1BE99FBBE9DF6 (U3CInstallRoutineU3Ed__19_t8B81180FCCDDEAEE29B70AA18C460CB15679462A* __this, const RuntimeMethod* method) 
 {
 	{
@@ -3859,7 +3905,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* U3CInstallRoutineU3Ed__19_Syst
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 140843
+// Method Definition Index: 140849
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void NetworkVariableSerializationHelper_InitializeSerialization_mA4F17C9D8F4934C552263003358AF8CC0E55E6E3 (const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -3898,7 +3944,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void NetworkVariableSerializationHelper_Initi
 #ifdef __clang__
 #pragma clang diagnostic pop
 #endif
-// Method Definition Index: 140818
+// Method Definition Index: 140824
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR bool SplatInstaller_get_Installing_m005FC0F883367FEA297AA5A2B905DBDC166D3FCB_inline (const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -3914,7 +3960,7 @@ IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR bool SplatInstaller_get_Installin
 		return L_0;
 	}
 }
-// Method Definition Index: 140822
+// Method Definition Index: 140828
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR String_t* SplatInstaller_get_Status_m1BAFA4A6F165E052F2B77CF074E7837DC24BE6D6_inline (const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -3930,7 +3976,7 @@ IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR String_t* SplatInstaller_get_Stat
 		return L_0;
 	}
 }
-// Method Definition Index: 140820
+// Method Definition Index: 140826
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float SplatInstaller_get_Progress01_m9511F3DD2D697D4AFE708F1C12A788C2B2B9AEA8_inline (const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -3954,7 +4000,7 @@ IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t String_get_Length_m42625D
 		return L_0;
 	}
 }
-// Method Definition Index: 140819
+// Method Definition Index: 140825
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void SplatInstaller_set_Installing_mF4AF66C61251C41BDD952F59109A963133992E4B_inline (bool ___0_value, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -3971,7 +4017,7 @@ IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void SplatInstaller_set_Installin
 		return;
 	}
 }
-// Method Definition Index: 140821
+// Method Definition Index: 140827
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void SplatInstaller_set_Progress01_mC54F689313704DCA5727BB00AF50A3B2ECA31B1D_inline (float ___0_value, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -3988,7 +4034,7 @@ IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void SplatInstaller_set_Progress0
 		return;
 	}
 }
-// Method Definition Index: 140823
+// Method Definition Index: 140829
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void SplatInstaller_set_Status_mF16BD8A66F173AA79B3D3323874439E0A67D4E86_inline (String_t* ___0_value, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -4006,7 +4052,7 @@ IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void SplatInstaller_set_Status_mF
 		return;
 	}
 }
-// Method Definition Index: 140763
+// Method Definition Index: 140769
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR VrHud_t91FCF003682D29DA47B23D67B54D48766C6EE1DA* VrHud_get_Instance_m13A8E7FA8796AD1F11220D98B23E20CBA863F8ED_inline (const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;

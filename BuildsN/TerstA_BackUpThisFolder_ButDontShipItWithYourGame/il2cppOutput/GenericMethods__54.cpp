@@ -18586,7 +18586,7 @@ IL_000a:
 		return L_2;
 	}
 }
-// Method Definition Index: 153607
+// Method Definition Index: 153613
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void NativeArrayUtils_EnsureCapacity_TisIl2CppFullySharedGenericStruct_m938B4EB2931FF9C2C46F85B047C222447D732032_gshared (NativeArray_1_tDB8B8DC66CC8E16ED6D9A8C75D2C1AFC80AC1E18* ___0_array, int32_t ___1_capacity, int32_t ___2_allocator, int32_t ___3_options, const RuntimeMethod* method) 
 {
 	il2cpp_rgctx_method_init(method);
@@ -26795,7 +26795,7 @@ IL2CPP_EXTERN_C  NativeArray_1_tDB8B8DC66CC8E16ED6D9A8C75D2C1AFC80AC1E18 NativeS
 	_returnValue = NativeStream_ToNativeArray_TisIl2CppFullySharedGenericStruct_m7F7EEAC0A5F9619B9A028BE880C504844C338E8D(_thisAdjusted, ___0_allocator, method);
 	return _returnValue;
 }
-// Method Definition Index: 140584
+// Method Definition Index: 140587
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void NetCandidacy_NetworkSerialize_TisBufferSerializerReader_t821F6D93FEA6652401EA14C2C96FB7328355A091_m69E7A32938637815E3CDE2CA359D2CD964705929_gshared (NetCandidacy_t8D337FB6A4785BA01727238196DE276F52090FD6* __this, BufferSerializer_1_t8B54D07A3EDD3D37E1369C511353FC3344A0FF3B ___0_s, const RuntimeMethod* method) 
 {
 	il2cpp_rgctx_method_init(method);
@@ -26828,7 +26828,7 @@ IL2CPP_EXTERN_C  void NetCandidacy_NetworkSerialize_TisBufferSerializerReader_t8
 	_thisAdjusted = reinterpret_cast<NetCandidacy_t8D337FB6A4785BA01727238196DE276F52090FD6*>(__this + _offset);
 	NetCandidacy_NetworkSerialize_TisBufferSerializerReader_t821F6D93FEA6652401EA14C2C96FB7328355A091_m69E7A32938637815E3CDE2CA359D2CD964705929(_thisAdjusted, ___0_s, method);
 }
-// Method Definition Index: 140584
+// Method Definition Index: 140587
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void NetCandidacy_NetworkSerialize_TisBufferSerializerWriter_t3F287564BDCF264BABBB18BF4D541A95238FBFD4_m88F769CD54127CB420B63BAC4D7F4268188565B9_gshared (NetCandidacy_t8D337FB6A4785BA01727238196DE276F52090FD6* __this, BufferSerializer_1_tB07CC05C8821999D2912FC2880FC1CAF4094FEF0 ___0_s, const RuntimeMethod* method) 
 {
 	il2cpp_rgctx_method_init(method);
@@ -26861,7 +26861,7 @@ IL2CPP_EXTERN_C  void NetCandidacy_NetworkSerialize_TisBufferSerializerWriter_t3
 	_thisAdjusted = reinterpret_cast<NetCandidacy_t8D337FB6A4785BA01727238196DE276F52090FD6*>(__this + _offset);
 	NetCandidacy_NetworkSerialize_TisBufferSerializerWriter_t3F287564BDCF264BABBB18BF4D541A95238FBFD4_m88F769CD54127CB420B63BAC4D7F4268188565B9(_thisAdjusted, ___0_s, method);
 }
-// Method Definition Index: 140584
+// Method Definition Index: 140587
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void NetCandidacy_NetworkSerialize_TisIl2CppFullySharedGenericAny_m202798B1A5CD979350900D55DD08EFC7EADD9418_gshared (NetCandidacy_t8D337FB6A4785BA01727238196DE276F52090FD6* __this, BufferSerializer_1_tC485B3539F0BCD2241145A679FB202806C206C10 ___0_s, const RuntimeMethod* method) 
 {
 	il2cpp_rgctx_method_init(method);
@@ -26894,7 +26894,7 @@ IL2CPP_EXTERN_C  void NetCandidacy_NetworkSerialize_TisIl2CppFullySharedGenericA
 	_thisAdjusted = reinterpret_cast<NetCandidacy_t8D337FB6A4785BA01727238196DE276F52090FD6*>(__this + _offset);
 	NetCandidacy_NetworkSerialize_TisIl2CppFullySharedGenericAny_m202798B1A5CD979350900D55DD08EFC7EADD9418(_thisAdjusted, ___0_s, method);
 }
-// Method Definition Index: 140588
+// Method Definition Index: 140591
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void NetFelled_NetworkSerialize_TisBufferSerializerReader_t821F6D93FEA6652401EA14C2C96FB7328355A091_m8EAD2430408EBF87A460291DFCC4747670CA5413_gshared (NetFelled_t75FF3C0C5241529B1C69121D3BB2A4DEA76056A7* __this, BufferSerializer_1_t8B54D07A3EDD3D37E1369C511353FC3344A0FF3B ___0_s, const RuntimeMethod* method) 
 {
 	il2cpp_rgctx_method_init(method);
@@ -26922,7 +26922,7 @@ IL2CPP_EXTERN_C  void NetFelled_NetworkSerialize_TisBufferSerializerReader_t821F
 	_thisAdjusted = reinterpret_cast<NetFelled_t75FF3C0C5241529B1C69121D3BB2A4DEA76056A7*>(__this + _offset);
 	NetFelled_NetworkSerialize_TisBufferSerializerReader_t821F6D93FEA6652401EA14C2C96FB7328355A091_m8EAD2430408EBF87A460291DFCC4747670CA5413(_thisAdjusted, ___0_s, method);
 }
-// Method Definition Index: 140588
+// Method Definition Index: 140591
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void NetFelled_NetworkSerialize_TisBufferSerializerWriter_t3F287564BDCF264BABBB18BF4D541A95238FBFD4_m667046D1176088BFE6557B48F9667FE315EAAEC5_gshared (NetFelled_t75FF3C0C5241529B1C69121D3BB2A4DEA76056A7* __this, BufferSerializer_1_tB07CC05C8821999D2912FC2880FC1CAF4094FEF0 ___0_s, const RuntimeMethod* method) 
 {
 	il2cpp_rgctx_method_init(method);
@@ -26950,7 +26950,7 @@ IL2CPP_EXTERN_C  void NetFelled_NetworkSerialize_TisBufferSerializerWriter_t3F28
 	_thisAdjusted = reinterpret_cast<NetFelled_t75FF3C0C5241529B1C69121D3BB2A4DEA76056A7*>(__this + _offset);
 	NetFelled_NetworkSerialize_TisBufferSerializerWriter_t3F287564BDCF264BABBB18BF4D541A95238FBFD4_m667046D1176088BFE6557B48F9667FE315EAAEC5(_thisAdjusted, ___0_s, method);
 }
-// Method Definition Index: 140588
+// Method Definition Index: 140591
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void NetFelled_NetworkSerialize_TisIl2CppFullySharedGenericAny_m6340EAAFE11EEC88D8330309753DC2A598697918_gshared (NetFelled_t75FF3C0C5241529B1C69121D3BB2A4DEA76056A7* __this, BufferSerializer_1_tC485B3539F0BCD2241145A679FB202806C206C10 ___0_s, const RuntimeMethod* method) 
 {
 	il2cpp_rgctx_method_init(method);

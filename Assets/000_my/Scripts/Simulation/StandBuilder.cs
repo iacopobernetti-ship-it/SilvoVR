@@ -391,7 +391,17 @@ namespace Artemis.Regeneration
             {
                 foreach (var s in current)
                     if (s.StemId == id)
-                    { d.felled.Add(new MartellataData.FelledTree { stemId = id, x = s.Base.x, z = s.Base.z, dbh = s.Dbh }); break; }
+                    {
+                        // L'ASSE del fusto, non il punto cliccato: quello sta sulla corteccia, e
+                        // un anello centrato li' risulta TANGENTE all'albero invece che attorno —
+                        // lo stesso difetto gia' corretto sui segni di misura in area. Lo scarto
+                        // e' un raggio, cioe' 15-20 cm su un fusto da 35: si vede benissimo.
+                        // MarkAnchor ripiega su Base per gli inventari vecchi, che l'asse non
+                        // ce l'hanno.
+                        var a = s.MarkAnchor;
+                        d.felled.Add(new MartellataData.FelledTree { stemId = id, x = a.x, z = a.z, dbh = s.Dbh });
+                        break;
+                    }
 
                 if (cellOf.TryGetValue(id, out int idx) && idx >= 0 && idx < cells.Count && cells[idx] != null)
                 {
@@ -860,6 +870,31 @@ namespace Artemis.Regeneration
             Gizmos.color = Color.yellow;
             foreach (var s in sites) Gizmos.DrawSphere(new Vector3(s.x, y, s.y), 0.15f);
         }
+
+        /// <summary>
+        /// Riporta il POPOLAMENTO a prima della martellata, lasciando stare tutto il resto.
+        ///
+        /// Perche' non si ricostruisce da capo (Build/BuildShared): il quadrato di suolo nasce dal
+        /// bounding box degli steli dell'INVENTARIO, e il ripristino rimette in piedi proprio
+        /// quell'inventario — centro, lato e quota sarebbero identici a quelli di adesso. Rifare
+        /// suolo, muri e luce per ottenerli uguali e' lavoro sprecato che porta con se' tre
+        /// effetti collaterali veri: il collider del piano sparisce per un frame (e in quel frame
+        /// la gravita' lavora indisturbata: e' la caduta nel vuoto vista dopo il reset), il rig
+        /// viene riposizionato al centro anche se il giocatore stava tranquillo altrove, e la
+        /// classe perde il confronto "prima/dopo" proprio nel momento in cui serve guardarlo.
+        ///
+        /// Le celle di Voronoi non si ricalcolano per necessita' ma per pulizia: sono gia'
+        /// costruite su `current`, cioe' sull'inventario intero, e non sono mai cambiate con
+        /// l'abbattimento. La chiamata serve solo a riassegnare CellIndex ai selettori nuovi.
+        ///
+        /// Fa scattare OnRebuilt perche' chi disegna sopra il soprassuolo (SimMarkTool per i
+        /// poligoni, MapPanel per la mappa) deve ridisegnare: gli alberi tornati in piedi non
+        /// avevano piu' una cella disegnata. Effetto collaterale accettato: anche XrRigPlacer
+        /// ascolta quell'evento e riporta il rig al centro del quadrato — non e' piu' pericoloso
+        /// (il suolo non e' mai stato distrutto e la quota viene dal builder), ma se in aula
+        /// risultasse fastidioso il rimedio e' separare l'evento "il suolo e' cambiato" da
+        /// "il soprassuolo e' cambiato".
+        /// </summary>
         public void RestoreStand()
         {
             if (felled.Count == 0 && youngGOs.Count == 0) return;
@@ -896,6 +931,5 @@ namespace Artemis.Regeneration
 
             OnRebuilt?.Invoke();
         }
-
     }
 }

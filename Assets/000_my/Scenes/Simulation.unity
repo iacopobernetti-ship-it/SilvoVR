@@ -247,6 +247,7 @@ GameObject:
   - component: {fileID: 660816979}
   - component: {fileID: 660816978}
   - component: {fileID: 660816982}
+  - component: {fileID: 660816983}
   m_Layer: 0
   m_Name: SimTools
   m_TagString: Untagged
@@ -282,6 +283,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Artemis.Regeneration.SimulationPanel
   tabTitle: Felling
   clearConfirmSeconds: 4
+  resetConfirmSeconds: 6
 --- !u!114 &660816980
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -345,6 +347,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Artemis.Session.SimulationSyncVR
   builder: {fileID: 1210512531}
   waitBeforeComplaining: 3
+--- !u!114 &660816983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 660816977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c74bf36f56c6d648b5ba68a3ee7e9ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Artemis.Regeneration.MapPanel
+  tabTitle: Map
+  miniMapLayerName: MiniMap
+  alsoRender:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  textureSize: 512
+  cameraHeight: 200
+  background: {r: 0.1, g: 0.12, b: 0.1, a: 1}
+  cellColor: {r: 1, g: 1, b: 1, a: 0.85}
+  cellLineWidth: 0.12
+  playerBlip: {r: 1, g: 0.95, b: 0.3, a: 1}
+  blipSize: 1.5
+  flipNorthSouth: 1
 --- !u!1 &1085496440
 GameObject:
   m_ObjectHideFlags: 0

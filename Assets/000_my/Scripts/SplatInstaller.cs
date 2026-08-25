@@ -65,6 +65,18 @@ namespace Artemis.Vr
                 return;
             }
 #endif
+            // Si installa SOLO se il progetto legge davvero dal disco. Con sorgente HttpUrl gli
+            // splat arrivano dalla rete e copiare 270 MB sul visore sarebbe lavoro inutile —
+            // per giunta invisibile, e quindi difficile da collegare alla propria causa quando ci
+            // si chiede perche' il primo avvio impiega un minuto.
+            var mode = SplatSourceConfig.Resolve(LCCRendererVR.SplatSource.PersistentData);
+            if (mode != LCCRendererVR.SplatSource.PersistentData)
+            {
+                Debug.Log($"[SplatInstaller] sorgente di progetto = {mode}: nessuna installazione.");
+                enabled = false;
+                return;
+            }
+
             StartCoroutine(InstallRoutine());
         }
 

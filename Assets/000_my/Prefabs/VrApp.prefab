@@ -355,9 +355,9 @@ MonoBehaviour:
   ringMinRadius: 0.22
   ringThickness: 0.06
   blazeSize: 0.5
-  showGapOutlines: 0
+  showGapOutlines: 1
   gapColor: {r: 0.25, g: 0.9, b: 0.35, a: 1}
-  outlineWidth: 0.14
+  outlineWidth: 0.05
   outlineLift: 0.08
   outlineSubdivisions: 6
 --- !u!114 &1619504335442013470

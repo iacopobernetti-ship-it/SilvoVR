@@ -17577,7 +17577,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void BaseField_1__cctor_mA76898D28BF390F54686
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 149375
+// Method Definition Index: 149381
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void BaseJsonVariableInfo_1__ctor_mDD6398C609946C8EE4AB39D446B567C6F27DF202_gshared (BaseJsonVariableInfo_1_tEA9F9E4B63BEFCCE451207267E4FCC078CA7CAF8* __this, RuntimeObject* ___0_info, const RuntimeMethod* method) 
 {
 	{
@@ -17591,7 +17591,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void BaseJsonVariableInfo_1__ctor_mDD6398C609
 		return;
 	}
 }
-// Method Definition Index: 149376
+// Method Definition Index: 149382
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* BaseJsonVariableInfo_1_GetName_m51EAED055F7C480B8F81013DC6B7D3845DD3B3D8_gshared (BaseJsonVariableInfo_1_tEA9F9E4B63BEFCCE451207267E4FCC078CA7CAF8* __this, const RuntimeMethod* method) 
 {
 	{
@@ -17603,7 +17603,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* BaseJsonVariableInfo_1_GetName_m51E
 		return L_1;
 	}
 }
-// Method Definition Index: 149379
+// Method Definition Index: 149385
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR StringU5BU5D_t7674CD946EC0CE7B3AE0BE70E6EE85F2ECD9F248* BaseJsonVariableInfo_1_GetSerializeNames_m88724A9E8623517957C6F01D781EAECCECD81BE0_gshared (BaseJsonVariableInfo_1_tEA9F9E4B63BEFCCE451207267E4FCC078CA7CAF8* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -17770,7 +17770,7 @@ IL_006b:
 		return L_23;
 	}
 }
-// Method Definition Index: 149380
+// Method Definition Index: 149386
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool BaseJsonVariableInfo_1_GetShouldSerialize_m4E58D9CAE970B9C9096304115717D01757D8E6A3_gshared (BaseJsonVariableInfo_1_tEA9F9E4B63BEFCCE451207267E4FCC078CA7CAF8* __this, const RuntimeMethod* method) 
 {
 	{
@@ -17833,7 +17833,7 @@ IL_002b:
 		return (bool)1;
 	}
 }
-// Method Definition Index: 149383
+// Method Definition Index: 149389
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool BaseJsonVariableInfo_1_GetShouldDeserialize_m1883C83B17C70C9D0865C8E0F0BD7C4B4C7AD130_gshared (BaseJsonVariableInfo_1_tEA9F9E4B63BEFCCE451207267E4FCC078CA7CAF8* __this, const RuntimeMethod* method) 
 {
 	{
@@ -30482,7 +30482,7 @@ IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR String_t* VisualElement_get_viewD
 		return L_0;
 	}
 }
-// Method Definition Index: 149469
+// Method Definition Index: 149475
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR String_t* JsonPropertyAttribute_get_PropertyName_mEF2DC572AB5568F23749E61FF62E92A5748A0121_inline (JsonPropertyAttribute_tAE8F411AD92C500F718638244884056850333FA0* __this, const RuntimeMethod* method) 
 {
 	{

@@ -126,12 +126,21 @@ namespace Artemis.Regeneration
 
         private void BuildFellingMarkers(MartellataData.FelledTree t)
         {
-            float groundY = SampleGround(t.x, t.z);
             float radius = Mathf.Max(t.dbh * 0.5f * ringWidthFactor, ringMinRadius);
+
+            // Il suolo si campiona ATTORNO al fusto, non attraverso.
+            //
+            // Da quando la martellata salva l'ASSE del fusto invece del punto cliccato sulla
+            // corteccia, la verticale in (x, z) passa dentro il tronco: il "punto piu' basso"
+            // lungo quella retta puo' essere l'interno del guscio, la base del tronco, o niente
+            // affatto — e in quel caso si ripiegava su y = 0, cioe' sottoterra, dove il marker
+            // esiste ma non lo vede nessuno. Campionando su una corona di raggio maggiore del
+            // fusto si tocca il terreno vero, che e' quello che serve.
+            float groundY = SampleGroundAround(t.x, t.z, Mathf.Max(t.dbh, 0.4f));
             var breast = new Vector3(t.x, groundY + breastHeight, t.z);
 
             BuildRing(breast, radius);
-            BuildBlaze(breast);
+            BuildBlaze(breast, radius);
         }
 
         private void BuildRing(Vector3 center, float radius)
@@ -157,12 +166,20 @@ namespace Artemis.Regeneration
 
         /// Due barre incrociate che guardano sempre il giocatore: una X piatta sarebbe illeggibile
         /// da tre quarti, ed e' proprio da li' che di solito la si guarda camminando.
-        private void BuildBlaze(Vector3 center)
+        private void BuildBlaze(Vector3 center, float radius)
         {
             var go = new GameObject("Blaze");
             go.transform.SetParent(root, false);
             go.transform.position = center;
-            go.AddComponent<BillboardVR>();
+
+            // La X sta sulla SUPERFICIE rivolta a chi guarda, non al centro geometrico: al centro
+            // finirebbe DENTRO il fusto, e da quando la mesh del rilievo fa da occlusore
+            // depth-only il tronco la nasconde per davvero — cosa che prima non accadeva solo
+            // perche' nulla occludeva nulla. Il raggio glielo si passa perche' e' esattamente di
+            // quanto va spostata in avanti.
+            var bb = go.AddComponent<BillboardVR>();
+            bb.Anchor = center;
+            bb.SurfaceOffset = radius;
 
             for (int k = 0; k < 2; k++)
             {
@@ -216,6 +233,31 @@ namespace Artemis.Regeneration
         /// Suolo = superficie PIU' BASSA lungo la verticale, sondata in entrambe le direzioni: il
         /// collider dell'area copre anche chiome e tronchi, e un raggio solo verso il basso
         /// appoggerebbe i marker sulle cime degli alberi.
+        /// <summary>
+        /// Quota del terreno attorno a un fusto: si sonda su una corona di punti a distanza
+        /// <paramref name="avoid"/> dall'asse e si tiene il piu' basso, cosi' il tronco stesso
+        /// non entra mai nella misura. Se nessun punto della corona colpisce, si ripiega sulla
+        /// verticale centrale — meglio una quota discutibile che un marker a quota zero.
+        /// </summary>
+        private float SampleGroundAround(float x, float z, float avoid)
+        {
+            const int probes = 6;
+            float lowest = float.MaxValue;
+            for (int i = 0; i < probes; i++)
+            {
+                float a = Mathf.PI * 2f * i / probes;
+                float y = SampleGround(x + Mathf.Cos(a) * avoid, z + Mathf.Sin(a) * avoid);
+                if (y != 0f && y < lowest) lowest = y;
+            }
+            if (lowest != float.MaxValue) return lowest;
+
+            float centre = SampleGround(x, z);
+            if (centre == 0f)
+                Debug.LogWarning($"[MartellataViewerVR] nessun terreno sotto ({x:F1}, {z:F1}): " +
+                                 "controlla il Terrain Layer del componente.");
+            return centre;
+        }
+
         private float SampleGround(float x, float z)
         {
             var up = Physics.RaycastAll(new Vector3(x, -rayLength, z), Vector3.up, rayLength * 2f, terrainLayer);
@@ -233,12 +275,37 @@ namespace Artemis.Regeneration
     /// <summary>Si orienta verso il giocatore a ogni frame (per la X).</summary>
     public class BillboardVR : MonoBehaviour
     {
+        /// <summary>Centro dell'ancoraggio (l'asse del fusto). Se resta a zero si usa la
+        /// posizione iniziale dell'oggetto, cosi' vecchi usi continuano a funzionare.</summary>
+        public Vector3 Anchor;
+
+        /// <summary>Di quanto scostarsi dall'ancora VERSO chi guarda: serve a posare il segno
+        /// sulla superficie del fusto invece che nel suo centro, dove sarebbe sepolto.</summary>
+        public float SurfaceOffset;
+
         private Camera cam;
+        private bool anchored;
+
+        private void Awake()
+        {
+            if (Anchor == Vector3.zero) Anchor = transform.position;
+            anchored = true;
+        }
+
         private void LateUpdate()
         {
             if (cam == null) cam = Camera.main;
-            if (cam != null)
-                transform.rotation = Quaternion.LookRotation(transform.position - cam.transform.position);
+            if (cam == null) return;
+
+            Vector3 toCam = cam.transform.position - Anchor;
+            toCam.y = 0f;                                   // il segno resta alla sua quota
+            if (toCam.sqrMagnitude < 0.0001f) return;
+            toCam.Normalize();
+
+            if (anchored && SurfaceOffset > 0.001f)
+                transform.position = Anchor + toCam * SurfaceOffset;
+
+            transform.rotation = Quaternion.LookRotation(-toCam, Vector3.up);
         }
     }
 }

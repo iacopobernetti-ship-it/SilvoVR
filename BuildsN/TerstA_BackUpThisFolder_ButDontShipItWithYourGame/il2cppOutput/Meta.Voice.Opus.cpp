@@ -404,7 +404,7 @@ IL2CPP_EXTERN_C void DEFAULT_CALL OpusPcmSoftClip(float*, int32_t, int32_t, floa
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 162975
+// Method Definition Index: 162981
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR MonoScriptData_t507DCF6FE72E4067FB250ED46543AE55F83F3F96 UnitySourceGeneratedAssemblyMonoScriptTypes_v1_Get_m0EEBCD54B4C6BED3DF1847900BC90280FD1EE688 (const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -438,7 +438,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR MonoScriptData_t507DCF6FE72E4067FB250ED46543A
 		return L_6;
 	}
 }
-// Method Definition Index: 162976
+// Method Definition Index: 162982
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void UnitySourceGeneratedAssemblyMonoScriptTypes_v1__ctor_m6F094AAD4F3EE832E067C8F58460B93006D02EEB (UnitySourceGeneratedAssemblyMonoScriptTypes_v1_tE28D92F166AA21AF3FEAF362C5B9F80BFF3CE7C4* __this, const RuntimeMethod* method) 
 {
 	{
@@ -524,7 +524,7 @@ IL2CPP_EXTERN_C void MonoScriptData_t507DCF6FE72E4067FB250ED46543AE55F83F3F96_ma
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 162977
+// Method Definition Index: 162983
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Decoder__ctor_m1ED15A896287B517A6FA1AD120C8E6E6A52AEF72 (Decoder_t7FB7949B8C3EF3CDC69C2621A360547E7966FE66* __this, int32_t ___0_samplingFrequency, int32_t ___1_channels, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -585,7 +585,7 @@ IL_0046:
 		return;
 	}
 }
-// Method Definition Index: 162978
+// Method Definition Index: 162984
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Decoder_Decode_m230D3D443C1123ACF03D9756BD7C0579F5E7A737 (Decoder_t7FB7949B8C3EF3CDC69C2621A360547E7966FE66* __this, ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031* ___0_data, int32_t ___1_dataLength, SingleU5BU5D_t89DEFE97BCEDB5857010E79ECE0F52CF6E93B87C* ___2_pcm, int32_t ___3_decodeFec, const RuntimeMethod* method) 
 {
 	int32_t V_0 = 0;
@@ -640,7 +640,7 @@ IL_0014:
 		return L_15;
 	}
 }
-// Method Definition Index: 162979
+// Method Definition Index: 162985
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Decoder_Dispose_mC81E04B55904C6E34733114D0DC116C7BB95FD57 (Decoder_t7FB7949B8C3EF3CDC69C2621A360547E7966FE66* __this, bool ___0_disposing, const RuntimeMethod* method) 
 {
 	{
@@ -683,7 +683,7 @@ IL_0038:
 		return;
 	}
 }
-// Method Definition Index: 162980
+// Method Definition Index: 162986
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Decoder_Finalize_m6EC59EA4C857B551C79F85113940444B3A1B645A (Decoder_t7FB7949B8C3EF3CDC69C2621A360547E7966FE66* __this, const RuntimeMethod* method) 
 {
 	{
@@ -715,7 +715,7 @@ IL_0010:
 		return;
 	}
 }
-// Method Definition Index: 162981
+// Method Definition Index: 162987
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Decoder_Dispose_m9D7BBF4DA7E8FC4A0773CAAF9D49D8263887CE24 (Decoder_t7FB7949B8C3EF3CDC69C2621A360547E7966FE66* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -742,7 +742,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Decoder_Dispose_m9D7BBF4DA7E8FC4A0773CAA
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 162982
+// Method Definition Index: 162988
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Encoder_get_Bitrate_mA517947CC532114A8E513BE6EE09DE7784728A54 (Encoder_tEC9A456262DD2B80D554E54344C002E6B83E3FF9* __this, const RuntimeMethod* method) 
 {
 	{
@@ -751,7 +751,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Encoder_get_Bitrate_mA517947CC532114A
 		return L_0;
 	}
 }
-// Method Definition Index: 162983
+// Method Definition Index: 162989
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Encoder_set_Bitrate_mC8813D43E111643906789E1F53FC983516239D5F (Encoder_tEC9A456262DD2B80D554E54344C002E6B83E3FF9* __this, int32_t ___0_value, const RuntimeMethod* method) 
 {
 	{
@@ -767,7 +767,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Encoder_set_Bitrate_mC8813D43E1116439067
 		return;
 	}
 }
-// Method Definition Index: 162984
+// Method Definition Index: 162990
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Encoder_get_Complexity_m9B300CCB308D255057A318A6EC29FFB24C317934 (Encoder_tEC9A456262DD2B80D554E54344C002E6B83E3FF9* __this, const RuntimeMethod* method) 
 {
 	{
@@ -776,7 +776,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Encoder_get_Complexity_m9B300CCB308D2
 		return L_0;
 	}
 }
-// Method Definition Index: 162985
+// Method Definition Index: 162991
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Encoder_set_Complexity_m5BAA7CF53DEF1BC04E5E3CD36CC7C1FFF179AFF6 (Encoder_tEC9A456262DD2B80D554E54344C002E6B83E3FF9* __this, int32_t ___0_value, const RuntimeMethod* method) 
 {
 	{
@@ -792,7 +792,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Encoder_set_Complexity_m5BAA7CF53DEF1BC0
 		return;
 	}
 }
-// Method Definition Index: 162986
+// Method Definition Index: 162992
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Encoder_get_Signal_m382AFC04503D6A9AA0208D480EF87A570E6D7502 (Encoder_tEC9A456262DD2B80D554E54344C002E6B83E3FF9* __this, const RuntimeMethod* method) 
 {
 	{
@@ -801,7 +801,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Encoder_get_Signal_m382AFC04503D6A9AA
 		return L_0;
 	}
 }
-// Method Definition Index: 162987
+// Method Definition Index: 162993
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Encoder_set_Signal_mB4E6B8CE587BEFD9B21FC7FAF9BCDF8CD31BB72C (Encoder_tEC9A456262DD2B80D554E54344C002E6B83E3FF9* __this, int32_t ___0_value, const RuntimeMethod* method) 
 {
 	{
@@ -817,7 +817,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Encoder_set_Signal_mB4E6B8CE587BEFD9B21F
 		return;
 	}
 }
-// Method Definition Index: 162988
+// Method Definition Index: 162994
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Encoder__ctor_m2272023985A26BAAC34886213AF8FDF08BD78AFF (Encoder_tEC9A456262DD2B80D554E54344C002E6B83E3FF9* __this, int32_t ___0_samplingFrequency, int32_t ___1_channels, int32_t ___2_application, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -875,7 +875,7 @@ IL_0047:
 		return;
 	}
 }
-// Method Definition Index: 162989
+// Method Definition Index: 162995
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Encoder_Encode_mCE9230BACBD237CD1A3FC133FA29CBB2D9018E3D (Encoder_tEC9A456262DD2B80D554E54344C002E6B83E3FF9* __this, SingleU5BU5D_t89DEFE97BCEDB5857010E79ECE0F52CF6E93B87C* ___0_pcm, ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031* ___1_output, const RuntimeMethod* method) 
 {
 	{
@@ -915,7 +915,7 @@ IL_0014:
 		return L_8;
 	}
 }
-// Method Definition Index: 162990
+// Method Definition Index: 162996
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Encoder_Dispose_mECDC4CD2D0E4DF79DF06ABEDA29E554E23FC6CE6 (Encoder_tEC9A456262DD2B80D554E54344C002E6B83E3FF9* __this, bool ___0_disposing, const RuntimeMethod* method) 
 {
 	{
@@ -958,7 +958,7 @@ IL_0038:
 		return;
 	}
 }
-// Method Definition Index: 162991
+// Method Definition Index: 162997
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Encoder_Finalize_mC59457BCA37427902CB854F4F5100256C034E737 (Encoder_tEC9A456262DD2B80D554E54344C002E6B83E3FF9* __this, const RuntimeMethod* method) 
 {
 	{
@@ -990,7 +990,7 @@ IL_0010:
 		return;
 	}
 }
-// Method Definition Index: 162992
+// Method Definition Index: 162998
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Encoder_Dispose_m00AB1C904B7938F4733E417075B2EB1D2488763F (Encoder_tEC9A456262DD2B80D554E54344C002E6B83E3FF9* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -1057,7 +1057,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Encoder_Dispose_m00AB1C904B7938F4733E417
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 162993
+// Method Definition Index: 162999
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR intptr_t Library_OpusEncoderCreate_m511277C1A955EFF458E5B9129C9EC6F005A16785 (int32_t ___0_samplingFrequency, int32_t ___1_channels, int32_t ___2_application, int32_t* ___3_error, const RuntimeMethod* method) 
 {
 	typedef intptr_t (DEFAULT_CALL *PInvokeFunc) (int32_t, int32_t, int32_t, int32_t*);
@@ -1079,7 +1079,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR intptr_t Library_OpusEncoderCreate_m511277C1A
 
 	return returnValue;
 }
-// Method Definition Index: 162994
+// Method Definition Index: 163000
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Library_OpusEncode_m2942AABA6BB80B92F8F44654D09D0C92EDD8465B (intptr_t ___0_encoder, Int16U5BU5D_t8175CE8DD9C9F9FB0CF4F58E45BC570575B43CFB* ___1_pcm, int32_t ___2_frameSize, ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031* ___3_data, int32_t ___4_maxDataBytes, const RuntimeMethod* method) 
 {
 	typedef int32_t (DEFAULT_CALL *PInvokeFunc) (intptr_t, int16_t*, int32_t, uint8_t*, int32_t);
@@ -1113,7 +1113,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Library_OpusEncode_m2942AABA6BB80B92F
 
 	return returnValue;
 }
-// Method Definition Index: 162995
+// Method Definition Index: 163001
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Library_OpusEncodeFloat_m2247BFE674B13ABE008B8B883BF0FA2A2833A670 (intptr_t ___0_encoder, SingleU5BU5D_t89DEFE97BCEDB5857010E79ECE0F52CF6E93B87C* ___1_pcm, int32_t ___2_frameSize, ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031* ___3_data, int32_t ___4_maxDataBytes, const RuntimeMethod* method) 
 {
 	typedef int32_t (DEFAULT_CALL *PInvokeFunc) (intptr_t, float*, int32_t, uint8_t*, int32_t);
@@ -1147,7 +1147,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Library_OpusEncodeFloat_m2247BFE674B1
 
 	return returnValue;
 }
-// Method Definition Index: 162996
+// Method Definition Index: 163002
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Library_OpusEncoderDestroy_m0AB2A3F21FE036742EA118AA571FF2D9F788FEAD (intptr_t ___0_encoder, const RuntimeMethod* method) 
 {
 	typedef void (DEFAULT_CALL *PInvokeFunc) (intptr_t);
@@ -1168,7 +1168,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Library_OpusEncoderDestroy_m0AB2A3F21FE0
 	#endif
 
 }
-// Method Definition Index: 162997
+// Method Definition Index: 163003
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Library_OpusEncoderSetBitrate_m7D2FB5E68B7ADDC355EDB4DF3E192EF8DB753831 (intptr_t ___0_encoder, int32_t ___1_bitrate, const RuntimeMethod* method) 
 {
 	typedef int32_t (DEFAULT_CALL *PInvokeFunc) (intptr_t, int32_t);
@@ -1190,7 +1190,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Library_OpusEncoderSetBitrate_m7D2FB5
 
 	return returnValue;
 }
-// Method Definition Index: 162998
+// Method Definition Index: 163004
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Library_OpusEncoderSetComplexity_mF0CE4052B36DE24973FDCA5811BEAF60B354731B (intptr_t ___0_encoder, int32_t ___1_complexity, const RuntimeMethod* method) 
 {
 	typedef int32_t (DEFAULT_CALL *PInvokeFunc) (intptr_t, int32_t);
@@ -1212,7 +1212,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Library_OpusEncoderSetComplexity_mF0C
 
 	return returnValue;
 }
-// Method Definition Index: 162999
+// Method Definition Index: 163005
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Library_OpusEncoderSetSignal_m6F3A7D8B75487DA509FC74065F101A603A484F09 (intptr_t ___0_encoder, int32_t ___1_signal, const RuntimeMethod* method) 
 {
 	typedef int32_t (DEFAULT_CALL *PInvokeFunc) (intptr_t, int32_t);
@@ -1234,7 +1234,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Library_OpusEncoderSetSignal_m6F3A7D8
 
 	return returnValue;
 }
-// Method Definition Index: 163000
+// Method Definition Index: 163006
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR intptr_t Library_OpusDecoderCreate_m82C5F3EE3CD50BC3CBF47F683664454CD48DE3B4 (int32_t ___0_samplingFrequency, int32_t ___1_channels, int32_t* ___2_error, const RuntimeMethod* method) 
 {
 	typedef intptr_t (DEFAULT_CALL *PInvokeFunc) (int32_t, int32_t, int32_t*);
@@ -1256,7 +1256,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR intptr_t Library_OpusDecoderCreate_m82C5F3EE3
 
 	return returnValue;
 }
-// Method Definition Index: 163001
+// Method Definition Index: 163007
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Library_OpusDecode_mDF75533B5834ED1BBE9412659A3B9CB19F8C32FF (intptr_t ___0_decoder, ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031* ___1_data, int32_t ___2_len, Int16U5BU5D_t8175CE8DD9C9F9FB0CF4F58E45BC570575B43CFB* ___3_pcm, int32_t ___4_frameSize, int32_t ___5_decodeFec, const RuntimeMethod* method) 
 {
 	typedef int32_t (DEFAULT_CALL *PInvokeFunc) (intptr_t, uint8_t*, int32_t, int16_t*, int32_t, int32_t);
@@ -1290,7 +1290,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Library_OpusDecode_mDF75533B5834ED1BB
 
 	return returnValue;
 }
-// Method Definition Index: 163002
+// Method Definition Index: 163008
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Library_OpusDecodeFloat_m63F90B1A0AAFE860ACB86883385EFA2C70D18DD9 (intptr_t ___0_decoder, ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031* ___1_data, int32_t ___2_len, SingleU5BU5D_t89DEFE97BCEDB5857010E79ECE0F52CF6E93B87C* ___3_pcm, int32_t ___4_frameSize, int32_t ___5_decodeFec, const RuntimeMethod* method) 
 {
 	typedef int32_t (DEFAULT_CALL *PInvokeFunc) (intptr_t, uint8_t*, int32_t, float*, int32_t, int32_t);
@@ -1324,7 +1324,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Library_OpusDecodeFloat_m63F90B1A0AAF
 
 	return returnValue;
 }
-// Method Definition Index: 163003
+// Method Definition Index: 163009
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Library_OpusDecoderDestroy_m2F1F6667A0C01F9F775801CCD57764424F9955D1 (intptr_t ___0_decoder, const RuntimeMethod* method) 
 {
 	typedef void (DEFAULT_CALL *PInvokeFunc) (intptr_t);
@@ -1345,7 +1345,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Library_OpusDecoderDestroy_m2F1F6667A0C0
 	#endif
 
 }
-// Method Definition Index: 163004
+// Method Definition Index: 163010
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Library_OpusPcmSoftClip_mE66B0E1F5215B6E0FA85669CBBBF8E2F343E7E51 (SingleU5BU5D_t89DEFE97BCEDB5857010E79ECE0F52CF6E93B87C* ___0_pcm, int32_t ___1_frameSize, int32_t ___2_channels, SingleU5BU5D_t89DEFE97BCEDB5857010E79ECE0F52CF6E93B87C* ___3_softclipMem, const RuntimeMethod* method) 
 {
 	typedef void (DEFAULT_CALL *PInvokeFunc) (float*, int32_t, int32_t, float*);
@@ -1378,7 +1378,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Library_OpusPcmSoftClip_mE66B0E1F5215B6E
 	#endif
 
 }
-// Method Definition Index: 163005
+// Method Definition Index: 163011
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Library__ctor_mCAC59CEE144806910040A9512921945865B9E560 (Library_tED251107F8557E50DDCBA98B7EC5DA2E563B109E* __this, const RuntimeMethod* method) 
 {
 	{
