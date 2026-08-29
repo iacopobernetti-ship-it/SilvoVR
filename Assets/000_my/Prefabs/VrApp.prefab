@@ -176,7 +176,7 @@ MonoBehaviour:
   distance: 0.6
   heightOffset: -0.8
   azimuthDegrees: 0
-  trackHeadYaw: 0
+  trackHeadYaw: 1
   trackHeadPitch: 0
   trackHeadRoll: 0
   deadZoneDegrees: 0

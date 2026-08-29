@@ -22,7 +22,7 @@ namespace Artemis.Regeneration
         private float nextRefresh;
 
         private Image showImg;
-        private Button openBtn;
+        private Button openBtn, showBtn;
         private TMP_Text showLabel, infoLabel, statusLabel;
 
         private void Update()
@@ -54,7 +54,7 @@ namespace Artemis.Regeneration
             });
             openBtn = oBtn;
             var (sBtn, sImg) = hud.MakeButton(row, "Show last\nmarking", OnShowClicked);
-            showImg = sImg;
+            showBtn = sBtn; showImg = sImg;
             showLabel = sBtn.GetComponentInChildren<TMP_Text>();
 
             statusLabel = hud.MakeLabel(page, "", 15);
@@ -84,11 +84,21 @@ namespace Artemis.Regeneration
             var v = MartellataViewerVR.Instance;
             bool showing = v != null && v.IsShowing;
 
-            infoLabel.text = trees == 0
-                ? (VrSession.IsStudent
-                    ? "waiting for the teacher — the stand comes from their inventory"
-                    : "SURVEY SOME TREES FIRST: the simulation is built from this plot's inventory")
-                : $"{trees} trees surveyed here" + (hasMarking ? "  ·  a marking is saved" : "  ·  no marking yet");
+            // La martellata viene PRIMA dell'inventario locale, ed e' una correzione non un
+            // dettaglio: lo studente non rileva quest'area — misura per conto suo dove capita — e
+            // il suo inventario locale e' quasi sempre vuoto. Guardando quello per primo, il
+            // pannello gli diceva "attendi il docente" anche quando la martellata da rivedere
+            // c'era gia', ed era proprio la cosa che era li' per fare.
+            if (hasMarking)
+                infoLabel.text = trees > 0
+                    ? $"{trees} trees surveyed here  ·  a marking is saved"
+                    : "a marking is saved for this plot — show it over the real forest";
+            else
+                infoLabel.text = trees == 0
+                    ? (VrSession.IsStudent
+                        ? "no marking yet — it appears here after the felling in the simulation"
+                        : "SURVEY SOME TREES FIRST: the simulation is built from this plot's inventory")
+                    : $"{trees} trees surveyed here  ·  no marking yet";
 
             // Nascosto, non grigio: aprire la simulazione e' una decisione del docente.
             // In piu' resta INERTE finche' non c'e' un inventario: la simulazione si costruisce
@@ -101,8 +111,13 @@ namespace Artemis.Regeneration
                     openBtn.gameObject.SetActive(VrSession.CanCommand);
                 openBtn.interactable = canOpen;
             }
+            // Inerte quando non c'e' martellata: premerlo produrrebbe solo un messaggio di
+            // assenza, cioe' un pulsante che risponde "no" — meglio che si veda prima.
+            if (showBtn != null) showBtn.interactable = hasMarking || showing;
             if (showLabel != null) showLabel.text = showing ? "Hide\nmarking" : "Show last\nmarking";
-            if (showImg != null) showImg.color = showing ? hud.ActiveColor : hud.ButtonColor;
+            if (showImg != null) showImg.color = showing ? hud.ActiveColor
+                                               : (hasMarking ? hud.ButtonColor
+                                                             : new Color(0.18f, 0.18f, 0.18f, 1f));
 
             statusLabel.text = v != null ? v.Status : "";
         }

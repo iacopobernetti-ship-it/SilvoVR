@@ -159,7 +159,7 @@ namespace Artemis.Regeneration
             foreach (var kv in decadeImages)
                 kv.Value.color = kv.Key == curStart ? hud.ActiveColor : hud.ButtonColor;
 
-            periodLabel.text = $"{curScenario.ToUpperInvariant()}   {curStart}-{curEnd}";
+            SetLine(periodLabel, $"{curScenario.ToUpperInvariant()}   {curStart}-{curEnd}");
 
             // --- i tre indici, dalla fonte giusta ---------------------------------------------
             bool hasData = shared ? st.HasClimateData : client.HasData;
@@ -169,20 +169,46 @@ namespace Artemis.Regeneration
 
             if (!hasData)
             {
-                indicesLabel.text = "";
-                aridityLabel.text = "";
-                statusLabel.text = waiting ? "querying the climate service…"
-                                           : (shared ? "waiting for the teacher's scenario"
-                                                     : "no climate data yet");
+                SetLine(indicesLabel, "");
+                SetLine(aridityLabel, "");
+                SetLine(statusLabel, waiting ? "querying the climate service…"
+                                             : (shared ? "waiting for the teacher's scenario"
+                                                       : "no climate data yet"));
                 return;
             }
 
-            indicesLabel.text = $"summer T {tSummer:F1} °C     De Martonne {dm:F1}";
-            aridityLabel.text = $"aridity  {arid:F2}" + Bar(arid);
+            SetLine(indicesLabel, $"summer T {tSummer:F1} °C     De Martonne {dm:F1}");
+            SetLine(aridityLabel, $"aridity  {arid:F2}" + Bar(arid));
 
-            statusLabel.text = waiting ? "updating…"
-                             : shared ? "the teacher sets the scenario for the class"
-                             : "fell again to apply this scenario to a new gap";
+            SetLine(statusLabel, waiting ? "updating…"
+                               : shared ? "the teacher sets the scenario for the class"
+                               : "fell again to apply this scenario to a new gap");
+        }
+
+        /// <summary>
+        /// Scrive un'etichetta E le da' l'altezza che le serve. VrHud.MakeLabel fissa
+        /// preferredHeight a UNA riga, ma quando TMP manda a capo un testo lungo la seconda riga
+        /// finisce sopra l'etichetta successiva — ed e' quello che rendeva illeggibile il
+        /// pannello sul visore piu' affollato. Vuota = altezza zero, niente buchi.
+        /// </summary>
+        private static void SetLine(TMP_Text t, string text)
+        {
+            if (t == null) return;
+            if (t.text != text) t.text = text;
+
+            var le = t.GetComponent<LayoutElement>();
+            if (le == null) return;
+
+            if (string.IsNullOrEmpty(text))
+            {
+                if (le.preferredHeight != 0f) le.preferredHeight = 0f;
+                return;
+            }
+
+            t.ForceMeshUpdate();
+            int lines = Mathf.Max(1, t.textInfo.lineCount);
+            float h = (t.fontSize + 6f) * lines + 8f;
+            if (!Mathf.Approximately(le.preferredHeight, h)) le.preferredHeight = h;
         }
 
         /// <summary>

@@ -4,50 +4,65 @@ using UnityEngine;
 namespace Artemis.Session
 {
     /// <summary>
-    /// Scene-local, uno per scena-area, sull'oggetto SpawnPoint: porta il rig XR PERSISTENTE
-    /// (vive nella scena Base, sopravvive ai cambi) sullo spawn di QUESTA area.
+    /// Porta il rig XR PERSISTENTE sul punto di partenza di QUESTA scena, e garantisce che ci sia
+    /// del terreno sotto i piedi prima di restituire la gravita'.
     ///
-    /// E' il discendente magro di SpawnPointBinder: niente CharacterController da congelare,
-    /// niente attesa del terreno — il collider dell'area e' un asset di scena, esiste dal
-    /// primo frame. Restano due lezioni desktop che valgono ancora:
-    ///  - il rig puo' apparire DOPO Start() (persistente, ordine di caricamento non garantito):
-    ///    retry paziente, mai pretendere il primo frame;
-    ///  - "suolo" = il punto PIU' BASSO lungo la verticale (RaycastAll dal basso verso l'alto):
-    ///    se lo spawn finisse sotto una chioma con collider, il primo hit sarebbe la cima
-    ///    degli alberi e il player partirebbe appollaiato lassu'.
+    /// REVISIONE dopo la sessione di debug sulle "cadute nel vuoto". I difetti erano tre, e si
+    /// sommavano:
     ///
-    /// REVISIONE (bug della caduta intermittente in Simulation): la regola del "punto piu'
-    /// basso" vale per i MESH COLLIDER delle aree GS, dove serve a bucare le chiome. Sul
-    /// BOX COLLIDER pieno del suolo generato trovava invece la faccia INFERIORE della soletta
-    /// (il raggio che sale entra da sotto, quello che scende da sopra, e il piu' basso vince):
-    /// il rig veniva posato 15 cm DENTRO il pavimento, con la capsula del CharacterController
-    /// compenetrata di ~8 cm — cioe' al limite della Skin Width (0.08). Da li' l'intermittenza:
-    /// a volte il CC si faceva espellere, a volte il primo Move tunnellava attraverso la
-    /// soletta e il player precipitava nel vuoto. La correzione: quando il suolo e' GENERATO
-    /// la sua quota non si sonda, SI CONOSCE — e' StandBuilder.GroundY. La sonda fisica resta
-    /// per le aree GS, dove e' nata e ha ragione lei.
+    ///  1. L'ancora era un oggetto piazzato A MANO in scena. Se lo SpawnPoint di un'area sta
+    ///     vicino al bordo della mesh — cosa che non si nota finche' non ci si sposta — basta uno
+    ///     scostamento per finire fuori.
+    ///
+    ///  2. Lo sparpagliamento dipende da LocalClientId, cioe' DALLO STATO DI RETE. Ecco perche'
+    ///     la stessa build su due visori con lo stesso ruolo apparente atterrava in due punti
+    ///     diversi: un docente host ha id 0 e riceve un offset fisso di oltre un metro, lo stesso
+    ///     ruolo fuori sessione riceve zero. Uno dentro il collider, l'altro sistematicamente
+    ///     fuori — deterministico, non casuale, ed e' per questo che sembrava inspiegabile.
+    ///
+    ///  3. La posizione calcolata non veniva MAI verificata prima di sbloccare il
+    ///     CharacterController: se la sonda non trovava terreno entro il tempo massimo si
+    ///     scriveva un avviso nel log e si lasciava cadere il giocatore comunque.
+    ///
+    /// Ora: l'ancora e' il CENTRO del collider dell'area (o del quadrato generato in Simulation);
+    /// ogni posizione candidata viene VALIDATA con una sonda prima di essere usata, e se non
+    /// regge si ripiega verso il centro; e una rete di sicurezza riprende chi sta precipitando.
+    ///
+    /// Resta la lezione desktop: il rig puo' apparire DOPO Start(), quindi retry paziente, mai
+    /// pretendere il primo frame.
+    ///
+    /// Va sull'oggetto SpawnPoint di ogni scena, come prima.
     /// </summary>
     public class XrRigPlacer : MonoBehaviour
     {
-        [Tooltip("Punto di spawn. Vuoto = il transform di questo oggetto.")]
+        [Header("Ancora")]
+        [Tooltip("Usa il CENTRO del collider dell'area invece del punto di spawn piazzato a mano. " +
+                 "E' la scelta robusta: il centro di un'area di saggio ha terreno sotto per " +
+                 "definizione, un punto messo a mano puo' finire vicino al bordo senza che si veda.")]
+        [SerializeField] private bool useColliderCentre = true;
+
+        [Tooltip("Punto di spawn di ripiego, usato se il collider non si trova o se il centro " +
+                 "e' disattivato. Vuoto = il transform di questo oggetto. Da lui si prende " +
+                 "comunque sempre la DIREZIONE dello sguardo iniziale.")]
         [SerializeField] private Transform spawnPoint;
 
-        [Tooltip("Nella scena Simulation il suolo e' GENERATO da StandBuilder, con centro e lato " +
-                 "che dipendono dagli alberi dell'inventario: un punto di spawn fisso puo' " +
-                 "cadere vicino al bordo o fuori dal piano. Con questo attivo il rig viene posato " +
-                 "al centro del quadrato effettivamente costruito, qualunque esso sia — e alla " +
-                 "QUOTA dichiarata dal builder, senza interrogare la fisica.")]
+        [Tooltip("In Simulation il suolo e' GENERATO da StandBuilder: centro e QUOTA arrivano da " +
+                 "lui e la fisica non viene interrogata affatto. Sul box pieno della soletta la " +
+                 "regola del 'punto piu' basso' troverebbe la faccia INFERIORE, posando il rig " +
+                 "dentro il pavimento — compenetrato quanto la Skin Width, cioe' espulso o " +
+                 "tunnellato a seconda del frame.")]
         [SerializeField] private bool useGeneratedGroundCentre = true;
 
         [Header("Sparpagliamento in sessione")]
-        [Tooltip("Raggio entro cui distanziare i partecipanti attorno allo spawn (m). 0 = tutti " +
-                 "sullo stesso punto. Serve in multiplayer: senza, la classe si materializza " +
-                 "compenetrata nello stesso metro quadrato.")]
-        [SerializeField] private float scatterRadius = 1.2f;
+        [Tooltip("Raggio entro cui distanziare i partecipanti attorno all'ancora (m). Tenerlo " +
+                 "piccolo: la classe deve restare a portata di voce e di sguardo, e ogni metro " +
+                 "in piu' e' un metro piu' vicino al bordo.")]
+        [SerializeField] private float scatterRadius = 0.8f;
 
         [Header("Aggancio al suolo")]
         [SerializeField] private bool snapToGround = true;
-        [Tooltip("Layer del collider terreno di questa scena.")]
+        [Tooltip("Layer del collider terreno di questa scena (PlotTerrain nelle aree, SimGround " +
+                 "in Simulation).")]
         [SerializeField] private LayerMask groundLayer = ~0;
         [Tooltip("Semilunghezza della sonda verticale: deve abbracciare l'area dal punto piu' " +
                  "basso al piu' alto.")]
@@ -55,27 +70,45 @@ namespace Artemis.Session
         [SerializeField] private float groundOffset = 0.05f;
 
         [Header("Congelamento")]
-        [Tooltip("Blocca il movimento del giocatore finche' non e' stato posato sul suolo. " +
-                 "Serve arrivando da un'altra scena: il rig si ricostruisce insieme al resto e " +
-                 "c'e' una finestra di qualche frame in cui il giocatore esiste ma il collider " +
-                 "del terreno non e' ancora registrato nella fisica — e in quella finestra la " +
-                 "gravita' lavora indisturbata. Partendo dalla scena il problema non si vede, " +
-                 "perche' tutto e' gia' pronto al primo frame.")]
         [SerializeField] private bool freezeUntilPlaced = true;
-        [Tooltip("Valvola di sicurezza: sblocca comunque dopo questo tempo, cosi' un suolo che " +
-                 "non arriva mai non puo' intrappolare nessuno.")]
+        [Tooltip("Valvola di sicurezza: sblocca comunque dopo questo tempo. Alla scadenza si posa " +
+                 "il rig sull'ancora, NON su una quota inventata.")]
         [SerializeField] private float maxFreezeSeconds = 8f;
 
+        [Header("Rete di sicurezza")]
+        [Tooltip("Riprende il giocatore se scende sotto la quota di posa di questo margine (m). " +
+                 "Serve contro le cause che non conosciamo: qualunque sia il motivo per cui si e' " +
+                 "finiti nel vuoto, cadere per sempre e' l'unico esito davvero inaccettabile in " +
+                 "aula. 0 = disattivata.")]
+        [SerializeField] private float fallRescueDepth = 8f;
+        [Tooltip("Quanti recuperi prima di rinunciare, per non entrare in un ciclo infinito se il " +
+                 "terreno e' irrecuperabile.")]
+        [SerializeField] private int maxRescues = 5;
+
         [Header("Ritentativi")]
-        [Tooltip("Per quanto insistere a cercare il rig (in build puo' arrivare tardi).")]
         [SerializeField] private float giveUpAfterSeconds = 10f;
         [SerializeField] private float retryInterval = 0.25f;
 
         private bool placed;
         private float started, nextTry;
         private CharacterController frozen;
-
         private Artemis.Regeneration.StandBuilder boundBuilder;
+
+        [Tooltip("Stampa TUTTI gli impatti lungo la verticale nel punto di posa, con quota e " +
+                 "normale. E' la misura che dice se la regola del 'punto piu' basso' sta pescando " +
+                 "qualcosa sotto il terreno vero — un frammento di scansione o l'altra faccia del " +
+                 "guscio — invece del suolo calpestabile. Da spegnere prima del pilot.")]
+        [SerializeField] private bool logGroundProbe = true;
+
+        private Vector3 lastGoodPosition;
+        private bool hasLastGood;
+        private int rescues;
+
+        /// Quante volte si e' gia' provato a posare qui: dopo una caduta si cambia posto, non si
+        /// ritenta lo stesso punto — che e' gia' stato smentito dai fatti.
+        private int attempt;
+
+        // ---- ciclo di vita ---------------------------------------------------------------------
 
         private void Start()
         {
@@ -89,24 +122,20 @@ namespace Artemis.Session
         }
 
         /// <summary>
-        /// Il suolo della simulazione e' GENERATO, e viene ricostruito ogni volta che cambia
-        /// l'inventario — sullo studente questo accade DOPO che il rig e' gia' stato posato,
-        /// quando arriva il soprassuolo del docente. In quel momento centro, lato e quota del
-        /// piano cambiano sotto i piedi: se non ci si riposa, si resta appesi nel vuoto o
-        /// sepolti. Ecco perche' la caduta capitava "non sempre, ma capitava": dipendeva da
-        /// quale dei due eventi arrivava prima.
+        /// Il suolo della simulazione e' GENERATO e viene ricostruito quando cambia l'inventario —
+        /// sullo studente questo accade DOPO che il rig e' gia' stato posato, quando arriva il
+        /// soprassuolo del docente. In quel momento centro, lato e quota cambiano sotto i piedi.
         /// </summary>
         private void OnGroundRebuilt()
         {
             Debug.Log("[XrRigPlacer] suolo ricostruito: riposiziono il rig.");
             placed = false;
-            started = Time.time;      // riparte anche la finestra di attesa
+            started = Time.time;
             nextTry = 0f;
+            rescues = 0;
             Freeze();
         }
 
-        /// Il CharacterController e' cio' che applica la gravita': disattivarlo congela il
-        /// giocatore dov'e', invece di lasciarlo precipitare mentre il terreno si registra.
         private void Freeze()
         {
             if (!freezeUntilPlaced || frozen != null) return;
@@ -123,147 +152,317 @@ namespace Artemis.Session
             if (frozen != null) { frozen.enabled = true; frozen = null; }
         }
 
+        // ---- posa -------------------------------------------------------------------------------
+
         private void Update()
         {
-            if (placed || Time.time < nextTry) return;
+            if (placed) { WatchForFalls(); return; }
+            if (Time.time < nextTry) return;
             nextTry = Time.time + retryInterval;
 
             Freeze();              // il rig puo' comparire dopo Start
 
-            if (Time.time - started > giveUpAfterSeconds)
+            var origin = FindFirstObjectByType<XROrigin>();
+            if (origin == null)
             {
-                Debug.LogWarning("[XrRigPlacer] nessun XROrigin trovato entro il timeout — rinuncio.");
-                placed = true;
-                Unfreeze();
+                if (Time.time - started > giveUpAfterSeconds)
+                {
+                    Debug.LogWarning("[XrRigPlacer] nessun XROrigin entro il timeout — rinuncio.");
+                    placed = true;
+                    Unfreeze();
+                }
                 return;
             }
 
-            var origin = FindFirstObjectByType<XROrigin>();
-            if (origin == null) return;
-
-            // Ci si aggancia allo StandBuilder appena esiste, per essere avvisati delle
-            // ricostruzioni successive del suolo.
             if (boundBuilder == null)
             {
                 boundBuilder = FindFirstObjectByType<Artemis.Regeneration.StandBuilder>();
                 if (boundBuilder != null) boundBuilder.OnRebuilt += OnGroundRebuilt;
             }
 
-            var spawn = spawnPoint != null ? spawnPoint : transform;
-            Vector3 pos = spawn.position;
-            float scatterLimit = scatterRadius;
+            bool timedOut = Time.time - started > maxFreezeSeconds;
 
-            // In una scena che HA uno StandBuilder, il suolo e' generato: non si posa nulla
-            // finche' non e' costruito, altrimenti si atterra su un piano che non esiste ancora.
-            if (useGeneratedGroundCentre && boundBuilder != null &&
-                boundBuilder.SquareSide <= 0.01f && Time.time - started < maxFreezeSeconds)
-                return;
-
-            // SUOLO GENERATO: centro E QUOTA arrivano dal builder, e la fisica non viene
-            // interrogata affatto. Il motivo e' il bug della caduta intermittente: la sonda
-            // "punto piu' basso" sul BoxCollider pieno della soletta trovava la faccia
-            // INFERIORE e posava il rig 15 cm dentro il pavimento — compenetrazione della
-            // capsula ~ skin width, cioe' espulsione o tunneling a seconda del frame. La quota
-            // del piano la dichiara chi il piano l'ha costruito; chiederla a un raycast e'
-            // chiedere a un testimone meno affidabile del progettista.
-            // (l'uso degli out sta DENTRO l'if: con il && in corto circuito il compilatore non
-            // puo' garantirne l'assegnazione fuori, ed e' un errore CS0165/CS0170)
-            bool onGeneratedGround = false;
-            if (useGeneratedGroundCentre &&
-                TryGeneratedGround(out Vector2 c, out float side, out float gy))
+            if (!TryResolveAnchor(out Vector3 anchor, out float extent, out bool generated))
             {
-                onGeneratedGround = true;
-                pos = new Vector3(c.x, gy + groundOffset, c.y);
-                // Lo sparpagliamento non deve poter spingere nessuno oltre il bordo: si limita
-                // a un terzo del semilato, che su un quadrato piccolo tiene tutti ben dentro.
-                scatterLimit = Mathf.Min(scatterRadius, side * 0.5f / 3f);
+                // Ancora non ancora disponibile: StandBuilder deve costruire, oppure il collider
+                // dell'area non e' ancora registrato nella fisica. Si aspetta CONGELATI — e' tutto
+                // il senso del congelamento.
+                if (!timedOut) return;
+
+                anchor = FallbackSpawn().position;
+                extent = 0f; generated = false;
+                Debug.LogWarning("[XrRigPlacer] ancora non risolta entro il tempo massimo: uso il " +
+                                 "punto di spawn di ripiego. Controlla groundLayer e il collider.");
             }
 
-            pos += ScatterOffset(scatterLimit);
-
-            if (snapToGround && !onGeneratedGround)
-            {
-                if (TrySampleGround(pos.x, pos.z, out float y)) pos.y = y + groundOffset;
-                else if (Time.time - started < maxFreezeSeconds)
-                {
-                    // Il collider puo' non essere ancora registrato nella fisica: si riprova al
-                    // tick successivo tenendo il giocatore congelato, invece di posarlo su una
-                    // quota inventata e lasciarlo cadere.
-                    return;
-                }
-                else
-                {
-                    Debug.LogWarning("[XrRigPlacer] nessun suolo sotto lo spawn entro il tempo " +
-                                     "massimo: uso la Y dello spawn cosi' com'e' — controlla " +
-                                     "groundLayer, la posizione e che il collider esista.");
-                }
-            }
-
-            // Si muove la RADICE del rig: il giocatore restera' fisicamente dov'e' nel suo
-            // spazio di gioco (offset camera dentro il play space), che su un'area di 400 m²
-            // e' irrilevante. Se un giorno servisse precisione al centimetro, il punto di
-            // raffinamento e' XROrigin.MoveCameraToWorldLocation + MatchOriginUpCameraForward.
+            Vector3 pos = ChoosePosition(anchor, extent, generated, out string how);
+            var spawn = FallbackSpawn();
             origin.transform.SetPositionAndRotation(pos, Quaternion.Euler(0f, spawn.eulerAngles.y, 0f));
 
             placed = true;
+            lastGoodPosition = pos;
+            hasLastGood = true;
             Unfreeze();
-            Debug.Log($"[XrRigPlacer] rig XR posato a {pos} in '{gameObject.scene.name}'" +
-                      (onGeneratedGround ? " (quota dal suolo generato)." : " (quota dalla sonda fisica)."));
+
+            Debug.Log($"[XrRigPlacer] rig XR posato a {pos} in '{gameObject.scene.name}' ({how}).");
+            if (logGroundProbe && !generated) LogVerticalHits(pos.x, pos.z);
         }
+
+        private Transform FallbackSpawn() => spawnPoint != null ? spawnPoint : transform;
 
         /// <summary>
-        /// Scostamento dallo spawn, uno diverso per ciascun partecipante.
-        ///
-        /// DETERMINISTICO e non casuale: l'angolo aureo (137.5 gradi) distribuisce gli indici
-        /// successivi in modo uniforme attorno al cerchio senza mai ripetersi, quindi due
-        /// partecipanti non finiscono mai nello stesso punto — cosa che con il caso puro
-        /// succederebbe eccome, e proprio in aula davanti a tutti. In piu' ognuno sa in anticipo
-        /// dove si materializzera', il che rende le prove ripetibili.
-        ///
-        /// Si sposta il RIG, non l'avatar: spostare l'avatar separerebbe la figura dalla persona,
-        /// e si vedrebbe il compagno mezzo metro a lato di dove punta davvero il suo raggio.
+        /// Da dove si parte: il centro del quadrato generato in Simulation, oppure il centro del
+        /// collider dell'area, oppure il punto di spawn. 'extent' e' il semilato utile entro cui
+        /// e' lecito sparpagliarsi.
         /// </summary>
-        private Vector3 ScatterOffset(float radius)
+        private bool TryResolveAnchor(out Vector3 anchor, out float extent, out bool generated)
         {
-            if (radius <= 0.01f) return Vector3.zero;
+            anchor = Vector3.zero; extent = 0f; generated = false;
 
-            var nm = Unity.Netcode.NetworkManager.Singleton;
-            if (nm == null || !nm.IsListening) return Vector3.zero;   // da soli, nessuno da evitare
+            // --- suolo GENERATO (Simulation): centro e quota li dichiara chi l'ha costruito ----
+            if (useGeneratedGroundCentre && boundBuilder != null)
+            {
+                if (boundBuilder.SquareSide <= 0.01f) return false;   // non ha ancora costruito
+                anchor = new Vector3(boundBuilder.SquareCenter.x,
+                                     boundBuilder.GroundY + groundOffset,
+                                     boundBuilder.SquareCenter.y);
+                extent = boundBuilder.SquareSide * 0.5f;
+                generated = true;
+                return true;
+            }
 
-            float a = nm.LocalClientId * 137.508f * Mathf.Deg2Rad;    // angolo aureo
-            return new Vector3(Mathf.Cos(a), 0f, Mathf.Sin(a)) * radius;
-        }
+            // --- area reale: centro del collider del terreno -----------------------------------
+            if (useColliderCentre && TryTerrainBounds(out Bounds b))
+            {
+                extent = Mathf.Min(b.extents.x, b.extents.z);
 
-        /// Centro, lato E QUOTA del suolo generato, quando in scena c'e' uno StandBuilder che ha
-        /// gia' costruito. La quota e' la novita' della revisione: e' il dato che evita di
-        /// sondare con la fisica un pavimento la cui altezza e' gia' nota per costruzione.
-        /// Nelle scene-area lo StandBuilder non esiste affatto ed e' giusto che questo
-        /// componente continui a funzionare come prima (sonda fisica sul mesh reale).
-        private bool TryGeneratedGround(out Vector2 centre, out float side, out float groundY)
-        {
-            centre = Vector2.zero; side = 0f; groundY = 0f;
-            var b = boundBuilder != null ? boundBuilder
-                                         : FindFirstObjectByType<Artemis.Regeneration.StandBuilder>();
-            if (b == null) return false;
-            if (b.SquareSide <= 0.01f) return false;    // non ha ancora costruito nulla
-            centre = b.SquareCenter;
-            side = b.SquareSide;
-            groundY = b.GroundY;
+                // Non si sonda il solo centro: le mesh di rilievo hanno BUCHI, soprattutto verso
+                // i margini ma non solo, e un unico raggio che passa per un buco farebbe fallire
+                // l'ancora migliore che abbiamo — ripiegando proprio su quel punto piazzato a mano
+                // che stiamo cercando di non usare piu'. Si cerca quindi il punto valido PIU'
+                // VICINO al centro.
+                if (!TrySampleGroundNear(b.center.x, b.center.z, extent * 0.6f, out Vector3 g))
+                    return false;
+
+                anchor = new Vector3(g.x, g.y + groundOffset, g.z);
+                return true;
+            }
+
+            // --- ripiego: il punto piazzato a mano ---------------------------------------------
+            var sp = FallbackSpawn();
+            if (snapToGround)
+            {
+                if (!TrySampleGround(sp.position.x, sp.position.z, out float y)) return false;
+                anchor = new Vector3(sp.position.x, y + groundOffset, sp.position.z);
+            }
+            else anchor = sp.position;
+
+            extent = 0f;
             return true;
         }
 
-        /// Suolo = superficie PIU' BASSA lungo la verticale (lezione canopy del desktop),
-        /// ma sondata in ENTRAMBE le direzioni. Il motivo: i raycast di Unity non colpiscono
-        /// le backface dei MeshCollider, quindi un raggio che SALE vede solo le facce rivolte
-        /// in giu' — sui terreni GS specchiati (scala -1, winding misto) funzionava, su un
-        /// piano ordinario con le normali in su la sonda era cieca. Salendo E scendendo si
-        /// coprono entrambi i winding, e il punto piu' basso resta il suolo vero anche sotto
-        /// una chioma con collider.
+        /// <summary>
+        /// Ingombro complessivo dei collider sul layer del terreno in questa scena. Il centro di
+        /// quell'ingombro e' il punto piu' sicuro che esista: per un'area di saggio quadrata e' il
+        /// suo centro geometrico, che ha terreno sotto per definizione — a differenza di un
+        /// oggetto piazzato a mano, che nessuno rimisura piu' dopo averlo messo.
+        /// </summary>
+        private bool TryTerrainBounds(out Bounds bounds)
+        {
+            bounds = new Bounds();
+            bool any = false;
+
+            foreach (var c in FindObjectsByType<Collider>(FindObjectsInactive.Exclude, FindObjectsSortMode.None))
+            {
+                if (c == null || c.isTrigger) continue;
+                if (((1 << c.gameObject.layer) & groundLayer.value) == 0) continue;
+                if (c is CharacterController) continue;         // il giocatore non e' terreno
+
+                if (!any) { bounds = c.bounds; any = true; }
+                else bounds.Encapsulate(c.bounds);
+            }
+            return any;
+        }
+
+        /// <summary>
+        /// Posizione definitiva: si parte dallo scostamento pieno e lo si accorcia finche' non si
+        /// trova terreno, fino a restare sull'ancora. Il punto e' che NON si posa piu' nessuno
+        /// senza aver verificato: la versione precedente calcolava lo scostamento e si fidava, e
+        /// bastava uno SpawnPoint vicino al bordo perche' quel metro e venti finisse fuori dalla
+        /// mesh — con esito diverso da visore a visore, perche' la direzione dipende dal
+        /// LocalClientId.
+        /// </summary>
+        private Vector3 ChoosePosition(Vector3 anchor, float extent, bool generated, out string how)
+        {
+            float limit = scatterRadius;
+            if (extent > 0.01f) limit = Mathf.Min(limit, extent / 3f);   // mai vicino al bordo
+
+            Vector3 dir = ScatterDirection();
+            float[] factors = { 1f, 0.5f, 0.25f, 0f };                   // pieno, meta', un quarto, centro
+
+            foreach (float f in factors)
+            {
+                Vector3 candidate = anchor + dir * (limit * f);
+
+                if (generated)
+                {
+                    // Quota nota per costruzione: si verifica solo di restare dentro il quadrato.
+                    if (extent > 0.01f &&
+                        (Mathf.Abs(candidate.x - anchor.x) > extent ||
+                         Mathf.Abs(candidate.z - anchor.z) > extent)) continue;
+                    how = f > 0f ? $"suolo generato, scostamento {limit * f:F2} m"
+                                 : "suolo generato, centro";
+                    return candidate;
+                }
+
+                if (!snapToGround) { how = "senza aggancio al suolo"; return candidate; }
+
+                // Anche qui si tollera un buco: si accetta un punto vicino, purche' entro mezzo
+                // metro, altrimenti si passa allo scostamento piu' corto.
+                if (TrySampleGroundNear(candidate.x, candidate.z, 0.5f, out Vector3 g))
+                {
+                    how = f > 0f ? $"verificato, scostamento {limit * f:F2} m"
+                                 : "verificato, centro dell'area";
+                    return new Vector3(g.x, g.y + groundOffset, g.z);
+                }
+            }
+
+            how = "NESSUN terreno trovato: ancora cosi' com'e'";
+            Debug.LogWarning($"[XrRigPlacer] nessuna posizione con terreno attorno a {anchor} — " +
+                             "controlla groundLayer e il collider dell'area.");
+            return anchor;
+        }
+
+        /// <summary>
+        /// Direzione dello scostamento, una diversa per partecipante. Angolo aureo: indici
+        /// successivi si distribuiscono uniformemente sul cerchio senza mai ripetersi, quindi due
+        /// persone non si materializzano mai nello stesso punto — e ognuno sa in anticipo dove
+        /// comparira', il che rende le prove ripetibili.
+        /// </summary>
+        private Vector3 ScatterDirection()
+        {
+            var nm = Unity.Netcode.NetworkManager.Singleton;
+            ulong id = (nm != null && nm.IsListening) ? nm.LocalClientId : 0UL;
+
+            // Ogni tentativo ruota di 90 gradi: se il primo punto si e' rivelato sfondabile, non
+            // ha senso riprovarlo — si va a cercare terreno da un'altra parte.
+            float a = (id * 137.508f + attempt * 90f) * Mathf.Deg2Rad;
+            return new Vector3(Mathf.Cos(a), 0f, Mathf.Sin(a));
+        }
+
+        // ---- rete di sicurezza ---------------------------------------------------------------
+
+        /// <summary>
+        /// Se il giocatore sta precipitando lo si riprende e si rifa' la posa. Non e' una diagnosi,
+        /// ed e' bene ricordarlo: le cause vanno trovate e corrette. Ma fra "cade per sempre e la
+        /// lezione si interrompe" e "torna al centro con un avviso nel log", in aula non c'e'
+        /// partita — e l'avviso, con la quota da cui e' partita la caduta, e' anche il modo per
+        /// accorgersi che il problema esiste ancora invece di scoprirlo dai racconti.
+        /// </summary>
+        private void WatchForFalls()
+        {
+            if (fallRescueDepth <= 0.01f || !hasLastGood || rescues >= maxRescues) return;
+
+            var origin = FindFirstObjectByType<XROrigin>();
+            if (origin == null) return;
+
+            float y = origin.transform.position.y;
+            if (y > lastGoodPosition.y - fallRescueDepth) return;
+
+            rescues++;
+            attempt++;                      // il punto di prima e' smentito dai fatti: se ne cerca un altro
+
+            Debug.LogWarning($"[XrRigPlacer] CADUTA rilevata (y={y:F1}, posato a {lastGoodPosition.y:F1}): " +
+                             $"quel punto NON regge il giocatore anche se la sonda ci trovava una " +
+                             $"superficie. Cerco un'altra posizione — recupero {rescues}/{maxRescues}.");
+            if (logGroundProbe) LogVerticalHits(lastGoodPosition.x, lastGoodPosition.z);
+
+            // Si riparte dalla posa da capo, ma sollevati: restare alla quota della caduta
+            // significherebbe ricadere prima ancora che il nuovo punto venga scelto.
+            placed = false;
+            started = Time.time;
+            nextTry = 0f;
+            Freeze();
+            origin.transform.position = lastGoodPosition + Vector3.up * 0.5f;
+        }
+
+        // ---- sonda del suolo ---------------------------------------------------------------------
+
+        /// Suolo = superficie PIU' BASSA lungo la verticale (lezione canopy del desktop), sondata
+        /// in ENTRAMBE le direzioni perche' i raycast non colpiscono le backface dei MeshCollider:
+        /// sui terreni GS specchiati (scala -1, winding misto) un raggio che sale vede solo le
+        /// facce rivolte in giu', su un piano ordinario e' cieco. Salendo E scendendo si coprono
+        /// entrambi i winding, e il punto piu' basso resta il suolo vero anche sotto una chioma.
         ///
-        /// ATTENZIONE: questa euristica vale SOLO per i mesh collider delle aree GS. Sul box
-        /// del suolo generato "il punto piu' basso" e' la faccia inferiore della soletta — e'
-        /// il bug della caduta intermittente — quindi in Simulation questa funzione non viene
-        /// piu' chiamata (vedi onGeneratedGround in Update).
+        /// NON si usa in Simulation: sul box pieno del suolo generato "il piu' basso" e' la faccia
+        /// inferiore della soletta. La' la quota la dichiara StandBuilder.
+        /// <summary>
+        /// Punto di terreno valido PIU' VICINO a (x, z): prima il punto stesso, poi anelli via via
+        /// piu' larghi, otto direzioni per anello. Si ferma al primo che regge, quindi il
+        /// risultato e' sempre il piu' centrale possibile.
+        ///
+        /// Esiste per i BUCHI nelle mesh di rilievo: una superficie ricostruita da scansione non
+        /// e' continua, e un singolo raggio che capita in una lacuna non dice "qui non c'e'
+        /// l'area", dice solo "qui non c'e' un triangolo". Trattare le due cose come la stessa
+        /// e' cio' che mandava il giocatore a cadere.
+        /// </summary>
+        /// <summary>
+        /// Elenca TUTTE le superfici incontrate lungo la verticale in (x, z), dal basso in alto,
+        /// con quota e inclinazione della normale. Serve a capire cosa sta scegliendo la regola
+        /// del "punto piu' basso" quando il giocatore cade: se sotto al suolo vero c'e' un
+        /// frammento di scansione, qui si vede — e la quota giusta si legge dall'elenco.
+        ///
+        /// La normale distingue una superficie calpestabile (rivolta in su) da una faccia
+        /// interna del guscio o da un residuo (rivolta in giu' o di taglio).
+        /// </summary>
+        private void LogVerticalHits(float x, float z)
+        {
+            var all = new System.Collections.Generic.List<RaycastHit>();
+            all.AddRange(Physics.RaycastAll(new Vector3(x, -probeHeight, z), Vector3.up,
+                                            probeHeight * 2f, groundLayer));
+            all.AddRange(Physics.RaycastAll(new Vector3(x,  probeHeight, z), Vector3.down,
+                                            probeHeight * 2f, groundLayer));
+            all.Sort((a, b) => a.point.y.CompareTo(b.point.y));
+
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine($"[XrRigPlacer] sonda verticale in ({x:F2}, {z:F2}) — {all.Count} superfici:");
+            foreach (var h in all)
+                sb.AppendLine($"    y={h.point.y,8:F2}   normale·su={Vector3.Dot(h.normal, Vector3.up),6:F2}   " +
+                              $"'{h.collider.name}'");
+            if (all.Count == 0) sb.AppendLine("    (nessuna: qui non c'e' proprio niente)");
+            Debug.LogWarning(sb.ToString());
+        }
+
+        private bool TrySampleGroundNear(float x, float z, float maxRadius, out Vector3 point)
+        {
+            point = Vector3.zero;
+
+            if (TrySampleGround(x, z, out float y0))
+            {
+                point = new Vector3(x, y0, z);
+                return true;
+            }
+
+            const int dirs = 8;
+            float step = Mathf.Max(0.5f, maxRadius / 6f);
+            for (float r = step; r <= Mathf.Max(step, maxRadius); r += step)
+            {
+                for (int i = 0; i < dirs; i++)
+                {
+                    float a = Mathf.PI * 2f * i / dirs;
+                    float px = x + Mathf.Cos(a) * r;
+                    float pz = z + Mathf.Sin(a) * r;
+                    if (!TrySampleGround(px, pz, out float y)) continue;
+
+                    point = new Vector3(px, y, pz);
+                    Debug.Log($"[XrRigPlacer] centro dell'area senza terreno (buco nella mesh): " +
+                              $"uso il punto valido piu' vicino, a {r:F1} m.");
+                    return true;
+                }
+            }
+            return false;
+        }
+
         private bool TrySampleGround(float x, float z, out float y)
         {
             y = 0f;

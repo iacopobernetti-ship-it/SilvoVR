@@ -30,7 +30,11 @@ namespace Artemis.Regeneration
         [SerializeField] private Color cellColor = new Color(1f, 1f, 1f, 0.85f);
         [SerializeField] private float cellLineWidth = 0.12f;
         [SerializeField] private Color playerBlip = new Color(1f, 0.95f, 0.30f);
+        [Tooltip("Larghezza del triangolo del giocatore, in metri di mondo.")]
         [SerializeField] private float blipSize = 1.5f;
+        [Tooltip("Lunghezza del triangolo, in metri. Piu' lungo che largo: e' cio' che rende " +
+                 "leggibile la direzione a colpo d'occhio, senza doverla dedurre.")]
+        [SerializeField] private float blipLength = 3.2f;
         [Tooltip("Capovolge la mappa in verticale: su alcune API grafiche la RenderTexture arriva " +
                  "rovesciata, il che scambia nord e sud lasciando corretti est e ovest.")]
         [SerializeField] private bool flipNorthSouth = true;
@@ -121,7 +125,7 @@ namespace Artemis.Regeneration
             le.flexibleWidth = 1; le.flexibleHeight = 1;
             le.minHeight = 160f;
 
-            hud.MakeLabel(page, "white outlines = Voronoi cells  ·  yellow dot = you", 14);
+            hud.MakeLabel(page, "white outlines = Voronoi cells  ·  yellow arrow = you, pointing where you look", 14);
         }
 
         // ---- inquadratura e puntino -----------------------------------------------------------------
@@ -146,20 +150,60 @@ namespace Artemis.Regeneration
                 head = cam.transform;
             }
 
-            if (blip == null)
-            {
-                blip = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                blip.name = "MapBlip";
-                var col = blip.GetComponent<Collider>(); if (col != null) Destroy(col);
-                blip.transform.SetParent(transform, false);
-                blip.layer = miniLayer;
-                var r = blip.GetComponent<Renderer>();
-                if (r != null && blipMat != null) r.sharedMaterial = blipMat;
-            }
+            if (blip == null) BuildBlip();
 
             float y = builder != null ? builder.GroundY + 1f : 1f;
             blip.transform.position = new Vector3(head.position.x, y, head.position.z);
-            blip.transform.localScale = Vector3.one * blipSize;
+
+            // Direzione dello SGUARDO proiettata in pianta. La camera della mappa guarda dritta
+            // verso il basso ed e' ruotata di 90 gradi attorno a X, quindi il suo "alto" coincide
+            // con il +Z del mondo: un triangolo che punta a +Z appare rivolto verso l'alto sulla
+            // mappa, e ruotandolo attorno a Y segue la testa senza altre conversioni.
+            Vector3 fwd = Vector3.ProjectOnPlane(head.forward, Vector3.up);
+            if (fwd.sqrMagnitude > 0.0001f)
+                blip.transform.rotation = Quaternion.LookRotation(fwd.normalized, Vector3.up);
+        }
+
+        /// <summary>
+        /// Il segnaposto del giocatore: un triangolo allungato che punta dove si guarda.
+        ///
+        /// Perche' non piu' un pallino: in un popolamento dove tutti gli alberi si somigliano il
+        /// problema non e' sapere DOVE si e', e' sapere da che parte si e' girati — un puntino
+        /// quella meta' dell'informazione non la porta, e per ricavarla si finisce a girare su se
+        /// stessi guardando il pallino, che e' esattamente il contrario di orientarsi.
+        ///
+        /// Mesh costruita a mano di tre vertici sul piano XZ, punta verso +Z e rivolta in su
+        /// (winding orario visto dall'alto, altrimenti il culling la fa sparire proprio dalla
+        /// camera della mappa, che la guarda da sopra). La scala e' in metri di mondo, cosi' il
+        /// triangolo mantiene la sua dimensione reale quando la mappa si adatta al quadrato.
+        /// </summary>
+        private void BuildBlip()
+        {
+            blip = new GameObject("MapBlip", typeof(MeshFilter), typeof(MeshRenderer));
+            blip.transform.SetParent(transform, false);
+            blip.layer = miniLayer;
+
+            float w = Mathf.Max(0.2f, blipSize) * 0.5f;
+            float back = Mathf.Max(0.3f, blipLength) * 0.4f;
+            float tip  = Mathf.Max(0.3f, blipLength) * 0.6f;
+
+            var mesh = new Mesh { name = "M_MapBlip" };
+            mesh.vertices = new[]
+            {
+                new Vector3(0f,  0f,  tip),     // punta, nella direzione dello sguardo
+                new Vector3( w,  0f, -back),    // spalla destra
+                new Vector3(-w,  0f, -back),    // spalla sinistra
+            };
+            mesh.triangles = new[] { 0, 1, 2 };
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+
+            blip.GetComponent<MeshFilter>().sharedMesh = mesh;
+
+            var r = blip.GetComponent<MeshRenderer>();
+            if (blipMat != null) r.sharedMaterial = blipMat;
+            r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            r.receiveShadows = false;
         }
 
         // ---- celle di Voronoi -------------------------------------------------------------------------

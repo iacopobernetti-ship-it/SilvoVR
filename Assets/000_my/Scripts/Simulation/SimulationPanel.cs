@@ -42,7 +42,8 @@ namespace Artemis.Regeneration
         private Button fellBtn;
         private Image fellImg;
         private RectTransform commandRow, resetRow, backRow;
-        private TMP_Text markedLabel, standLabel, climateLabel, fisLabel, statusLabel, diagLabel;
+        private TMP_Text markedLabel, standLabel, climateLabel, statusLabel, diagLabel;
+        private TMP_Text fisTitle, fisIn1, fisIn2, fisOut1, fisOut2, standNowLabel;
         private TMP_Text clearLabel, resetLabel;
         private Image clearImg, resetImg;
 
@@ -96,9 +97,26 @@ namespace Artemis.Regeneration
             hud.MakeButton(backRow, "Back to plot  (saves marking)", OnBackClicked);
 
             climateLabel = hud.MakeLabel(page, "", 16);
-            fisLabel     = hud.MakeLabel(page, "", 16);
-            statusLabel  = hud.MakeLabel(page, "", 15);
-            diagLabel    = hud.MakeLabel(page, "", 12);
+
+            // Il blocco del modello ha un titolo suo e due righe distinte, INGRESSI e USCITA.
+            // Non e' cosmesi: il senso didattico del FIS sta nel nesso fra le quattro grandezze
+            // che entrano e il giudizio che ne esce, e schiacciarle in un'unica riga lo nasconde
+            // proprio a chi deve impararlo. Le stesse righe le vedono docente e studenti: il
+            // calcolo avviene identico su ogni visore (stesso inventario, stesso seme, stessa
+            // aridita' condivisa), quindi non c'era motivo perche' fossero riservate a uno solo.
+            // UNA RIGA PER ETICHETTA, mai '\n': MakeLabel fissa preferredHeight a una sola riga
+            // (size + 14), quindi un testo su due righe ne disegna due nello spazio di una e
+            // finisce sopra l'etichetta successiva. E' il motivo per cui la scheda risultava
+            // sovrapposta, e vale per chiunque aggiunga righe qui in futuro.
+            fisTitle = hud.MakeLabel(page, "", 15);
+            fisIn1   = hud.MakeLabel(page, "", 16);
+            fisIn2   = hud.MakeLabel(page, "", 16);
+            fisOut1  = hud.MakeLabel(page, "", 18);
+            fisOut2  = hud.MakeLabel(page, "", 16);
+            standNowLabel = hud.MakeLabel(page, "", 16);
+
+            statusLabel = hud.MakeLabel(page, "", 15);
+            diagLabel   = hud.MakeLabel(page, "", 12);
 
             built = true;
             Refresh();
@@ -202,21 +220,21 @@ namespace Artemis.Regeneration
 
             var residual = builder.ResidualStems;
             var m = StandMetrics.Compute(residual, builder.PlotAreaM2);
-            standLabel.text = $"{builder.CurrentAreaId}  ·  {m.N} standing  ·  {builder.FelledCount} felled  ·  " +
-                              $"{builder.YoungCount} seedlings";
+            SetLine(standLabel, $"{builder.CurrentAreaId}  ·  {m.N} standing  ·  {builder.FelledCount} felled  ·  " +
+                                $"{builder.YoungCount} seedlings");
 
             int marks = t != null ? t.MarkedCount : 0;
             int props = t != null ? t.ProposedCount : 0;
 
             if (VrSession.IsStudent)
-                markedLabel.text = props == 0
+                SetLine(markedLabel, props == 0
                     ? "aim at a tree and pull the trigger to propose it"
-                    : $"{props} trees proposed by the class  ·  {marks} marked by the teacher";
+                    : $"{props} trees proposed by the class  ·  {marks} marked by the teacher");
             else
-                markedLabel.text = marks == 0
+                SetLine(markedLabel, marks == 0
                     ? (props > 0 ? $"{props} proposed by students — mark the ones you agree with"
                                  : "aim at a tree and pull the trigger to mark it")
-                    : $"{marks} marked for felling  ·  {props} student proposals";
+                    : $"{marks} marked for felling  ·  {props} student proposals");
 
             // Agli studenti i comandi si NASCONDONO invece di restare grigi: un pulsante inerte
             // invita comunque a premerlo, e a chiedersi perche' non risponde.
@@ -238,24 +256,48 @@ namespace Artemis.Regeneration
             RefreshResetButton(hud);
 
             // --- clima sotto cui si sta simulando, uguale per tutti ----------------------------
-            if (climateLabel != null) climateLabel.text = ClimateLine();
+            SetLine(climateLabel, ClimateLine());
 
             // --- esito ecologico: A TUTTI, non solo al docente ---------------------------------
             // G/ha residua e' il numero che il selvicoltore guarda per primo dopo un taglio;
             // idoneita' e fattore limitante sono la risposta del FIS a quella buca sotto quel
             // clima, cioe' il nesso che la lezione vuole far vedere.
-            fisLabel.text = builder.FelledCount == 0
-                ? $"G {m.BasalAreaHa:F1} m²/ha  ·  {m.DensityHa:F0} N/ha  ·  dbh {m.MeanDbhCm:F1} cm"
-                : $"gap light {builder.LastLightPct:F0} %  ·  aridity {builder.LastAridity:F2}  ·  " +
-                  $"G {builder.LastResidualGha:F1} m²/ha\nsuitability {builder.LastSuitability:F2}  " +
-                  $"·  limiting: {builder.LastLimiting}  ·  {builder.YoungCount} seedlings";
+            if (builder.FelledCount == 0)
+            {
+                // Prima di abbattere il modello non ha ancora nulla da dire: si mostra il
+                // soprassuolo cosi' com'e', che e' il termine di paragone del dopo.
+                SetLine(fisTitle, "stand before felling");
+                SetLine(fisIn1, $"G {m.BasalAreaHa:F1} m²/ha  ·  {m.DensityHa:F0} N/ha");
+                SetLine(fisIn2, $"dbh {m.MeanDbhCm:F1} cm  ·  h {m.MeanHeightM:F1} m");
+                SetLine(fisOut1, "");
+                SetLine(fisOut2, "");
+                SetLine(standNowLabel, "");
+            }
+            else
+            {
+                SetLine(fisTitle, "regeneration model (Mamdani FIS)");
 
-            statusLabel.text = t != null ? t.Status : "";
+                // I QUATTRO ingressi del sistema, due per riga.
+                SetLine(fisIn1, $"gap light {builder.LastLightPct:F0} %   ·   " +
+                                $"aridity {builder.LastAridity:F2}");
+                SetLine(fisIn2, $"residual G {builder.LastResidualGha:F1} m²/ha   ·   " +
+                                $"diversity {builder.StationDiversity:F2}");
+
+                // L'uscita: idoneita', fattore limitante, e cio' che ne e' seguito sul terreno.
+                SetLine(fisOut1, $"suitability {builder.LastSuitability:F2}{Bar(builder.LastSuitability)}");
+
+                // Spezzata a mano in due: era la riga piu' lunga del pannello, e quella che sul
+                // visore del docente andava a capo per prima.
+                SetLine(fisOut2, $"limiting: {builder.LastLimiting}   ·   {builder.YoungCount} seedlings");
+                SetLine(standNowLabel, $"now {m.BasalAreaHa:F1} m²/ha  ·  {m.DensityHa:F0} N/ha");
+            }
+
+            SetLine(statusLabel, t != null ? t.Status : "");
 
             if (diagLabel != null)
             {
                 var sync = FindFirstObjectByType<Artemis.Session.SimulationSyncVR>();
-                diagLabel.text = sync != null ? sync.Diagnostics : "";
+                SetLine(diagLabel, sync != null ? sync.Diagnostics : "");
             }
         }
 
@@ -277,6 +319,48 @@ namespace Artemis.Regeneration
             if (c == null || !c.HasData) return "climate: no data yet";
             return $"{c.Scenario} {c.Period}  ·  summer T {c.SummerMeanTempC:F1} °C  ·  " +
                    $"DM {c.DeMartonneSummer:F1}  ·  aridity {c.Aridity01:F2}";
+        }
+
+        /// <summary>
+        /// Scrive un'etichetta E le da' l'altezza che le serve davvero.
+        ///
+        /// Perche' non basta evitare gli a-capo espliciti: VrHud.MakeLabel fissa preferredHeight
+        /// a UNA riga (size + 14), ma quando il testo va a capo non lo decidiamo noi — lo decide
+        /// TMP in base alla larghezza disponibile. Una riga lunga si spezza in due e la seconda
+        /// finisce sopra l'etichetta successiva. Sul visore del docente si vedeva piu' che su
+        /// quello dello studente per un motivo banale: il suo pannello e' piu' affollato (riga
+        /// Reset e barra "Back to plot"), quindi si va a capo prima.
+        ///
+        /// Qui si misurano le righe EFFETTIVAMENTE disegnate e si adegua l'altezza. Le etichette
+        /// vuote si ritirano a zero, cosi' non lasciano buchi nel pannello.
+        /// </summary>
+        private static void SetLine(TMP_Text t, string text)
+        {
+            if (t == null) return;
+            if (t.text != text) t.text = text;
+
+            var le = t.GetComponent<LayoutElement>();
+            if (le == null) return;
+
+            if (string.IsNullOrEmpty(text))
+            {
+                if (le.preferredHeight != 0f) le.preferredHeight = 0f;
+                return;
+            }
+
+            t.ForceMeshUpdate();
+            int lines = Mathf.Max(1, t.textInfo.lineCount);
+            float h = (t.fontSize + 6f) * lines + 8f;
+            if (!Mathf.Approximately(le.preferredHeight, h)) le.preferredHeight = h;
+        }
+
+        /// Barretta di dieci tacche accanto all'idoneita'. Un numero fra 0 e 1 non dice da solo se
+        /// e' tanto o poco, e in aula lo si guarda da lontano: la lunghezza si legge a colpo
+        /// d'occhio, ed e' cio' che rende immediato il confronto fra due scenari climatici.
+        private static string Bar(float v01)
+        {
+            int n = Mathf.Clamp(Mathf.RoundToInt(Mathf.Clamp01(v01) * 10f), 0, 10);
+            return "   [" + new string('#', n) + new string('-', 10 - n) + "]";
         }
 
         private void RefreshResetButton(VrHud hud)

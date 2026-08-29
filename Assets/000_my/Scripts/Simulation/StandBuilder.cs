@@ -416,6 +416,29 @@ namespace Artemis.Regeneration
         /// <summary>Salva la martellata come UNICA dell'area: sovrascrive la precedente.</summary>
         public void SaveMartellata() => MartellataStore.Save(CurrentAreaId, BuildMartellata());
 
+        /// <summary>
+        /// Salva la martellata anche quando si esce dalla scena senza premere "Back to plot".
+        ///
+        /// Perche' serve: quel pulsante e' del DOCENTE, e lo studente non lo preme mai — e' il
+        /// docente a portare via la classe. Risultato: sul visore dello studente il file della
+        /// martellata non nasceva affatto, e tornando in area il visualizzatore diceva
+        /// correttamente "nessuna martellata salvata". Il dato pero' ce l'ha eccome: ha
+        /// riapplicato gli stessi turni con lo stesso seme, quindi il suo BuildMartellata()
+        /// produce esattamente lo stesso contenuto di quello del docente. Mancava solo di
+        /// scriverlo.
+        ///
+        /// Vale la regola di sempre — MAI una martellata vuota sopra una piena: senza abbattimenti
+        /// non si tocca il file, cosi' un giro a vuoto in Simulation non cancella il lavoro fatto
+        /// prima.
+        /// </summary>
+        private void OnDestroy()
+        {
+            if (felled.Count == 0 || string.IsNullOrWhiteSpace(CurrentAreaId)) return;
+            SaveMartellata();
+            Debug.Log($"[StandBuilder] uscita dalla simulazione: martellata di '{CurrentAreaId}' " +
+                      $"salvata in locale ({felled.Count} alberi).");
+        }
+
         /// <summary>Restore a saved marking: reload its inventory (or rebuild), then fell its trees.</summary>
         public void ApplyMartellata(MartellataData d)
         {
