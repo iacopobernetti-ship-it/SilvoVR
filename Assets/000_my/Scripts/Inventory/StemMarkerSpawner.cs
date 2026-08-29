@@ -23,30 +23,21 @@ namespace Artemis.Inventory
     ///   root  — StemMarker + CapsuleCollider ALTA E INVISIBILE: la fascia e' sottile e col ray
     ///           sarebbe quasi impuntabile, quindi il volume da colpire e' un cilindro di 1.6 m
     ///           attorno al fusto, mentre cio' che si VEDE resta il solo segno;
-    ///   Band  — la striscia sottile visibile, senza collider.
+    ///   Band  — il cilindro sottile visibile, senza collider.
     ///
-    /// LA FASCIA NON E' PIU' UN CILINDRO PRIMITIVO. Il cilindro di Unity ha i TAPPI, e un tappo
-    /// visto dall'alto e' un disco pieno: con gli occhi a ~1.65 m e il segno a 1.30 m lo si
-    /// guarda sempre dall'alto, tanto piu' aperto quanto piu' si e' vicini — da cui i "dischi"
-    /// verdi in visore, mentre da una vista orizzontale (la finestra Game sul PC) lo stesso
-    /// oggetto sembrava corretto. Una pennellata vera non ha tappo: qui la fascia e' la sola
-    /// SUPERFICIE LATERALE, generata come mesh.
+    /// I materiali si generano qui con una cascata di shader (URP/Unlit -> URP/Lit -> Unlit ->
+    /// Sprites): CreatePrimitive assegna il Default-Material della pipeline Built-in, che in URP
+    /// non esiste e diventa magenta acceso. Nessun materiale da preparare in editor.
     ///
-    /// La striscia e' DOUBLE-SIDED per GEOMETRIA (ogni quad e' scritto due volte, con winding
-    /// opposto) e non per materiale: '_Cull' esiste su URP/Unlit ma non sui fallback della
-    /// cascata, e affidarsi a una proprieta' che potrebbe non esserci e' lo stesso genere di
-    /// fragilita' che con Shader.Find e' gia' costata cara. Serve perche' attraversando la
-    /// fascia — o guardandola dal lato interno dove sopravanza il fusto — una faccia sola
-    /// sparirebbe.
-    ///
-    /// La mesh e' UNA SOLA, statica e condivisa da tutti i marker: raggio 0.5 e altezza 1, cosi'
-    /// la scala del transform da' direttamente diametro e spessore in metri. Generare una mesh
-    /// a runtime e' sicuro (a differenza degli shader, le mesh non vengono rimosse dalla build:
-    /// qui la si costruisce vertice per vertice, non la si cerca).
-    ///
-    /// I materiali si generano con una cascata di shader (URP/Unlit -> URP/Lit -> Unlit ->
-    /// Sprites): CreatePrimitive assegnava il Default-Material della pipeline Built-in, che in
-    /// URP non esiste e diventa magenta acceso. Nessun materiale da preparare in editor.
+    /// NOTA su un tentativo abbandonato: la fascia era stata riscritta come striscia laterale
+    /// senza tappi, generata a mano e visibile da entrambi i lati, per correggere i "dischi"
+    /// verdi che si vedevano in visore. Era la cura sbagliata per la malattia giusta: quei dischi
+    /// nascevano dalla mancanza di OCCLUSIONE — gli splat non nascondevano la meta' posteriore
+    /// dell'anello, e quindi lo si vedeva chiuso e pieno — non dai tappi del cilindro. Risolta
+    /// l'occlusione con la mesh del rilievo usata come occlusore depth-only, il cilindro
+    /// primitivo si legge correttamente da ogni angolo, e in piu' ha normali giuste per
+    /// costruzione: la striscia fatta a mano, con le facce opposte sugli stessi vertici, aveva
+    /// normali che si annullavano e diventava NERA sotto uno shader illuminato.
     /// </summary>
     public class StemMarkerSpawner : MonoBehaviour
     {
@@ -58,9 +49,6 @@ namespace Artemis.Inventory
         [Tooltip("Quanto la fascia sopravanza il diametro misurato. 1.03 = 3% in piu', cosi' " +
                  "circonda la corteccia invece di sparirci dentro.")]
         [SerializeField] private float bandOversize = 1.03f;
-        [Tooltip("Segmenti della circonferenza. 32 e' gia' liscio su un fusto; alzarlo costa " +
-                 "poco perche' la mesh e' una sola per tutti i marker.")]
-        [SerializeField] private int bandSegments = 32;
 
         [Header("Colori")]
         [Tooltip("Albero rilevato: rosso, come il segno di cavallettamento.")]
@@ -78,8 +66,6 @@ namespace Artemis.Inventory
         private readonly Dictionary<int, GameObject> markers = new Dictionary<int, GameObject>();
         private StemInventory bound;
         private static Material unmarkedMat, markedMat;
-        private static Mesh bandMesh;
-        private static int bandMeshSegments;
 
         // ---- ciclo di vita ---------------------------------------------------------------------
 
@@ -91,8 +77,7 @@ namespace Artemis.Inventory
         /// file che porta il nome della scena. Basta un inv_Simulation.json finito su disco per
         /// sbaglio (una misura confermata in Simulation, quando i due strumenti si contendevano
         /// il grilletto) e da quel momento un anello compare in mezzo al bosco simulato a ogni
-        /// ingresso, sempre nello stesso punto, su quel visore soltanto. Il file su disco resta,
-        /// ma non lo guarda piu' nessuno.
+        /// ingresso, sempre nello stesso punto, su quel visore soltanto.
         /// </summary>
         private bool ActiveHere
         {
@@ -162,15 +147,12 @@ namespace Artemis.Inventory
             col.height = pickHeight;
             col.center = new Vector3(0f, pickHeight * 0.5f, 0f);
 
-            // La striscia visibile: niente CreatePrimitive, quindi niente tappi e nessun
-            // collider da rimuovere subito dopo averlo creato.
-            var band = new GameObject("Band", typeof(MeshFilter), typeof(MeshRenderer));
+            // La fascia visibile.
+            var band = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            band.name = "Band";
+            var bandCol = band.GetComponent<Collider>();
+            if (bandCol != null) Destroy(bandCol);    // il collider e' uno solo, sulla radice
             band.transform.SetParent(root.transform, false);
-            band.GetComponent<MeshFilter>().sharedMesh = BandMesh(bandSegments);
-
-            var r = band.GetComponent<MeshRenderer>();
-            r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-            r.receiveShadows = false;
 
             return root;
         }
@@ -189,8 +171,8 @@ namespace Artemis.Inventory
             if (band != null)
             {
                 band.localPosition = new Vector3(0f, breastHeight, 0f);
-                // La mesh e' unitaria (diametro 1, altezza 1): la scala E' la misura in metri.
-                band.localScale = new Vector3(d, bandThickness, d);
+                // Il cilindro primitivo e' alto 2 unita' a scala 1: meta' spessore in Y.
+                band.localScale = new Vector3(d, bandThickness * 0.5f, d);
 
                 var r = band.GetComponent<Renderer>();
                 if (r != null) r.sharedMaterial = rec.Marked ? MarkedMaterial : UnmarkedMaterial;
@@ -198,63 +180,6 @@ namespace Artemis.Inventory
 
             var tag = root.GetComponent<StemMarker>();
             if (tag != null) tag.StemId = rec.StemId;
-        }
-
-        // ---- mesh della fascia ---------------------------------------------------------------
-
-        /// <summary>
-        /// Striscia cilindrica SENZA TAPPI: raggio 0.5, altezza 1, centrata sull'origine. Ogni
-        /// quad viene emesso due volte con winding opposto, cosi' la fascia si vede anche da
-        /// dentro senza dipendere da una proprieta' '_Cull' che i fallback della cascata di
-        /// shader potrebbero non avere.
-        ///
-        /// Una sola mesh per tutti i marker: e' statica e si rigenera solo se cambia il numero
-        /// di segmenti.
-        /// </summary>
-        private static Mesh BandMesh(int segments)
-        {
-            segments = Mathf.Clamp(segments, 8, 128);
-            if (bandMesh != null && bandMeshSegments == segments) return bandMesh;
-
-            var verts = new Vector3[segments * 2];
-            var uvs = new Vector2[segments * 2];
-            for (int i = 0; i < segments; i++)
-            {
-                float a = Mathf.PI * 2f * i / segments;
-                float x = Mathf.Cos(a) * 0.5f, z = Mathf.Sin(a) * 0.5f;
-                verts[i * 2]     = new Vector3(x, -0.5f, z);
-                verts[i * 2 + 1] = new Vector3(x,  0.5f, z);
-                float u = i / (float)segments;
-                uvs[i * 2]     = new Vector2(u, 0f);
-                uvs[i * 2 + 1] = new Vector2(u, 1f);
-            }
-
-            var tris = new int[segments * 12];      // 2 triangoli per faccia x 2 facce x 3 indici
-            int t = 0;
-            for (int i = 0; i < segments; i++)
-            {
-                int b0 = i * 2, t0 = b0 + 1;
-                int n  = (i + 1) % segments;
-                int b1 = n * 2, t1 = b1 + 1;
-
-                // faccia esterna
-                tris[t++] = b0; tris[t++] = t0; tris[t++] = b1;
-                tris[t++] = t0; tris[t++] = t1; tris[t++] = b1;
-                // faccia interna (winding invertito)
-                tris[t++] = b1; tris[t++] = t0; tris[t++] = b0;
-                tris[t++] = b1; tris[t++] = t1; tris[t++] = t0;
-            }
-
-            var m = new Mesh { name = "M_StemBand" };
-            m.vertices = verts;
-            m.uv = uvs;
-            m.triangles = tris;
-            m.RecalculateNormals();
-            m.RecalculateBounds();
-
-            bandMesh = m;
-            bandMeshSegments = segments;
-            return bandMesh;
         }
 
         // ---- materiali ---------------------------------------------------------------------------

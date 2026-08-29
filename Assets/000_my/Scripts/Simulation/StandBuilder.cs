@@ -158,6 +158,16 @@ namespace Artemis.Regeneration
         public float LastAridity { get; private set; }
 
         // ---- clima condiviso (Fase 4) ------------------------------------------------------
+        /// <summary>Storico dei turni di abbattimento: serve a RIAPPLICARLI identici quando
+        /// cambia il clima. Stessi alberi, stesso seme, quindi stesse buche e stesse posizioni —
+        /// cambia solo quanta rinnovazione il modello concede sotto il nuovo scenario, che e'
+        /// esattamente il confronto che la lezione vuole mostrare.</summary>
+        private readonly List<(List<int> ids, int seed, bool seeded)> roundHistory =
+            new List<(List<int>, int, bool)>();
+
+        private bool replaying;      // sta riapplicando lo storico: non registrare di nuovo
+        private bool nestedCall;     // l'overload col seme delega all'altro: una registrazione sola
+
         private bool hasSharedClimate;
         private float sharedAridity;
         private string sharedScenario = "";
@@ -169,8 +179,14 @@ namespace Artemis.Regeneration
         {
             sharedScenario = scenario ?? "";
             sharedStart = startYear; sharedEnd = endYear;
+            float previous = hasSharedClimate ? sharedAridity : -1f;
             sharedAridity = Mathf.Clamp01(aridity01);
             hasSharedClimate = true;
+
+            // Se il clima cambia a martellata gia' fatta, la rinnovazione va rifatta con il nuovo
+            // valore: e' il senso stesso del cambio di scenario.
+            if (previous >= 0f && !Mathf.Approximately(previous, sharedAridity) && felled.Count > 0)
+                ReapplyClimate();
         }
 
         public bool HasSharedClimate => hasSharedClimate;
@@ -190,6 +206,15 @@ namespace Artemis.Regeneration
         public int FelledCount => felled.Count;
         public int YoungCount => youngGOs.Count;
         public float GroundY => builtGroundY;
+
+        /// <summary>
+        /// Quante volte il SUOLO e' stato davvero rigenerato. Serve a distinguere "il pavimento
+        /// e' cambiato sotto i piedi" (e allora il rig va riposato) da "e' cambiato solo il
+        /// soprassuolo" — ripristino, riapplicazione del clima — dove teletrasportare tutti al
+        /// centro sarebbe solo fastidioso, e in mezzo a un confronto fra scenari anche dannoso:
+        /// si sta guardando una buca, e ci si ritrova altrove.
+        /// </summary>
+        public int GroundGeneration { get; private set; }
         /// Flat ground level (kept as a method so callers don't need to change).
         public float SampleGround(float x, float z) => builtGroundY;
         public IReadOnlyList<List<Vector2>> Cells => cells;
@@ -292,6 +317,7 @@ namespace Artemis.Regeneration
 
             ComputeSquare();
             GenerateGround();
+            GroundGeneration++;
             GenerateWalls();
             GenerateLighting();
             foreach (var s in current) SpawnAdult(s);
@@ -460,14 +486,23 @@ namespace Artemis.Regeneration
         /// Seeded overload: all clients must produce identical young-plant positions.
         public void FellMany(IEnumerable<int> stemIds, int seed)
         {
+            var ids = new List<int>(stemIds);
             var state = UnityEngine.Random.state;
             UnityEngine.Random.InitState(seed);
-            try { FellMany(stemIds); }
-            finally { UnityEngine.Random.state = state; }
+            nestedCall = true;
+            try { FellMany(ids); }
+            finally { nestedCall = false; UnityEngine.Random.state = state; }
+
+            // Registrato DOPO: se non c'era nulla di valido da abbattere, FellMany non ha fatto
+            // niente e non c'e' turno da ricordare.
+            if (!replaying) RememberRound(ids, seed, true);
         }
 
         public void FellMany(IEnumerable<int> stemIds)
         {
+            var incoming = stemIds as List<int> ?? new List<int>(stemIds);
+            if (!replaying && !nestedCall) RememberRound(incoming, 0, false);
+
             var valid = new List<int>();
             foreach (var id in stemIds) if (!felled.Contains(id) && cellOf.ContainsKey(id)) valid.Add(id);
             if (valid.Count == 0) return;
@@ -894,6 +929,56 @@ namespace Artemis.Regeneration
             foreach (var s in sites) Gizmos.DrawSphere(new Vector3(s.x, y, s.y), 0.15f);
         }
 
+        private void RememberRound(List<int> ids, int seed, bool seeded)
+        {
+            if (ids == null || ids.Count == 0) return;
+            roundHistory.Add((new List<int>(ids), seed, seeded));
+        }
+
+        /// <summary>
+        /// Ricalcola la rinnovazione della martellata GIA' FATTA sotto il clima attuale.
+        ///
+        /// E' il confronto per cui esiste la simulazione: la stessa martellata sotto ssp126 e
+        /// sotto ssp585 deve dare esiti diversi, e per vederlo non si deve essere costretti a
+        /// rimettere in piedi il bosco e rimartellare venti alberi davanti alla classe — nel
+        /// frattempo l'attenzione se n'e' andata, e comunque non sarebbe piu' la STESSA
+        /// martellata, solo una simile.
+        ///
+        /// Il come e' semplice e onesto: si ripristina il soprassuolo e si riapplicano i turni
+        /// registrati, con gli stessi alberi e gli STESSI SEMI. Le buche tornano identiche
+        /// perche' dipendono dalla geometria, le posizioni delle piantine pure perche' dipendono
+        /// dal seme: cambia soltanto QUANTA rinnovazione il modello concede, cioe' l'unica cosa
+        /// che si voleva mettere a confronto.
+        /// </summary>
+        public void ReapplyClimate()
+        {
+            if (roundHistory.Count == 0) return;
+
+            var history = new List<(List<int> ids, int seed, bool seeded)>(roundHistory);
+
+            replaying = true;
+            try
+            {
+                RestoreStand();
+                roundHistory.Clear();
+                foreach (var r in history)
+                {
+                    if (r.seeded) FellMany(r.ids, r.seed);
+                    else FellMany(r.ids);
+                }
+            }
+            finally
+            {
+                replaying = false;
+                roundHistory.Clear();
+                roundHistory.AddRange(history);
+            }
+
+            Debug.Log($"[StandBuilder] clima cambiato: riapplicati {history.Count} turni sulla " +
+                      $"stessa martellata — suitability {LastSuitability:F2}, " +
+                      $"{YoungCount} piantine.");
+        }
+
         /// <summary>
         /// Riporta il POPOLAMENTO a prima della martellata, lasciando stare tutto il resto.
         ///
@@ -926,6 +1011,11 @@ namespace Artemis.Regeneration
             foreach (var g in youngGOs) if (g != null) Destroy(g);
             youngGOs.Clear();
             youngRecords.Clear();
+
+            // Un ripristino VOLUTO cancella anche lo storico: da li' si riparte davvero da zero.
+            // Durante una riapplicazione del clima invece lo storico serve, ed e' chi riapplica a
+            // conservarlo.
+            if (!replaying) roundHistory.Clear();
 
             // 2. rimettere in piedi gli abbattuti. I record non se ne sono mai andati: `current`
             //    e' l'inventario, e l'abbattimento toglie l'ALBERO, non il dato.

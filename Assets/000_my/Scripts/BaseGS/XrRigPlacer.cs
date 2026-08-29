@@ -108,6 +108,9 @@ namespace Artemis.Session
         /// ritenta lo stesso punto — che e' gia' stato smentito dai fatti.
         private int attempt;
 
+        /// Generazione di suolo gia' vista: distingue un pavimento nuovo da un bosco nuovo.
+        private int lastGroundGeneration = -1;
+
         // ---- ciclo di vita ---------------------------------------------------------------------
 
         private void Start()
@@ -128,6 +131,15 @@ namespace Artemis.Session
         /// </summary>
         private void OnGroundRebuilt()
         {
+            // OnRebuilt lo emette anche chi cambia il solo SOPRASSUOLO: il ripristino del bosco e
+            // la riapplicazione del clima sulla martellata gia' fatta. In quei casi il pavimento
+            // e' rimasto esattamente dov'era, e riposare il rig significherebbe teletrasportare
+            // tutti al centro proprio mentre stanno guardando una buca — cioe' rovinare il
+            // confronto fra scenari che quell'operazione serviva a mostrare.
+            int gen = boundBuilder != null ? boundBuilder.GroundGeneration : -1;
+            if (gen >= 0 && gen == lastGroundGeneration) return;
+            lastGroundGeneration = gen;
+
             Debug.Log("[XrRigPlacer] suolo ricostruito: riposiziono il rig.");
             placed = false;
             started = Time.time;
@@ -200,6 +212,7 @@ namespace Artemis.Session
             origin.transform.SetPositionAndRotation(pos, Quaternion.Euler(0f, spawn.eulerAngles.y, 0f));
 
             placed = true;
+            if (boundBuilder != null) lastGroundGeneration = boundBuilder.GroundGeneration;
             lastGoodPosition = pos;
             hasLastGood = true;
             Unfreeze();

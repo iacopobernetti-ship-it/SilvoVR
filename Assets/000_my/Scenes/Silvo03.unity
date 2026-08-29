@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 240874884}
   - component: {fileID: 240874883}
   - component: {fileID: 240874885}
+  - component: {fileID: 240874886}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -246,6 +247,22 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!114 &240874886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 240874882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5f0013c7ac2eb64a80a96f5b8d57a2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Artemis.Vr.SceneBackground
+  mode: 0
+  color: {r: 0, g: 0, b: 0, a: 1}
+  skybox: {fileID: 0}
+  recheckInterval: 0.5
 --- !u!1 &453542426
 GameObject:
   m_ObjectHideFlags: 0

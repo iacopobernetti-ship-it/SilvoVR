@@ -371,6 +371,7 @@ MonoBehaviour:
   cellLineWidth: 0.12
   playerBlip: {r: 1, g: 0.95, b: 0.3, a: 1}
   blipSize: 1.5
+  blipLength: 3.2
   flipNorthSouth: 1
 --- !u!1 &1085496440
 GameObject:
@@ -416,6 +417,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e12f39b74d5456408e598260481bfd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Artemis.Session.XrRigPlacer
+  useColliderCentre: 1
   spawnPoint: {fileID: 0}
   useGeneratedGroundCentre: 1
   scatterRadius: 1.2
@@ -427,8 +429,11 @@ MonoBehaviour:
   groundOffset: 0.05
   freezeUntilPlaced: 1
   maxFreezeSeconds: 8
+  fallRescueDepth: 8
+  maxRescues: 5
   giveUpAfterSeconds: 10
   retryInterval: 0.25
+  logGroundProbe: 1
 --- !u!1 &1155817004
 GameObject:
   m_ObjectHideFlags: 0
@@ -440,6 +445,7 @@ GameObject:
   - component: {fileID: 1155817006}
   - component: {fileID: 1155817005}
   - component: {fileID: 1155817007}
+  - component: {fileID: 1155817008}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -556,6 +562,22 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!114 &1155817008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1155817004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5f0013c7ac2eb64a80a96f5b8d57a2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Artemis.Vr.SceneBackground
+  mode: 0
+  color: {r: 0, g: 0, b: 0, a: 1}
+  skybox: {fileID: 0}
+  recheckInterval: 0.5
 --- !u!1 &1210512530
 GameObject:
   m_ObjectHideFlags: 0

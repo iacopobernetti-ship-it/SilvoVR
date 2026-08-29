@@ -44,6 +44,11 @@ namespace Artemis.Regeneration
             new System.Collections.Generic.Dictionary<string, Image>();
         private readonly System.Collections.Generic.Dictionary<int, Image> decadeImages =
             new System.Collections.Generic.Dictionary<int, Image>();
+
+        // I pulsanti, non solo le loro immagini: agli studenti servono VISIBILI ma inerti, e per
+        // renderli inerti serve il Button.
+        private readonly System.Collections.Generic.List<Button> pickerButtons =
+            new System.Collections.Generic.List<Button>();
         private TMP_Text periodLabel, indicesLabel, aridityLabel, statusLabel;
         private RectTransform sspRow, decRow;
         private TMP_Text sspTitle, decTitle;
@@ -80,6 +85,7 @@ namespace Artemis.Regeneration
                 string s = ssp;                                  // copia per la closure
                 var (btn, img) = hud.MakeButton(sspRow, s.ToUpperInvariant(), () => SelectScenario(s));
                 sspImages[s] = img;
+                pickerButtons.Add(btn);
             }
 
             decTitle = hud.MakeLabel(page, "Decade", 16);
@@ -89,6 +95,7 @@ namespace Artemis.Regeneration
                 int y = d;
                 var (btn, img) = hud.MakeButton(decRow, y.ToString(), () => SelectDecade(y));
                 decadeImages[y] = img;
+                pickerButtons.Add(btn);
             }
 
             periodLabel  = hud.MakeLabel(page, "", 17);
@@ -127,6 +134,14 @@ namespace Artemis.Regeneration
             if (st != null && st.IsSpawned && VrSession.IsTeacher && client != null)
                 st.SetClimate(client.Scenario, client.StartYear, client.EndYear, client.Aridity01,
                               client.SummerMeanTempC, client.DeMartonneSummer);
+
+            // Se una martellata c'e' gia', il nuovo scenario si applica SUBITO alle buche
+            // esistenti invece che al prossimo taglio. Gli studenti ci arrivano per un'altra
+            // strada — SetSharedClimate sul loro StandBuilder — ma il docente e chi lavora da
+            // solo non passano di li', perche' sono la FONTE del dato e non il destinatario.
+            var b = FindFirstObjectByType<StandBuilder>();
+            if (b != null && b.FelledCount > 0) b.ReapplyClimate();
+
             Refresh();
         }
 
@@ -141,23 +156,31 @@ namespace Artemis.Regeneration
             var st = SessionState.Instance;
             bool shared = st != null && st.IsSpawned && !VrSession.IsTeacher;
 
-            // Lo studente non sceglie: i selettori spariscono del tutto, restano i valori.
-            bool showPickers = VrSession.CanCommand;
-            if (sspRow != null && sspRow.gameObject.activeSelf != showPickers)
-                sspRow.gameObject.SetActive(showPickers);
-            if (decRow != null && decRow.gameObject.activeSelf != showPickers)
-                decRow.gameObject.SetActive(showPickers);
-            if (sspTitle != null) sspTitle.gameObject.SetActive(showPickers);
-            if (decTitle != null) decTitle.gameObject.SetActive(showPickers);
+            // I selettori si VEDONO SEMPRE, anche allo studente: qui non sono un comando, sono
+            // l'informazione principale della scheda. Sapere quale scenario e quale decade sono
+            // in vigore fa parte della lezione — e' il parametro sotto cui si sta osservando il
+            // bosco — mentre poterli cambiare no. Nascondendoli, lo studente non aveva modo di
+            // sapere cosa stesse guardando; e siccome lo stato mostrato viene dalla sessione, si
+            // aggiorna da solo appena il docente cambia scelta.
+            bool canPick = VrSession.CanCommand;
+            foreach (var b in pickerButtons) if (b != null) b.interactable = canPick;
+            if (sspTitle != null)
+                SetLine(sspTitle, canPick ? "Emission scenario" : "Emission scenario (set by the teacher)");
+            if (decTitle != null)
+                SetLine(decTitle, canPick ? "Decade" : "Decade (set by the teacher)");
 
             string curScenario = shared ? st.Scenario.Value.ToString() : client.Scenario;
             int curStart = shared ? st.StartYear.Value : client.StartYear;
             int curEnd   = shared ? st.EndYear.Value   : client.EndYear;
 
+            // Il verde marca sempre la scelta in vigore, per tutti. Le altre voci restano piu'
+            // spente per chi non puo' sceglierle, cosi' si capisce a colpo d'occhio che sono da
+            // leggere e non da premere.
+            Color idle = canPick ? hud.ButtonColor : new Color(0.16f, 0.16f, 0.16f, 1f);
             foreach (var kv in sspImages)
-                kv.Value.color = kv.Key == curScenario ? hud.ActiveColor : hud.ButtonColor;
+                kv.Value.color = kv.Key == curScenario ? hud.ActiveColor : idle;
             foreach (var kv in decadeImages)
-                kv.Value.color = kv.Key == curStart ? hud.ActiveColor : hud.ButtonColor;
+                kv.Value.color = kv.Key == curStart ? hud.ActiveColor : idle;
 
             SetLine(periodLabel, $"{curScenario.ToUpperInvariant()}   {curStart}-{curEnd}");
 
