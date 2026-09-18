@@ -150,8 +150,14 @@ public class LCCRendererVR : MonoBehaviour
 
             case SplatSource.PersistentData:
             {
-                string p = Path.Combine(Application.persistentDataPath, localRelativePath);
-                if (!File.Exists(p))
+                    // Separatore NATIVO della piattaforma. L'SDK fa parsing della stringa del percorso
+                    // (Substring su un separatore) e non e' tollerante: con slash su Windows lancia
+                    // ArgumentOutOfRangeException, con separatori misti carica ma non trova i chunk.
+                    // Su Android il separatore nativo e' comunque '/', quindi il visore non cambia.
+                    string p = Path.GetFullPath(Path.Combine(Application.persistentDataPath, localRelativePath))
+                                   .Replace('/', Path.DirectorySeparatorChar);
+
+                    if (!File.Exists(p))
                 {
                     Debug.LogError($"[LCCRendererVR] '{gameObject.scene.name}': file NON trovato in\n  {p}\n" +
                                    "Copialo sul visore con:\n" +

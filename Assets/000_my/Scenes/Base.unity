@@ -321,7 +321,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Artemis.Vr.SceneBackground
   mode: 1
-  color: {r: 0, g: 0, b: 0, a: 1}
+  color: {r: 0.7433963, g: 0.7433963, b: 0.7433963, a: 1}
   skybox: {fileID: 2100000, guid: 8b1d335512c1d8849aced36ba09d1c36, type: 2}
   recheckInterval: 0.5
 --- !u!1 &535404425
@@ -816,7 +816,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Artemis.Vr.SplatInstaller
   rootFolder: LCC
   manifestName: _files.txt
-  skipInEditor: 1
+  skipInEditor: 0
 --- !u!4 &1840971183
 Transform:
   m_ObjectHideFlags: 0

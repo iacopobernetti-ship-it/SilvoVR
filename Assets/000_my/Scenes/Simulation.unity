@@ -150,15 +150,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Artemis.Regeneration.FutureClimateClient
   baseUrl: http://80.211.133.205:8004
   path: /gardens/bioclim
-  lat: 43.5
-  lon: 11.25
+  lat: 43.732
+  lon: 11.5499
   scenario: ssp245
   startYear: 2041
   endYear: 2060
   summerHumidIndex: 20
   summerAridIndex: 5
-  coolSummerC: 14
-  hotSummerC: 24
+  coolSummerC: 27
+  hotSummerC: 35
   heatWeight: 0.5
   fetchOnStart: 1
   useSummerAridity: 1
@@ -575,7 +575,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Artemis.Vr.SceneBackground
   mode: 0
-  color: {r: 0, g: 0, b: 0, a: 1}
+  color: {r: 0.74509805, g: 0.74509805, b: 0.74509805, a: 1}
   skybox: {fileID: 0}
   recheckInterval: 0.5
 --- !u!1 &1210512530
